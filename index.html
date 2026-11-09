@@ -1318,7 +1318,7 @@ function shuffleGenreTabsHourly(){
 async function loadSongs(){
  const {data,error} = await supabase
   .from('songs')
-  .select('id,title,artist,youtube_id,youtube_url,genre,plays,likes,chart_category,youtube_views,youtube_likes,youtube_comments,created_at')
+  .select('id,title,artist,youtube_id,genre,plays,likes,chart_category,youtube_views,youtube_likes,youtube_comments,created_at')
   .order('youtube_views',{ascending:false,nullsFirst:false});
 
  if(error){ message('곡 목록 오류: '+error.message); return; }
