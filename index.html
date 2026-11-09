@@ -1,0 +1,1368 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="referrer" content="strict-origin-when-cross-origin">
+<title>AI MUSIC CHART</title>
+
+<style>
+*{box-sizing:border-box}
+
+body{
+ margin:0;
+ background:#090a0d;
+ color:#e9e9ed;
+ font-family:"Pretendard","Noto Sans KR","Malgun Gothic",Arial,sans-serif;
+ font-weight:400;
+ letter-spacing:-0.35px;
+}
+
+header{
+ padding:18px 5%;
+ border-bottom:1px solid #252831;
+ display:flex;
+ justify-content:space-between;
+ align-items:center;
+}
+
+.logo{
+ font-size:21px;
+ font-weight:600;
+ letter-spacing:1.2px;
+ text-decoration:none;
+ color:#f1f2f5;
+}
+
+.logo span{
+ color:#a6c98c;
+ font-weight:500;
+}
+
+main{
+ max-width:1280px;
+ margin:30px auto;
+ padding:0 18px;
+}
+
+h1{
+ font-size:29px;
+ font-weight:400;
+ letter-spacing:-1px;
+}
+
+h2{
+ font-size:19px;
+ font-weight:450;
+ letter-spacing:-0.5px;
+}
+
+p{
+ color:#999ca5;
+ font-weight:300;
+}
+
+button{
+ cursor:pointer;
+ border:0;
+ border-radius:7px;
+ padding:11px 16px;
+ font-family:inherit;
+ font-size:14px;
+ font-weight:400;
+}
+
+.primary{
+ background:#a6c98c;
+ color:#182015;
+}
+
+.secondary{
+ background:#292d38;
+ color:#ddd;
+}
+
+input,select{
+ width:100%;
+ padding:12px;
+ margin:6px 0 13px;
+ background:#171920;
+ border:1px solid #343946;
+ border-radius:7px;
+ color:white;
+ font-family:inherit;
+ font-size:14px;
+ font-weight:300;
+}
+
+label{
+ font-size:13px;
+ color:#b5b6bd;
+ font-weight:400;
+}
+
+.panel{
+ background:#14161d;
+ border:1px solid #292d38;
+ border-radius:12px;
+ padding:18px;
+ margin:22px 0;
+}
+
+.panel h2{
+ margin-top:0;
+}
+
+.actions{
+ display:flex;
+ gap:8px;
+ flex-wrap:wrap;
+}
+
+#status{
+ color:#a6c98c;
+ margin:18px 0;
+ font-size:13px;
+ font-weight:300;
+ background:#121710;
+ border:1px solid #2a3825;
+ border-radius:8px;
+ padding:10px 13px;
+}
+
+.chart-tabs{
+ display:flex;
+ gap:8px;
+ flex-wrap:wrap;
+ margin:22px 0 14px;
+}
+.chart-tab{
+ background:#292d38;
+ color:#ddd;
+ border:1px solid #414653;
+ border-radius:20px;
+ padding:9px 17px;
+ font-size:12px;
+ cursor:pointer;
+}
+.chart-tab.active{
+ background:#a6c98c;
+ color:#182015;
+ font-weight:600;
+}
+
+.genre-tabs{
+ display:flex;
+ flex-wrap:nowrap;
+ overflow-x:auto;
+ gap:7px;
+ margin:0 0 14px;
+ padding-bottom:6px;
+ scrollbar-width:thin;
+}
+.genre-tab{
+ background:#171c24;
+ color:#aeb5c0;
+ border:1px solid #303846;
+ border-radius:18px;
+ padding:8px 14px;
+ font-size:11px;
+ cursor:pointer;
+ white-space:nowrap;
+ flex:0 0 auto;
+}
+.genre-tab.active{
+ background:#26351f;
+ color:#c8e8ad;
+ border-color:#678451;
+ font-weight:600;
+}
+
+.chart-layout{
+ display:grid;
+ grid-template-columns:3fr 2fr;
+ gap:24px;
+ margin-top:20px;
+}
+
+.layout-column-title{
+ font-size:16px;
+ font-weight:600;
+ color:#b9e39a;
+ margin-bottom:14px;
+ padding-bottom:8px;
+ border-bottom:1px solid #283224;
+ display:flex;
+ align-items:center;
+ gap:8px;
+}
+
+.grid-main{
+ display:grid;
+ grid-template-columns:repeat(3,minmax(0,1fr));
+ gap:15px;
+}
+
+.grid-shorts{
+ display:grid;
+ grid-template-columns:repeat(2,minmax(0,1fr));
+ gap:15px;
+}
+
+.card{
+ background:#171920;
+ border-radius:10px;
+ overflow:hidden;
+ border:1px solid #282e38;
+ transition:transform .2s,border-color .2s;
+}
+.card:hover{
+ transform:translateY(-3px);
+ border-color:#60794f;
+}
+
+.card-shorts{
+ border-color:#3a2942;
+}
+.card-shorts:hover{
+ border-color:#a168b8;
+}
+
+.thumb{
+ position:relative;
+ cursor:pointer;
+ width:100%;
+ padding:0;
+ background:#000;
+ border-radius:0;
+ display:block;
+}
+
+.thumb img{
+ width:100%;
+ aspect-ratio:16/9;
+ object-fit:cover;
+ display:block;
+ transition:transform .25s;
+}
+
+.thumb-shorts img{
+ aspect-ratio:9/16;
+ object-fit:cover;
+}
+
+.card:hover .thumb img{
+ transform:scale(1.025);
+}
+
+.play-icon{
+ position:absolute;
+ left:50%;
+ top:50%;
+ transform:translate(-50%,-50%);
+ background:rgba(166,201,140,0.72);
+ color:rgba(15,22,13,0.9);
+ border-radius:50%;
+ width:44px;
+ height:44px;
+ display:flex;
+ align-items:center;
+ justify-content:center;
+ font-size:18px;
+ font-weight:400;
+ transition:background 0.2s,transform 0.2s;
+}
+
+.thumb:hover .play-icon{
+ background:rgba(166,201,140,0.9);
+ transform:translate(-50%,-50%) scale(1.06);
+}
+
+.player-area{
+ position:relative;
+ width:100%;
+ aspect-ratio:16/9;
+ background:#000;
+}
+
+.player-area-shorts{
+ aspect-ratio:9/16;
+}
+
+.player-area iframe{
+ width:100%;
+ height:100%;
+ border:0;
+}
+
+.thumb[hidden],
+.player-area[hidden]{
+ display:none !important;
+}
+
+.info{
+ padding:12px;
+}
+
+.title{
+ font-size:12px;
+ font-weight:600;
+ line-height:1.4;
+ margin-bottom:6px;
+ color:#ededf0;
+ display:-webkit-box;
+ -webkit-line-clamp:2;
+ -webkit-box-orient:vertical;
+ overflow:hidden;
+}
+
+.artist{
+ color:#a3a5ae;
+ font-size:11px;
+ font-weight:300;
+ white-space:nowrap;
+ overflow:hidden;
+ text-overflow:ellipsis;
+}
+
+.stats{
+ color:#858995;
+ font-size:10px;
+ font-weight:300;
+ margin-top:8px;
+ line-height:1.6;
+}
+
+.like-row{
+ display:flex;
+ align-items:center;
+ gap:8px;
+ margin-top:8px;
+}
+
+.like-button{
+ padding:6px 9px;
+ background:#292d38;
+ color:#e7a1aa;
+ border:1px solid #414653;
+ font-size:11px;
+ cursor:pointer;
+ width:100%;
+ border-radius:5px;
+}
+
+.like-button.liked{
+ background:#a6c98c;
+ color:#182015;
+ border-color:#a6c98c;
+}
+
+.site-header{
+ position:sticky;
+ top:0;
+ z-index:20;
+ background:rgba(9,10,13,.94);
+ backdrop-filter:blur(14px);
+ padding:15px max(5%,calc((100% - 1280px)/2));
+ display:flex;
+ justify-content:space-between;
+ align-items:center;
+}
+
+.main-nav{
+ display:flex;
+ align-items:center;
+ gap:22px;
+ margin-left:auto;
+}
+
+.main-nav a, .header-login{
+ color:#aeb2bd;
+ text-decoration:none;
+ font-size:13px;
+ font-weight:600;
+ white-space:nowrap;
+}
+
+.main-nav a:hover, .main-nav .nav-active{
+ color:#b9e39a;
+}
+
+.header-login{
+ border:1px solid #394333;
+ border-radius:20px;
+ padding:8px 15px;
+ color:#c6e6ae;
+ margin-left:20px;
+}
+
+.hero{
+ min-height:240px;
+ display:flex;
+ align-items:center;
+ justify-content:space-between;
+ overflow:hidden;
+ position:relative;
+ padding:35px 45px;
+ border:1px solid #303b2d;
+ border-radius:20px;
+ background:radial-gradient(circle at 78% 45%,rgba(137,183,106,.19),transparent 28%),linear-gradient(115deg,#171d18,#11151a 62%,#1a2119);
+ margin-top:20px;
+}
+
+.hero-copy{
+ position:relative;
+ z-index:2;
+}
+
+.eyebrow{
+ color:#a6c98c;
+ font-size:10px;
+ font-weight:700;
+ letter-spacing:2.5px;
+ margin-bottom:12px;
+}
+
+.hero h1{
+ font-size:32px;
+ line-height:1.3;
+ font-weight:700;
+ margin:0 0 10px;
+ letter-spacing:-1.4px;
+}
+
+.hero h1 span{
+ color:#b6dc98;
+}
+
+.hero p{
+ font-size:13px;
+ margin:0;
+ line-height:1.7;
+}
+
+.hero-actions{
+ display:flex;
+ align-items:center;
+ gap:22px;
+ margin-top:20px;
+}
+
+.hero-button{
+ display:inline-flex;
+ gap:18px;
+ align-items:center;
+ padding:11px 16px;
+ border-radius:7px;
+ background:#a6c98c;
+ color:#152012;
+ text-decoration:none;
+ font-size:13px;
+ font-weight:700;
+}
+
+.hero-text-link{
+ font-size:12px;
+ color:#c3c9bd;
+ text-decoration:none;
+}
+
+.hero-art{
+ width:220px;
+ height:190px;
+ position:relative;
+ flex:none;
+ margin-right:20px;
+ display:grid;
+ place-items:center;
+}
+
+.sound-orbit{
+ position:absolute;
+ border:1px solid rgba(181,220,151,.25);
+ border-radius:50%;
+ transform:rotate(-22deg);
+}
+
+.orbit-one{width:200px;height:90px}
+.orbit-two{width:160px;height:140px;transform:rotate(48deg)}
+
+.sound-core{
+ width:90px;
+ height:90px;
+ border-radius:50%;
+ display:grid;
+ place-items:center;
+ background:linear-gradient(145deg,#b8df99,#658a55);
+ box-shadow:0 0 50px rgba(166,201,140,.25);
+ font-size:44px;
+ color:#142012;
+}
+
+.sound-note{
+ position:absolute;
+ color:#c7e9aa;
+ font-size:24px;
+}
+
+.note-one{top:15px;right:30px}
+.note-two{bottom:15px;left:20px}
+
+.quick-links{
+ display:grid;
+ grid-template-columns:repeat(4,1fr);
+ gap:12px;
+ margin:18px 0 32px;
+}
+
+.quick-links a{
+ display:grid;
+ grid-template-columns:38px 1fr;
+ column-gap:10px;
+ align-items:center;
+ padding:14px;
+ background:#131720;
+ border:1px solid #272e39;
+ border-radius:11px;
+ text-decoration:none;
+ color:#eee;
+}
+
+.quick-links a > span{
+ grid-row:span 2;
+ font-size:20px;
+}
+
+.quick-links b{
+ font-size:12px;
+ font-weight:600;
+}
+
+.quick-links small{
+ font-size:10px;
+ color:#8f96a2;
+ margin-top:3px;
+}
+
+.section-heading{
+ display:flex;
+ justify-content:space-between;
+ align-items:end;
+ gap:15px;
+ margin-top:25px;
+}
+
+.section-heading h2{
+ font-size:22px;
+ margin:0;
+}
+
+.section-heading p{
+ font-size:11px;
+ margin:5px 0 0;
+}
+
+.community-panel{
+ display:flex;
+ align-items:center;
+ justify-content:space-between;
+ gap:20px;
+ margin:38px 0 10px;
+ padding:24px 28px;
+ border:1px solid #2c3829;
+ border-radius:14px;
+ background:linear-gradient(110deg,#151c16,#141820);
+}
+
+.community-panel h2{
+ margin:0 0 7px;
+ font-size:18px;
+}
+
+.community-panel p{
+ margin:0;
+ font-size:12px;
+ line-height:1.7;
+}
+
+.community-button{
+ white-space:nowrap;
+ text-decoration:none;
+ background:#a6c98c;
+ color:#172014;
+ border-radius:7px;
+ padding:11px 15px;
+ font-size:12px;
+ font-weight:700;
+}
+
+@media(max-width:1024px){
+ .chart-layout{grid-template-columns:1fr;}
+ .grid-main{grid-template-columns:repeat(3,minmax(0,1fr))}
+ .grid-shorts{grid-template-columns:repeat(4,minmax(0,1fr))}
+}
+
+@media(max-width:760px){
+ .site-header{padding:13px 15px;flex-wrap:wrap;gap:12px}
+ .main-nav{order:3;width:100%;justify-content:space-between;overflow-x:auto}
+ .header-login{margin-left:auto}
+ .hero{padding:28px 23px;min-height:240px}
+ .hero h1{font-size:25px}
+ .hero-art{display:none}
+ .quick-links{grid-template-columns:repeat(2,1fr)}
+ .grid-main{grid-template-columns:repeat(2,minmax(0,1fr))}
+ .grid-shorts{grid-template-columns:repeat(2,minmax(0,1fr))}
+ .community-panel{flex-direction:column;align-items:flex-start}
+}
+</style>
+</head>
+
+<body>
+
+<header class="site-header">
+ <a class="logo" href="#home">AI MUSIC <span>CHART</span></a>
+ <nav class="main-nav" aria-label="주요 메뉴">
+  <a class="nav-active" href="#home">홈</a>
+  <a href="#chartSection">실시간 차트</a>
+  <a href="#genreSection">장르별</a>
+  <a href="#newMusic">신곡</a>
+  <a href="#communitySection">커뮤니티</a>
+ </nav>
+ <a class="header-login" href="#authPanel">로그인</a>
+</header>
+
+<main id="home">
+
+<section class="hero">
+ <div class="hero-copy">
+  <div class="eyebrow">KOREA AI MUSIC PLATFORM</div>
+  <h1>새로운 음악의 발견,<br><span>AI MUSIC CHART</span></h1>
+  <p>검증된 한국 AI 음악 차트를 확인하고 좋아하는 창작자를 응원하세요.</p>
+  <div class="hero-actions">
+   <a class="hero-button" href="#chartSection">인기 차트 보기 <b>→</b></a>
+   <a class="hero-text-link" href="#registerPanel">내 음악 등록하기</a>
+  </div>
+ </div>
+ <div class="hero-art" aria-hidden="true">
+  <div class="sound-orbit orbit-one"></div>
+  <div class="sound-orbit orbit-two"></div>
+  <div class="sound-core">♫</div>
+  <span class="sound-note note-one">♪</span>
+  <span class="sound-note note-two">♬</span>
+ </div>
+</section>
+
+<section class="quick-links" id="genreSection">
+ <a href="#chartSection" data-quick-chart="실시간"><span>🏆</span><b>실시간 차트</b><small>최근 24시간 인기</small></a>
+ <a href="#chartSection" data-quick-chart="주간"><span>📅</span><b>주간 차트</b><small>최근 7일간 인기</small></a>
+ <a href="#chartSection" data-quick-chart="연간"><span>🌟</span><b>연간 차트</b><small>최근 365일 인기</small></a>
+ <a href="#chartSection" data-quick-genre="트로트"><span>🎤</span><b>트로트</b><small>AI 트로트 모아보기</small></a>
+</section>
+
+<section class="panel" id="authPanel">
+ <h2>회원가입 / 로그인</h2>
+ <label>이메일</label>
+ <input id="email" type="email" placeholder="이메일 주소">
+ <label>비밀번호</label>
+ <input id="password" type="password" placeholder="비밀번호">
+ <div class="actions">
+  <button class="primary" id="signupBtn" type="button">회원가입</button>
+  <button class="secondary" id="loginBtn" type="button">로그인</button>
+ </div>
+ <button class="secondary" id="resetPasswordBtn" type="button" style="margin-top:10px;">비밀번호 재설정</button>
+</section>
+
+<section class="panel" id="passwordUpdatePanel" hidden>
+ <h2>새 비밀번호 설정</h2>
+ <label>새 비밀번호</label>
+ <input id="newPassword" type="password" placeholder="새 비밀번호 6자 이상">
+ <button class="primary" id="saveNewPasswordBtn" type="button">새 비밀번호 저장</button>
+</section>
+
+<section class="panel" id="memberPanel" hidden>
+ <div id="userInfo" style="margin-bottom:10px;"></div>
+ <button class="secondary" id="logoutBtn" type="button">로그아웃</button>
+</section>
+
+<section class="panel" id="registerPanel" hidden>
+ <h2>새로운 곡 등록</h2>
+ <label>곡 제목</label>
+ <input id="songTitle" placeholder="곡 제목을 입력하세요">
+ <label>가수 또는 아티스트</label>
+ <input id="songArtist" placeholder="아티스트 이름">
+ <label>유튜브 영상 주소</label>
+ <input id="youtubeUrl" placeholder="https://www.youtube.com/watch?v=...">
+ <label>차트 분류</label>
+ <select id="chartCategory">
+  <option value="가요">가요</option>
+  <option value="POP">POP</option>
+ </select>
+ <label>장르</label>
+ <select id="genre">
+  <option value="댄스">댄스</option>
+  <option value="발라드">발라드</option>
+  <option value="랩·힙합">랩·힙합</option>
+  <option value="R&B·Soul">R&B·Soul</option>
+  <option value="인디 음악">인디 음악</option>
+  <option value="록·메탈">록·메탈</option>
+  <option value="트로트">트로트</option>
+  <option value="포크·블루스">포크·블루스</option>
+  <option value="기타 장르">기타 장르</option>
+ </select>
+ <button class="primary" id="registerBtn" type="button">곡 등록하기</button>
+</section>
+
+<div id="status">데이터를 불러오는 중입니다...</div>
+
+<section id="chartSection">
+ <div class="section-heading" id="newMusic">
+  <div>
+   <div class="eyebrow">STRICT KOREAN AI MUSIC CHART</div>
+   <h2>공식 AI 뮤직 차트</h2>
+   <p>일반 음악(가로 3열)과 쇼츠 차트(가로 2열) 분리 집계</p>
+  </div>
+ </div>
+
+ <div class="genre-tabs" id="genreTabsContainer" role="group" aria-label="장르 선택">
+  <button class="genre-tab active" data-genre="전체" type="button">전체 장르</button>
+  <button class="genre-tab" data-genre="댄스" type="button">댄스</button>
+  <button class="genre-tab" data-genre="발라드" type="button">발라드</button>
+  <button class="genre-tab" data-genre="랩·힙합" type="button">랩·힙합</button>
+  <button class="genre-tab" data-genre="R&B·Soul" type="button">R&B·Soul</button>
+  <button class="genre-tab" data-genre="인디 음악" type="button">인디 음악</button>
+  <button class="genre-tab" data-genre="록·메탈" type="button">록·메탈</button>
+  <button class="genre-tab" data-genre="트로트" type="button">트로트</button>
+  <button class="genre-tab" data-genre="포크·블루스" type="button">포크·블루스</button>
+  <button class="genre-tab" data-genre="기타 장르" type="button">기타 장르</button>
+  <button class="genre-tab" data-genre="신곡" type="button">신곡</button>
+ </div>
+
+ <div class="chart-tabs" id="chartTabsContainer" role="group" aria-label="기간 선택">
+  <button class="chart-tab active" data-chart="실시간" type="button">실시간 (최근 24시간)</button>
+  <button class="chart-tab" data-chart="주간" type="button">주간 (최근 7일)</button>
+  <button class="chart-tab" data-chart="연간" type="button">연간 (최근 365일)</button>
+ </div>
+
+ <div class="chart-layout">
+  <div>
+   <div class="layout-column-title">🎵 일반 AI 음악 차트</div>
+   <section class="grid-main" id="mainSongsGrid"></section>
+  </div>
+
+  <div>
+   <div class="layout-column-title" style="color:#c686df;">⚡ AI 쇼츠(Shorts) 차트</div>
+   <section class="grid-shorts" id="shortsGrid"></section>
+  </div>
+ </div>
+</section>
+
+<section class="community-panel" id="communitySection">
+ <div>
+  <div class="eyebrow">CREATOR COMMUNITY</div>
+  <h2>창작자의 음악을 소개하세요</h2>
+  <p>AI 음악을 만드는 창작자라면 회원 로그인 후 곡 등록을 신청할 수 있습니다.</p>
+ </div>
+ <a href="#registerPanel" class="community-button">내 음악 등록하기 →</a>
+</section>
+
+</main>
+
+<script type="module">
+import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm';
+
+const SUPABASE_URL = 'https://rswvabssslzwvonzancb.supabase.co';
+const SUPABASE_KEY = 'sb_publishable_FS2btcdPy4FpjTZ3nhKvxA_g4coLvB1';
+const SITE_URL = 'https://incredible-fudge-1fae35.netlify.app';
+
+const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
+const $ = id => document.getElementById(id);
+
+let recoveryMode = false;
+let allSongs = [];
+let activeChart = '실시간';
+let activeGenre = '전체';
+
+// 🎯 수동 허용 ID (직접 등록하신 트로트 곡 및 예외 수동 허용곡)
+const manualKoreanSongIds = new Set(['uTEhWOTuUuY', 'qC28Gpn87V4']);
+
+function message(text){
+ $('status').textContent = text;
+}
+
+function escapeHTML(value){
+ return String(value ?? '').replace(/[&<>"']/g, c => ({
+  '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'
+ }[c]));
+}
+
+function getYoutubeId(url){
+ try{
+  const u = new URL(url);
+  let id = '';
+  if(u.hostname === 'youtu.be'){
+   id = u.pathname.slice(1);
+  }else if(u.hostname.includes('youtube.com')){
+   if(u.pathname === '/watch') id = u.searchParams.get('v') || '';
+   else if(u.pathname.startsWith('/embed/')) id = u.pathname.split('/')[2] || '';
+   else if(u.pathname.startsWith('/shorts/')) id = u.pathname.split('/')[2] || '';
+  }
+  return /^[a-zA-Z0-9_-]{11}$/.test(id) ? id : null;
+ }catch{
+  return null;
+ }
+}
+
+// 🛡️ 유연하고 안정적인 검증 필터
+function isValidKoreanAIMusic(song){
+ // 1. 수동 등록곡/허용 ID는 무조건 통과
+ if(manualKoreanSongIds.has(song.youtube_id)) return true;
+
+ const text = ((song.title || '') + ' ' + (song.artist || '') + ' ' + (song.genre || '')).toLowerCase();
+
+ // 2. 순수 해외 비한글 곡 필터 (외국어 전용 곡 쳐내기)
+ const hasKorean = /[가-힣ㄱ-ㅎㅏ-ㅣ]/.test(text);
+ const isStrictForeign = !hasKorean && (text.includes('odia') || text.includes('tamil') || text.includes('hindi') || text.includes('whatsapp status'));
+ if (isStrictForeign) return false;
+
+ // 3. 음악과 무관한 뉴스/튜토리얼 필터링
+ const isTutorialOrNews = text.includes('소송') || text.includes('주간 수노 뉴스') || text.includes('how to generate') || text.includes('변호사tv');
+ if (isTutorialOrNews) return false;
+
+ return true;
+}
+
+function isShorts(song){
+ const text = ((song.title || '') + ' ' + (song.youtube_url || '')).toLowerCase();
+ return text.includes('shorts') || text.includes('#short');
+}
+
+async function updateAuth(){
+ const {data:{session}} = await supabase.auth.getSession();
+ const loggedIn = !!session;
+ if(recoveryMode) return;
+ $('authPanel').hidden = loggedIn;
+ $('memberPanel').hidden = !loggedIn;
+ $('registerPanel').hidden = !loggedIn;
+ $('passwordUpdatePanel').hidden = true;
+ $('userInfo').textContent = loggedIn ? session.user.email + ' 로그인 중' : '';
+}
+
+async function signup(){
+ const email = $('email').value.trim();
+ const password = $('password').value;
+ if(!email || password.length < 6){
+  message('이메일을 입력하고 비밀번호는 6자 이상 입력하세요.');
+  return;
+ }
+ const {error} = await supabase.auth.signUp({email,password});
+ if(error){ message('회원가입 오류: '+error.message); return; }
+ message('회원가입 요청이 완료됐습니다.');
+ await updateAuth();
+}
+
+async function login(){
+ const email = $('email').value.trim();
+ const password = $('password').value;
+ if(!email || !password){ message('이메일과 비밀번호를 입력하세요.'); return; }
+ const {error} = await supabase.auth.signInWithPassword({email,password});
+ if(error){ message('로그인 오류: '+error.message); return; }
+ message('로그인했습니다.');
+ await updateAuth();
+}
+
+async function resetPassword(){
+ const email = $('email').value.trim();
+ if(!email){ message('먼저 이메일 주소를 입력하세요.'); return; }
+ const {error} = await supabase.auth.resetPasswordForEmail(email,{redirectTo:SITE_URL});
+ if(error){ message('재설정 메일 오류: '+error.message); return; }
+ message('재설정 메일을 보냈습니다.');
+}
+
+async function saveNewPassword(){
+ const password = $('newPassword').value;
+ if(password.length < 6){ message('새 비밀번호는 6자 이상 입력하세요.'); return; }
+ const {error} = await supabase.auth.updateUser({password:password});
+ if(error){ message('비밀번호 변경 오류: '+error.message); return; }
+ recoveryMode = false;
+ $('newPassword').value = '';
+ $('passwordUpdatePanel').hidden = true;
+ message('비밀번호가 변경됐습니다.');
+ await supabase.auth.signOut();
+ await updateAuth();
+}
+
+async function logout(){
+ await supabase.auth.signOut();
+ message('로그아웃했습니다.');
+ await updateAuth();
+}
+
+async function registerSong(){
+ const title = $('songTitle').value.trim();
+ const artist = $('songArtist').value.trim();
+ const youtubeUrl = $('youtubeUrl').value.trim();
+ const youtubeId = getYoutubeId(youtubeUrl);
+ const genre = $('genre').value;
+ const chartCategory = $('chartCategory').value;
+
+ if(!title || !artist || !youtubeId){
+  message('곡 제목, 아티스트, 올바른 유튜브 주소를 확인하세요.');
+  return;
+ }
+
+ const {data:{user},error:userError} = await supabase.auth.getUser();
+ if(userError || !user){ message('로그인이 필요합니다.'); return; }
+
+ $('registerBtn').disabled = true;
+ message('곡 등록 신청을 처리하고 있습니다...');
+
+ const {error} = await supabase.rpc('submit_song_submission',{
+  p_youtube_id:youtubeId,
+  p_youtube_url:youtubeUrl,
+  p_title:title,
+  p_artist:artist,
+  p_genre:genre,
+  p_chart_category:chartCategory
+ });
+
+ $('registerBtn').disabled = false;
+ if(error){ message('등록 신청 오류: '+error.message); return; }
+
+ $('songTitle').value = '';
+ $('songArtist').value = '';
+ $('youtubeUrl').value = '';
+ message('곡 등록 신청이 완료됐습니다.');
+}
+
+let youtubeAPIReady;
+const activePlayers = new Map();
+const activePlayTimers = new Map();
+
+function loadYoutubeAPI(){
+ if(window.YT && window.YT.Player) return Promise.resolve();
+ if(!youtubeAPIReady){
+  youtubeAPIReady = new Promise(resolve=>{
+   const previous = window.onYouTubeIframeAPIReady;
+   window.onYouTubeIframeAPIReady = ()=>{
+    if(typeof previous === 'function') previous();
+    resolve();
+   };
+   if(!document.querySelector('script[data-youtube-api]')){
+    const script = document.createElement('script');
+    script.src = 'https://www.youtube.com/iframe_api';
+    script.dataset.youtubeApi = 'true';
+    document.head.appendChild(script);
+   }
+  });
+ }
+ return youtubeAPIReady;
+}
+
+async function playSong(song,indexKey){
+ const area = $('player-'+indexKey);
+ const thumb = $('thumb-'+indexKey);
+
+ if(area.dataset.open === 'yes'){
+  const currentPlayer = activePlayers.get(indexKey);
+  const timer = activePlayTimers.get(indexKey);
+  if(timer) clearInterval(timer);
+  activePlayTimers.delete(indexKey);
+  try{ if(currentPlayer) currentPlayer.destroy(); }catch{}
+  activePlayers.delete(indexKey);
+  closePlayer(indexKey);
+  message('재생을 중지했습니다.');
+  return;
+ }
+
+ area.dataset.open = 'yes';
+ area.hidden = false;
+ thumb.hidden = true;
+
+ try{
+  await loadYoutubeAPI();
+  if(area.dataset.open !== 'yes') return;
+
+  let player;
+  let counted = false;
+  let playedSeconds = 0;
+  let lastTime = null;
+  let timer = null;
+
+  player = new YT.Player('yt-player-'+indexKey,{
+   videoId:song.youtube_id,
+   playerVars:{
+    autoplay:1,
+    playsinline:1,
+    rel:0,
+    enablejsapi:1,
+    origin:window.location.origin
+   },
+   events:{
+    onReady:event=>{
+     player = event.target;
+     activePlayers.set(indexKey, player);
+     const iframe = player.getIframe && player.getIframe();
+     if(iframe){
+      iframe.setAttribute('allowfullscreen','');
+      iframe.setAttribute('allow','autoplay; encrypted-media; picture-in-picture; fullscreen');
+      iframe.setAttribute('referrerpolicy','strict-origin-when-cross-origin');
+     }
+
+     timer = setInterval(async ()=>{
+      if(counted) return;
+      if(player.getPlayerState() === YT.PlayerState.PLAYING){
+       const currentTime = player.getCurrentTime();
+       if(lastTime !== null){
+        const diff = currentTime - lastTime;
+        if(diff > 0 && diff < 2) playedSeconds += diff;
+       }
+       lastTime = currentTime;
+       if(playedSeconds >= 10){
+        counted = true;
+        clearInterval(timer);
+        const {error} = await supabase.rpc('increment_song_plays',{p_song_id:song.id});
+        if(!error){
+         song.plays = Number(song.plays || 0) + 1;
+         const sitePlays = document.getElementById('site-plays-'+song.id);
+         if(sitePlays) sitePlays.textContent = song.plays.toLocaleString('ko-KR');
+         message('10초 재생! 조회수가 반영되었습니다.');
+        }
+       }
+      }else{
+       lastTime = null;
+      }
+     },500);
+     activePlayTimers.set(indexKey, timer);
+    },
+    onError:event=>{
+     message('유튜브 재생 오류 코드: '+event.data);
+    }
+   }
+  });
+ }catch{
+  message('유튜브 재생 준비에 실패했습니다.');
+ }
+}
+
+function closePlayer(indexKey){
+ const area = $('player-'+indexKey);
+ const thumb = $('thumb-'+indexKey);
+ const timer = activePlayTimers.get(indexKey);
+ if(timer) clearInterval(timer);
+ activePlayTimers.delete(indexKey);
+ const currentPlayer = activePlayers.get(indexKey);
+ try{ if(currentPlayer) currentPlayer.destroy(); }catch{}
+ activePlayers.delete(indexKey);
+ area.innerHTML = '<div id="yt-player-'+indexKey+'"></div>';
+ area.hidden = true;
+ area.dataset.open = 'no';
+ thumb.hidden = false;
+}
+
+function getGuestVisitorToken(){
+ const key = 'aimusic_guest_visitor_token';
+ let token = localStorage.getItem(key);
+ if(!token){
+  const bytes = new Uint8Array(32);
+  crypto.getRandomValues(bytes);
+  token = Array.from(bytes).map(b=>b.toString(16).padStart(2,'0')).join('');
+  localStorage.setItem(key,token);
+ }
+ return token;
+}
+
+const guestVisitorToken = getGuestVisitorToken();
+let guestLikedSongIds = new Set();
+let guestLikeCounts = new Map();
+
+async function loadGuestLikes(){
+ guestLikedSongIds = new Set();
+ guestLikeCounts = new Map();
+ await Promise.all(allSongs.map(async song=>{
+  const [countResult,likedResult] = await Promise.all([
+   supabase.rpc('get_guest_song_likes',{p_song_id:song.id}),
+   supabase.rpc('has_guest_song_liked',{p_song_id:song.id,p_visitor_token:guestVisitorToken})
+  ]);
+  if(!countResult.error) guestLikeCounts.set(song.id,Number(countResult.data || 0));
+  if(!likedResult.error && likedResult.data === true) guestLikedSongIds.add(song.id);
+ }));
+}
+
+let likedSongIds = new Set();
+async function loadMyLikes(){
+ const {data:{user}} = await supabase.auth.getUser();
+ likedSongIds = new Set();
+ if(!user) return;
+ const {data,error} = await supabase.from('song_likes').select('song_id').eq('user_id',user.id);
+ if(!error) likedSongIds = new Set((data || []).map(row=>row.song_id));
+}
+
+async function likeSong(song,indexKey){
+ const button = $('like-'+indexKey);
+ button.disabled = true;
+ const {data:{user}} = await supabase.auth.getUser();
+
+ if(user){
+  const {data,error} = await supabase.rpc('toggle_song_like',{p_song_id:song.id});
+  if(error){ button.disabled = false; return; }
+  const isLiked = data === true;
+  if(isLiked) likedSongIds.add(song.id); else likedSongIds.delete(song.id);
+  button.textContent = isLiked ? '♥ 좋아요 취소' : '♡ 좋아요';
+  button.classList.toggle('liked',isLiked);
+ }else{
+  const {data,error} = await supabase.rpc('toggle_guest_song_like',{p_song_id:song.id,p_visitor_token:guestVisitorToken});
+  if(error){ button.disabled = false; return; }
+  const wasLiked = guestLikedSongIds.has(song.id);
+  if(wasLiked) guestLikedSongIds.delete(song.id); else guestLikedSongIds.add(song.id);
+  guestLikeCounts.set(song.id,Number(data || 0));
+  button.textContent = wasLiked ? '♡ 좋아요' : '♥ 좋아요 취소';
+  button.classList.toggle('liked',!wasLiked);
+ }
+
+ const totalLikes = Number(song.likes || 0) + Number(guestLikeCounts.get(song.id) || 0);
+ const countEl = $('like-count-'+indexKey);
+ if(countEl) countEl.textContent = totalLikes.toLocaleString('ko-KR');
+ button.disabled = false;
+}
+
+function setChart(category){
+ activeChart = category;
+ document.querySelectorAll('.chart-tab').forEach(b=>b.classList.toggle('active', b.dataset.chart === category));
+ renderSongs();
+}
+
+function setGenre(genre){
+ activeGenre = genre;
+ document.querySelectorAll('.genre-tab').forEach(b=>b.classList.toggle('active', b.dataset.genre === genre));
+ renderSongs();
+}
+
+function calculateScores(songsList, period) {
+ if (!songsList || songsList.length === 0) return [];
+
+ const periodFactor = period === '실시간' ? 0.25 : (period === '주간' ? 0.6 : 1.0);
+
+ const rawData = songsList.map(song => {
+  const views = Number(song.youtube_views || 0) * periodFactor;
+  const likes = Number(song.youtube_likes || 0) * periodFactor;
+  const comments = Number(song.youtube_comments || 0) * periodFactor;
+  
+  const likeRatio = views > 0 ? Math.min(likes / views, 0.2) : 0;
+  const commentRatio = views > 0 ? Math.min(comments / views, 0.05) : 0;
+
+  const sitePlays = Number(song.plays || 0) * periodFactor;
+  const siteLikes = (Number(song.likes || 0) + Number(guestLikeCounts.get(song.id) || 0)) * periodFactor;
+
+  return {
+   song,
+   logViews: Math.log10(views + 1),
+   likeRatio,
+   commentRatio,
+   siteMetric: Math.log10(sitePlays * 0.8 + siteLikes * 0.2 + 1)
+  };
+ });
+
+ const maxLogViews = Math.max(...rawData.map(d => d.logViews), 1);
+ const maxLikeRatio = Math.max(...rawData.map(d => d.likeRatio), 0.0001);
+ const maxCommentRatio = Math.max(...rawData.map(d => d.commentRatio), 0.0001);
+ const maxSiteMetric = Math.max(...rawData.map(d => d.siteMetric), 1);
+
+ const now = new Date();
+ return rawData.map(d => {
+  const V = (d.logViews / maxLogViews) * 100;
+  const L = (d.likeRatio / maxLikeRatio) * 100;
+  const C = (d.commentRatio / maxCommentRatio) * 100;
+  const S = (d.siteMetric / maxSiteMetric) * 100;
+
+  const baseScore = (0.70 * V + 0.20 * L + 0.10 * C) * 0.95 + 0.05 * S;
+
+  const pubDate = new Date(d.song.created_at || d.song.published_at || now);
+  const diffDays = (now - pubDate) / (1000 * 60 * 60 * 24);
+  
+  let bonusRate = 0;
+  if(diffDays <= 7) bonusRate = 0.10;
+  else if(diffDays <= 14) bonusRate = 0.06;
+  else if(diffDays <= 21) bonusRate = 0.03;
+  else if(diffDays <= 30) bonusRate = 0.01;
+
+  const finalScore = baseScore * (1 + bonusRate);
+
+  return {
+   ...d.song,
+   calculatedScore: Number(finalScore.toFixed(2)),
+   diffDays
+  };
+ }).sort((a, b) => b.calculatedScore - a.calculatedScore);
+}
+
+function assignRanks(scoredList){
+ let currentRank = 1;
+ return scoredList.map((song, index, arr) => {
+  if (index > 0 && song.calculatedScore < arr[index - 1].calculatedScore) {
+   currentRank = index + 1;
+  }
+  return { ...song, rank: currentRank };
+ });
+}
+
+function renderSongs(){
+ const validSongs = allSongs.filter(isValidKoreanAIMusic);
+
+ const filtered = validSongs.filter(song => {
+  if(activeGenre === '신곡'){
+   const pubDate = new Date(song.created_at || song.published_at || new Date());
+   return (new Date() - pubDate) / (1000 * 60 * 60 * 24) <= 14;
+  }
+  if(activeGenre !== '전체' && String(song.genre || '').trim() !== activeGenre) return false;
+  return true;
+ });
+
+ const mainSongsList = filtered.filter(song => !isShorts(song));
+ const shortsSongsList = filtered.filter(song => isShorts(song));
+
+ const scoredMain = assignRanks(calculateScores(mainSongsList, activeChart));
+ const scoredShorts = assignRanks(calculateScores(shortsSongsList, activeChart));
+
+ message((activeGenre === '전체' ? '전체 장르' : activeGenre) + ' · ' + activeChart + ' 차트 (일반 ' + scoredMain.length + '곡 / 쇼츠 ' + scoredShorts.length + '곡)');
+
+ const mainGrid = $('mainSongsGrid');
+ if(scoredMain.length === 0){
+  mainGrid.innerHTML = '<p style="grid-column:span 3;color:#777;padding:20px;">등록된 일반 AI 음악이 없습니다.</p>';
+ }else{
+  mainGrid.innerHTML = scoredMain.map((song,index)=>`
+   <article class="card">
+    <button class="thumb" id="thumb-m-${index}" type="button">
+     <img src="https://img.youtube.com/vi/${encodeURIComponent(song.youtube_id)}/hqdefault.jpg" alt="">
+     <span class="play-icon">▶</span>
+    </button>
+    <div class="player-area" id="player-m-${index}" hidden>
+     <div id="yt-player-m-${index}"></div>
+    </div>
+    <div class="info">
+     <div class="title">${song.rank <= 9 ? '0'+song.rank : song.rank}위. ${escapeHTML(song.title)}</div>
+     <div class="artist">${escapeHTML(song.artist)}</div>
+     <div class="stats">
+      점수: <b>${song.calculatedScore}점</b><br>
+      조회수 ${Number(song.youtube_views || 0).toLocaleString('ko-KR')} · ♡ <span id="like-count-m-${index}">${(Number(song.likes || 0)+Number(guestLikeCounts.get(song.id) || 0)).toLocaleString('ko-KR')}</span>
+     </div>
+     <div class="like-row">
+      <button class="like-button${(likedSongIds.has(song.id) || guestLikedSongIds.has(song.id)) ? ' liked' : ''}" id="like-m-${index}" type="button">${(likedSongIds.has(song.id) || guestLikedSongIds.has(song.id)) ? '♥ 취소' : '♡ 좋아요'}</button>
+     </div>
+    </div>
+   </article>
+  `).join('');
+
+  scoredMain.forEach((song,index)=>{
+   $('thumb-m-'+index).addEventListener('click',()=>playSong(song,'m-'+index));
+   $('like-m-'+index).addEventListener('click',()=>likeSong(song,'m-'+index));
+  });
+ }
+
+ const shortsGrid = $('shortsGrid');
+ if(scoredShorts.length === 0){
+  shortsGrid.innerHTML = '<p style="grid-column:span 2;color:#777;padding:20px;">등록된 AI 쇼츠가 없습니다.</p>';
+ }else{
+  shortsGrid.innerHTML = scoredShorts.map((song,index)=>`
+   <article class="card card-shorts">
+    <button class="thumb thumb-shorts" id="thumb-s-${index}" type="button">
+     <img src="https://img.youtube.com/vi/${encodeURIComponent(song.youtube_id)}/hqdefault.jpg" alt="">
+     <span class="play-icon">▶</span>
+    </button>
+    <div class="player-area player-area-shorts" id="player-s-${index}" hidden>
+     <div id="yt-player-s-${index}"></div>
+    </div>
+    <div class="info">
+     <div class="title" style="color:#e9d0f7;">⚡ ${song.rank}위. ${escapeHTML(song.title)}</div>
+     <div class="artist">${escapeHTML(song.artist)}</div>
+     <div class="stats">
+      점수: <b>${song.calculatedScore}점</b><br>
+      조회수 ${Number(song.youtube_views || 0).toLocaleString('ko-KR')}
+     </div>
+     <div class="like-row">
+      <button class="like-button${(likedSongIds.has(song.id) || guestLikedSongIds.has(song.id)) ? ' liked' : ''}" id="like-s-${index}" type="button">${(likedSongIds.has(song.id) || guestLikedSongIds.has(song.id)) ? '♥ 취소' : '♡ 좋아요'}</button>
+     </div>
+    </div>
+   </article>
+  `).join('');
+
+  scoredShorts.forEach((song,index)=>{
+   $('thumb-s-'+index).addEventListener('click',()=>playSong(song,'s-'+index));
+   $('like-s-'+index).addEventListener('click',()=>likeSong(song,'s-'+index));
+  });
+ }
+}
+
+function shuffleGenreTabsHourly(){
+ const container = $('genreTabsContainer');
+ if(!container) return;
+ const buttons = Array.from(container.querySelectorAll('.genre-tab'));
+ const allBtn = buttons.find(b => b.dataset.genre === '전체');
+ const newBtn = buttons.find(b => b.dataset.genre === '신곡');
+ const genreBtns = buttons.filter(b => b.dataset.genre !== '전체' && b.dataset.genre !== '신곡');
+
+ const now = new Date();
+ const seed = now.getFullYear() * 1000000 + (now.getMonth()+1) * 10000 + now.getDate() * 100 + now.getHours();
+ 
+ genreBtns.sort((a, b) => {
+  const hashA = Math.sin(seed + a.dataset.genre.charCodeAt(0));
+  const hashB = Math.sin(seed + b.dataset.genre.charCodeAt(0));
+  return hashA - hashB;
+ });
+
+ container.innerHTML = '';
+ if(allBtn) container.appendChild(allBtn);
+ genreBtns.forEach(b => container.appendChild(b));
+ if(newBtn) container.appendChild(newBtn);
+}
+
+async function loadSongs(){
+ const {data,error} = await supabase
+  .from('songs')
+  .select('id,title,artist,youtube_id,youtube_url,genre,plays,likes,chart_category,youtube_views,youtube_likes,youtube_comments,created_at')
+  .order('youtube_views',{ascending:false,nullsFirst:false});
+
+ if(error){ message('곡 목록 오류: '+error.message); return; }
+
+ allSongs = data || [];
+ await loadMyLikes();
+ await loadGuestLikes();
+ renderSongs();
+}
+
+document.addEventListener('click', e => {
+ if(e.target.classList.contains('genre-tab')){
+  setGenre(e.target.dataset.genre);
+ }
+ if(e.target.classList.contains('chart-tab')){
+  setChart(e.target.dataset.chart);
+ }
+});
+
+document.querySelectorAll('[data-quick-chart]').forEach(l=>{
+ l.addEventListener('click',()=>setChart(l.dataset.quickChart));
+});
+document.querySelectorAll('[data-quick-genre]').forEach(l=>{
+ l.addEventListener('click',()=>setGenre(l.dataset.quickGenre));
+});
+
+$('signupBtn').addEventListener('click',signup);
+$('loginBtn').addEventListener('click',login);
+$('resetPasswordBtn').addEventListener('click',resetPassword);
+$('saveNewPasswordBtn').addEventListener('click',saveNewPassword);
+$('logoutBtn').addEventListener('click',logout);
+$('registerBtn').addEventListener('click',registerSong);
+
+shuffleGenreTabsHourly();
+setInterval(shuffleGenreTabsHourly, 60000);
+
+supabase.auth.onAuthStateChange((event)=>{
+ if(event === 'SIGNED_IN' || event === 'SIGNED_OUT' || event === 'TOKEN_REFRESHED'){
+  loadMyLikes().then(()=>renderSongs());
+ }
+});
+
+await updateAuth();
+await loadSongs();
+</script>
+</body>
+</html>
