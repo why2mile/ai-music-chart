@@ -937,7 +937,7 @@ label{
     <p>최근 12개월 기준</p>
     <div class="period-empty">연간 조회수 기록을 쌓은 뒤 순위를 표시합니다.</div>
    </section>
-   <div class="realtime-ticker" role="status" aria-live="polite" aria-atomic="true"><span class="ticker-live-dot"></span><strong>실시간</strong><span id="realtimeTickerText" class="ticker-message">AI 음악 실시간 소식을 확인하고 있습니다.</span></div>
+   <div class="realtime-ticker" role="status" aria-live="polite" aria-atomic="true" style="display:flex!important;align-items:center;gap:9px;min-height:36px;padding:6px 10px;background:#16d83b!important;color:#071b0b!important;border-radius:3px;overflow:hidden;white-space:nowrap;font-size:12px;font-weight:700;grid-column:1/-1;"><span class="ticker-live-dot"></span><strong>실시간</strong><span id="realtimeTickerText" class="ticker-message" style="display:inline-block;min-width:0;overflow:hidden;text-overflow:ellipsis;">AI 음악 실시간 소식을 확인하고 있습니다.</span></div>
   </div>
   <div class="shorts-column">
    <div class="layout-column-title" style="color:#c686df;">⚡ AI 한국음악 쇼츠</div>
@@ -1392,14 +1392,17 @@ function assignRanks(scoredList){
 
 let realtimeTickerTimer=null,realtimeTickerItems=[],realtimeTickerIndex=0;
 function updateRealtimeTicker(){
- const el=$('realtimeTickerText'); if(!el)return;
- el.textContent=realtimeTickerItems.length?realtimeTickerItems[realtimeTickerIndex%realtimeTickerItems.length]:'AI 음악 실시간 소식 · 등록된 곡이 없습니다.';
+ const el=document.getElementById('realtimeTickerText'); if(!el)return;
+ const items=realtimeTickerItems.length?realtimeTickerItems:['AI 음악 실시간 소식 · 등록된 곡이 없습니다.'];
+ el.textContent=items[realtimeTickerIndex%items.length];
  el.classList.remove('ticker-message'); void el.offsetWidth; el.classList.add('ticker-message');
- if(realtimeTickerItems.length)realtimeTickerIndex=(realtimeTickerIndex+1)%realtimeTickerItems.length;
+ realtimeTickerIndex=(realtimeTickerIndex+1)%items.length;
 }
 function startRealtimeTicker(){
  if(realtimeTickerTimer)clearInterval(realtimeTickerTimer);
- updateRealtimeTicker(); realtimeTickerTimer=setInterval(updateRealtimeTicker,2000);
+ realtimeTickerIndex=0;
+ updateRealtimeTicker();
+ realtimeTickerTimer=setInterval(()=>{updateRealtimeTicker();},2000);
 }
 function renderSongs(){
  const needle=searchTerm.trim().toLocaleLowerCase('ko-KR');
@@ -1670,8 +1673,8 @@ supabase.auth.onAuthStateChange((event)=>{
 
 await updateAuth();
 await loadProposalInbox();
-await startRealtimeTicker();
-loadSongs();
+await loadSongs();
+startRealtimeTicker();
 </script>
 </body>
 </html>
