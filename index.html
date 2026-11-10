@@ -1630,7 +1630,7 @@ async function discoverYoutubeAiMusic(){
   if(error) throw error;
   if(!data||data.error) throw new Error(data?.error||'검색 결과를 받지 못했습니다.');
   const songs=data.songs||[];
-  status.textContent='검색 '+Number(data.query_count||0)+'회 · 검색 영상 '+Number(data.unique_search_results||0)+'개 · 조건 후보 '+Number(data.candidate_count||songs.length)+'개 · 채널 재탐색 '+Number(data.channels_followed||0)+'개 · 최근 업로드 '+Number(data.channel_upload_videos||0)+'개 · DB 저장 '+Number(data.persisted?.saved||0)+'개. AI 배지는 아직 별도 검증 전입니다.';
+  status.textContent='검색 '+Number(data.query_count||0)+'회 · 검색 영상 '+Number(data.unique_search_results||0)+'개 · 조건 후보 '+Number(data.candidate_count||songs.length)+'개 · 채널 재탐색 '+Number(data.channels_followed||0)+'개 · 최근 업로드 '+Number(data.channel_upload_videos||0)+'개 · 후보 저장 '+Number(data.persisted?.saved||0)+'개 · 채널 저장 '+Number(data.channel_persisted?.saved||0)+'개 · 주제 저장 '+Number(data.topics_persisted?.saved||0)+'개'+(data.persisted?.error?' · 후보 저장 오류: '+data.persisted.error:'')+(data.channel_persisted?.error?' · 채널 저장 오류: '+data.channel_persisted.error:'')+(data.topics_persisted?.error?' · 주제 저장 오류: '+data.topics_persisted.error:'')+'. AI 배지는 별도 검증 전입니다.';
   target.innerHTML=songs.map(song=>{
    const duration=Number(song.duration_seconds)||0;
    const time=Math.floor(duration/60)+':'+String(duration%60).padStart(2,'0');
