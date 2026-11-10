@@ -761,6 +761,7 @@ label{
   <button class="secondary" id="logoutBtn" type="button">로그아웃</button>
  </div>
  <div id="userInfo" hidden></div>
+ <div class="profile-edit" id="proposalInbox"><h3>곡 사용 제안함</h3><div id="proposalInboxList"><p>받은 제안을 불러오는 중입니다.</p></div></div>
  <div class="profile-edit" id="profileView" hidden></div>
  <div class="profile-edit" id="profileEdit" hidden>
   <label>닉네임</label><input id="profileNickname" maxlength="30" placeholder="사이트에서 사용할 닉네임">
@@ -782,7 +783,7 @@ label{
    <h3>비AI 인기곡 등록 (BTS / BLACKPINK)</h3>
    <p>공식 아티스트 채널의 일반 음원만 등록하세요. 조회수는 등록 시점의 수치를 입력하며, 높은 조회수 순으로 표시됩니다.</p>
    <label>곡 제목</label><input id="nonAiTitle" maxlength="160" placeholder="공식 곡 제목">
-   <label>아티스트</label><select id="nonAiArtist"><option value="BTS">BTS</option><option value="BLACKPINK">BLACKPINK</option></select>
+   <label>아티스트</label><input id="nonAiArtist" maxlength="100" placeholder="예: BTS, BLACKPINK, 아이유">
    <label>유튜브 공식 영상 주소</label><input id="nonAiYoutubeUrl" placeholder="https://www.youtube.com/watch?v=XXXXXXXXXXX">
    <label>현재 유튜브 조회수</label><input id="nonAiViews" type="number" min="0" step="1" placeholder="예: 123456789">
    <div class="actions"><button class="primary" id="createNonAiSongBtn" type="button">비AI 곡 등록</button></div>
@@ -1420,6 +1421,50 @@ function shuffleGenreTabsHourly(){
  if(newBtn) container.appendChild(newBtn);
 }
 
+function closeMusicModal(){$('musicActionModal').classList.remove('open');$('musicModalBody').innerHTML='';currentActionSong=null;}
+async function openSongAction(song,mode){
+ currentActionSong=song;currentActionMode=mode;
+ const modal=$('musicActionModal'),body=$('musicModalBody');
+ $('musicModalTitle').textContent=mode==='proposal'?'곡 사용 제안':'댓글';
+ modal.classList.add('open');
+ if(mode==='proposal'){
+  const {data:{user}}=await supabase.auth.getUser();
+  if(!user){body.innerHTML='<p>곡 사용 제안은 로그인 후 이용할 수 있습니다.</p><button class="modal-submit" id="goLoginFromProposal" type="button">로그인하기</button>';$('goLoginFromProposal').onclick=()=>{closeMusicModal();$('authPanel').scrollIntoView({behavior:'smooth'});return;};return;}
+  if(!song.user_id||song.user_id===user.id){body.innerHTML='<p class="modal-note">이 곡은 등록자가 제안을 받을 수 있도록 설정되지 않았거나 본인 곡입니다.</p>';return;}
+  body.innerHTML=`<p><b>${escapeHTML(song.title)}</b> · ${escapeHTML(song.artist)}</p><p class="modal-note">사용 희망 금액과 사용 목적을 적어 보내면 곡 등록자에게 전달됩니다. 실제 계약과 결제는 당사자 간 협의로 진행됩니다.</p><form id="songProposalForm"><label>제안 금액 (원)</label><input name="offer_price" type="number" min="0" step="1000" required placeholder="예: 100000"><label>사용 목적</label><select name="usage_type" required><option value="">선택하세요</option><option>유튜브 영상·방송</option><option>광고·홍보</option><option>공연·행사</option><option>음원 발매·배포</option><option>기타 상업적 이용</option></select><label>제안 내용</label><textarea name="message" minlength="5" maxlength="2000" required placeholder="사용 범위, 기간, 희망 조건 등을 적어주세요."></textarea><label>연락 이메일</label><input name="contact_email" type="email" maxlength="254" required value="${escapeHTML(user.email||'')}"><button class="modal-submit" type="submit">곡 사용 제안 보내기</button></form>`;
+  $('songProposalForm').addEventListener('submit',submitSongProposal);
+ }else{
+  body.innerHTML='<div id="songCommentsList"><p>댓글을 불러오는 중입니다.</p></div><form id="songCommentForm"><label>댓글</label><textarea name="content" minlength="1" maxlength="1000" required placeholder="이 곡에 대한 의견을 남겨주세요."></textarea><div id="guestCommentFields"><label>닉네임 (2~20자)</label><input name="guest_nickname" minlength="2" maxlength="20" placeholder="닉네임"><label>비밀번호 (6자 이상)</label><input name="guest_password" type="password" minlength="6" placeholder="댓글 수정·삭제에 사용할 비밀번호"></div><button class="modal-submit" type="submit">댓글 등록</button></form>';
+  const {data:{user}}=await supabase.auth.getUser();if(user)$('guestCommentFields').hidden=true;
+  $('songCommentForm').addEventListener('submit',submitSongComment);
+  await loadSongComments(song.id);
+ }
+}
+async function submitSongProposal(event){
+ event.preventDefault();const form=event.currentTarget;const fd=new FormData(form);const {data:{user}}=await supabase.auth.getUser();if(!user){message('로그인이 필요합니다.');return;}
+ const payload={song_id:currentActionSong.id,seller_user_id:currentActionSong.user_id,buyer_user_id:user.id,offer_price:Number(fd.get('offer_price')),usage_type:String(fd.get('usage_type')),message:String(fd.get('message')).trim(),contact_email:String(fd.get('contact_email')).trim()};
+ const {error}=await supabase.from('song_use_proposals').insert(payload);if(error){message('제안 전송 오류: '+error.message);return;}
+ closeMusicModal();message('곡 사용 제안을 전달했습니다. 등록자가 제안함에서 확인할 수 있습니다.');
+}
+async function loadSongComments(songId){
+ const target=$('songCommentsList');const {data,error}=await supabase.from('song_comments').select('id,user_id,guest_nickname,content,created_at').eq('song_id',songId).order('created_at',{ascending:false}).limit(50);
+ if(error){target.textContent='댓글을 불러오지 못했습니다.';return;}
+ target.innerHTML=(data||[]).map(c=>`<div class="comment-entry"><strong>${escapeHTML(c.guest_nickname||'회원')}</strong><span class="modal-note"> · ${new Date(c.created_at).toLocaleString('ko-KR')}</span><p>${escapeHTML(c.content)}</p></div>`).join('')||'<p class="modal-note">첫 댓글을 남겨보세요.</p>';
+}
+async function submitSongComment(event){
+ event.preventDefault();const fd=new FormData(event.currentTarget);const {data:{user}}=await supabase.auth.getUser();
+ const args={p_song_id:currentActionSong.id,p_content:String(fd.get('content')).trim(),p_guest_nickname:user?null:String(fd.get('guest_nickname')||'').trim(),p_guest_password:user?null:String(fd.get('guest_password')||'')};
+ const {error}=await supabase.rpc('create_song_comment',args);if(error){message('댓글 등록 오류: '+error.message);return;}
+ await loadSongComments(currentActionSong.id);event.currentTarget.reset();message('댓글을 등록했습니다.');
+}
+async function loadProposalInbox(){
+ const target=$('proposalInboxList');if(!target)return;
+ const {data:{user}}=await supabase.auth.getUser();if(!user){target.innerHTML='<p class="modal-note">로그인하면 내 곡에 도착한 사용 제안을 확인할 수 있습니다.</p>';return;}
+ const {data,error}=await supabase.from('song_use_proposals').select('id,song_id,buyer_user_id,offer_price,usage_type,message,contact_email,status,created_at,songs(title,artist)').eq('seller_user_id',user.id).order('created_at',{ascending:false});
+ if(error){target.textContent='제안함을 불러오지 못했습니다: '+error.message;return;}
+ target.innerHTML=(data||[]).map(p=>`<div class="ad-admin-item"><span><b>${escapeHTML(p.songs?.title||'곡')}</b> · ${escapeHTML(p.usage_type)}<br>${Number(p.offer_price).toLocaleString('ko-KR')}원 · ${escapeHTML(p.contact_email)}<br><small>${escapeHTML(p.message)} · ${p.status==='pending'?'대기':p.status==='accepted'?'수락':p.status==='declined'?'거절':'완료'}</small></span>${p.status==='pending'?'<button type="button" data-proposal-status="accepted" data-proposal-id="'+p.id+'">수락</button><button type="button" data-proposal-status="declined" data-proposal-id="'+p.id+'">거절</button>':''}</div>`).join('')||'<p class="modal-note">아직 도착한 곡 사용 제안이 없습니다.</p>';
+ target.querySelectorAll('[data-proposal-status]').forEach(btn=>btn.addEventListener('click',async()=>{const {error}=await supabase.from('song_use_proposals').update({status:btn.dataset.proposalStatus,updated_at:new Date().toISOString()}).eq('id',btn.dataset.proposalId);if(error){message('제안 상태 변경 오류: '+error.message);return;}await loadProposalInbox();}));
+}
 async function loadNonAiChartSongs(){
  const {data,error}=await supabase.from('non_ai_chart_songs').select('id,title,artist,youtube_id,youtube_views').eq('is_active',true).order('youtube_views',{ascending:false}).order('sort_order',{ascending:true});
  if(error){nonAiSongs=[];console.warn('비AI 차트 조회 오류',error.message);return;}nonAiSongs=data||[];
@@ -1449,7 +1494,7 @@ async function loadAdminNonAiSongs(){
  target.querySelectorAll('[data-nonai-toggle]').forEach(btn=>btn.addEventListener('click',()=>toggleNonAiSong(btn.dataset.nonaiToggle,btn.dataset.active!=='true')));target.querySelectorAll('[data-nonai-delete]').forEach(btn=>btn.addEventListener('click',()=>deleteNonAiSong(btn.dataset.nonaiDelete)));
 }
 async function createNonAiSong(){
- const title=$('nonAiTitle').value.trim(),artist=$('nonAiArtist').value,youtubeId=getYoutubeId($('nonAiYoutubeUrl').value.trim()),views=Number($('nonAiViews').value);if(!title||!youtubeId||!Number.isSafeInteger(views)||views<0){message('곡 제목, 유튜브 주소, 올바른 조회수를 입력하세요.');return;}
+ const title=$('nonAiTitle').value.trim(),artist=$('nonAiArtist').value.trim(),youtubeId=getYoutubeId($('nonAiYoutubeUrl').value.trim()),views=Number($('nonAiViews').value);if(!title||!youtubeId||!Number.isSafeInteger(views)||views<0){message('곡 제목, 유튜브 주소, 올바른 조회수를 입력하세요.');return;}
  const {error}=await supabase.from('non_ai_chart_songs').insert({title,artist,youtube_id:youtubeId,youtube_views:views,is_active:true});if(error){message('비AI 곡 등록 오류: '+error.message);return;}
  $('nonAiTitle').value='';$('nonAiYoutubeUrl').value='';$('nonAiViews').value='';await loadNonAiChartSongs();renderNonAiSongs();await loadAdminNonAiSongs();message('비AI 공식곡을 등록했습니다.');
 }
@@ -1532,6 +1577,8 @@ $('editProfileBtn').addEventListener('click',()=>{$('profileView').hidden=true;$
 $('cancelProfileBtn').addEventListener('click',()=>{$('profileEdit').hidden=true;});
 $('saveProfileBtn').addEventListener('click',saveProfile);
 $('createAdBtn').addEventListener('click',createAd);
+$('musicModalClose').addEventListener('click',closeMusicModal);
+$('musicActionModal').addEventListener('click',event=>{if(event.target.id==='musicActionModal')closeMusicModal();});
 $('createNonAiSongBtn').addEventListener('click',createNonAiSong);
 $('cardViewBtn').addEventListener('click',()=>setMainView('card'));
 $('listViewBtn').addEventListener('click',()=>setMainView('list'));
@@ -1548,6 +1595,7 @@ supabase.auth.onAuthStateChange((event)=>{
 });
 
 await updateAuth();
+await loadProposalInbox();
 await loadSongs();
 </script>
 </body>
