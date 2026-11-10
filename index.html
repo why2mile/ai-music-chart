@@ -7,7 +7,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Noto+Sans+JP:wght@300;400;500;600;700&family=Noto+Sans+KR:wght@300;400;500;600;700&family=Noto+Sans+SC:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-<title>AI MUSIC CHART</title>
+<title>한국 음악 차트</title>
 
 <style>
 *{box-sizing:border-box}
@@ -778,7 +778,7 @@ label{
 <body>
 
 <header class="site-header">
- <a class="logo" href="#home">AI MUSIC <span>CHART</span></a>
+ <a class="logo" href="#home">KOREA MUSIC <span>CHART</span></a>
  <nav class="main-nav" aria-label="주요 메뉴">
   <a class="nav-active" href="#home">홈</a>
   <a href="#chartSection">실시간 차트</a>
@@ -793,9 +793,9 @@ label{
 
 <section class="hero">
  <div class="hero-copy">
-  <div class="eyebrow">KOREA AI MUSIC PLATFORM</div>
-  <h1>새로운 음악의 발견,<br><span>AI MUSIC CHART</span></h1>
-  <p>검증된 한국 AI 음악 차트를 확인하고 좋아하는 창작자를 응원하세요.</p>
+  <div class="eyebrow">KOREAN MUSIC RANKING</div>
+  <h1>대한민국 대중음악의 흐름,<br><span>한국 음악 차트</span></h1>
+  <p>한국 가요의 주간·월간·연간 인기 순위와 한국 AI음악 순위를 한곳에서 확인하세요.</p>
   <div class="hero-actions">
    <a class="hero-button" href="#chartSection">인기 차트 보기 <b>→</b></a>
    <a class="hero-text-link" href="#registerPanel">내 음악 등록하기</a>
@@ -811,10 +811,10 @@ label{
 </section>
 
 <section class="quick-links" id="genreSection">
- <a href="#chartSection" data-quick-chart="실시간"><span>🏆</span><b>실시간 차트</b><small>최근 24시간 인기</small></a>
- <a href="#chartSection" data-quick-chart="주간"><span>📅</span><b>주간 차트</b><small>최근 7일간 인기</small></a>
- <a href="#chartSection" data-quick-chart="연간"><span>🌟</span><b>연간 차트</b><small>최근 365일 인기</small></a>
- <a href="#chartSection" data-quick-genre="트로트"><span>🎤</span><b>트로트</b><small>AI 트로트 모아보기</small></a>
+ <a href="#chartSection" data-quick-chart="주간"><span>🏆</span><b>한국 가요 주간</b><small>최근 7일 조회수 증가</small></a>
+ <a href="#chartSection" data-quick-chart="월간"><span>📅</span><b>한국 가요 월간</b><small>최근 30일 조회수 증가</small></a>
+ <a href="#chartSection" data-quick-chart="연간"><span>🌟</span><b>한국 가요 연간</b><small>최근 365일 조회수 증가</small></a>
+ <a href="#aiMusicRanking"><span>🎧</span><b>한국 AI음악 순위</b><small>AI 배지 확인곡 누적 순위</small></a>
 </section>
 
 <section class="panel" id="authPanel">
@@ -872,13 +872,13 @@ label{
   <div class="actions"><button class="primary" id="createAdBtn" type="button">광고 등록</button></div>
   <h4>등록된 광고 확인 / 노출 관리</h4><div id="adAdminList"></div>
   <div class="profile-edit">
-   <h3>비AI 한국음악 등록</h3>
-   <p>BTS·BLACKPINK 차트와 그 아래 일반 한국음악 목록으로 나뉘어 조회수 순으로 표시됩니다.</p>
+   <h3>한국 가요 등록</h3>
+   <p>한국 가요 공식 영상의 제목·아티스트·유튜브 주소와 현재 조회수를 등록합니다.</p>
    <label>곡 제목</label><input id="nonAiTitle" maxlength="160" placeholder="공식 곡 제목">
    <label>아티스트</label><input id="nonAiArtist" maxlength="100" placeholder="예: BTS, BLACKPINK, 아이유">
    <label>유튜브 공식 영상 주소</label><input id="nonAiYoutubeUrl" placeholder="https://www.youtube.com/watch?v=XXXXXXXXXXX">
    <label>현재 유튜브 조회수</label><input id="nonAiViews" type="number" min="0" step="1" placeholder="예: 123456789">
-   <div class="actions"><button class="primary" id="createNonAiSongBtn" type="button">비AI 곡 등록</button></div>
+   <div class="actions"><button class="primary" id="createNonAiSongBtn" type="button">한국 가요 등록</button></div>
    <div id="nonAiAdminList"></div>
   </div>
  </section>
@@ -917,7 +917,7 @@ label{
 <section id="chartSection">
  <div class="section-heading" id="newMusic">
   <div class="chart-heading-row">
-   <div><div class="eyebrow">STRICT KOREAN AI MUSIC CHART</div><h2>공식 AI 뮤직 차트</h2><p>왼쪽 AI 일반음악 · 가운데 비AI 한국음악 · 오른쪽 AI 쇼츠</p></div>
+   <div><div class="eyebrow">KOREAN POPULAR MUSIC CHART</div><h2>한국 가요 순위</h2><p>주간·월간·연간 유튜브 조회수 증가량 기준</p></div>
    <div class="chart-search"><input id="chartSearch" type="search" placeholder="곡 제목 · 아티스트 검색" aria-label="곡 제목과 아티스트 검색"></div>
   </div>
  </div>
@@ -936,36 +936,22 @@ label{
   <button class="genre-tab" data-genre="신곡" type="button">신곡</button>
  </div>
 
- <div class="chart-tabs" id="chartTabsContainer" role="group" aria-label="기간 선택">
-  <button class="chart-tab active" data-chart="주간" type="button">주간 (최근 7일)</button>
-  <button class="chart-tab" data-chart="월간" type="button">월간 (최근 30일)</button>
-  <button class="chart-tab" data-chart="연간" type="button">연간 (최근 365일)</button>
-  <div class="view-switch" role="group" aria-label="차트 보기 방식"><button class="secondary active" id="cardViewBtn" type="button">앨범형</button><button class="secondary" id="listViewBtn" type="button">한줄형</button></div>
+ <div class="chart-tabs" id="chartTabsContainer" role="group" aria-label="한국 가요 기간 선택">
+  <button class="chart-tab active" data-chart="주간" type="button">한국 가요 주간</button>
+  <button class="chart-tab" data-chart="월간" type="button">한국 가요 월간</button>
+  <button class="chart-tab" data-chart="연간" type="button">한국 가요 연간</button>
  </div>
 
- <div class="realtime-ticker" role="status" aria-live="polite" aria-atomic="true"><span class="ticker-live-dot"></span><strong>실시간</strong><span id="realtimeTickerText" class="ticker-message">AI 음악 실시간 소식을 확인하고 있습니다.</span></div>
+ 
 
- <div class="chart-layout">
-  <section class="ai-main-column">
-   <div class="layout-column-title">🎵 일반 AI 음악 · 최근 7일 순위</div>
-   <p class="chart-period-note" id="weeklyChartNote">최근 7일 조회수 변화를 집계합니다. 데이터 수집 초기에는 임시 누적 조회수 순서로 표시합니다.</p>
-   <section class="grid-main" id="mainSongsGrid"></section>
-   
+ <div class="chart-layout korea-chart-layout">
+  <section class="ai-main-column korea-general-column">
+   <div class="layout-column-title">🎤 한국 가요 · 최근 7일 순위</div>
+   <p class="chart-period-note" id="weeklyChartNote">기간별 조회수 증가량을 기준으로 정렬합니다. 기록이 부족한 곡은 누적 조회수 임시 순위로 표시합니다.</p>
+   <div class="non-ai-list korea-general-list" id="nonAiSongsGrid"><p>한국 가요 순위를 불러오는 중입니다.</p></div>
   </section>
-  <section class="non-ai-chart non-ai-column" id="nonAiChartSection">
-   <section class="period-chart alltime-ai-chart"><h3>🏆 역대 AI 음악 순위</h3><p>실제 AI 배지 확인곡 · 누적 조회수 기준</p><div class="period-empty" id="aiAllTimeList">AI 배지 검증곡을 불러오는 중입니다.</div></section>
-   <h3>🎤 한국 일반음악 유튜브 역대 순위</h3>
-   <p>한국 대중음악 공식 영상 · 누적 조회수 기준</p>
-   <div class="non-ai-list" id="nonAiSongsGrid"><p>한국음악 순위를 불러오는 중입니다.</p></div>
-   <div class="non-ai-monthly">
-    <h4>📆 1개월간 유튜브 한국 일반음악 순위</h4>
-    <p>최근 30일 조회수 증가량</p>
-    <div class="period-empty" id="nonAiMonthlyList">최근 30일 데이터 수집 중입니다.</div>
-   </div>
-  </section>
-  <section class="shorts-column">
-   <div class="layout-column-title" style="color:#c686df;">⚡ AI 한국음악 쇼츠</div>
-   <section class="grid-shorts" id="shortsGrid"></section>
+  <section class="non-ai-chart non-ai-column" id="aiMusicRanking">
+   <section class="period-chart alltime-ai-chart"><h3>🏆 한국 AI음악 순위</h3><p>유튜브 AI 배지 확인곡 · 누적 조회수 기준</p><div class="period-empty" id="aiAllTimeList">AI 배지 검증곡을 불러오는 중입니다.</div></section>
   </section>
  </div>
 </section>
@@ -1379,7 +1365,7 @@ async function likeSong(song,indexKey){
 function setChart(category){
  activeChart = category;
  document.querySelectorAll('.chart-tab').forEach(b=>b.classList.toggle('active', b.dataset.chart === category));
- renderSongs();
+ renderNonAiSongs();
 }
 
 function setGenre(genre){
@@ -1460,6 +1446,7 @@ function renderSongs(){
  const note=$('weeklyChartNote');if(note)note.textContent=hasPeriodData?periodLabel+' 실제 조회수 증가량 기준입니다.':'기간별 조회수 기록을 수집 중입니다. 현재는 누적 조회수 임시 순위로 표시합니다.';
  const allTime=validSongs.filter(song=>!isShorts(song)).sort((a,b)=>Number(b.youtube_views||0)-Number(a.youtube_views||0)).slice(0,12);
  const allTimeTarget=$('aiAllTimeList');if(allTimeTarget){allTimeTarget.className='period-rank-list';allTimeTarget.innerHTML=allTime.map((song,i)=>'<div class="period-rank-row"><span>'+String(i+1).padStart(2,'0')+'위 · '+escapeHTML(song.title)+'</span><strong>'+Number(song.youtube_views||0).toLocaleString('ko-KR')+'회</strong></div>').join('')||'<p>AI 배지 검증곡이 없습니다.</p>';}
+ renderNonAiSongs();
 
  renderPeriodRanks('nonAiMonthlyList',nonAiSongs,30,'최근 30일 조회수 기록 수집 중입니다.');
  realtimeTickerItems=['실시간 AI 음악 소식 · 2초마다 순위 정보가 바뀝니다.',...scoredMain.slice(0,10).map(song=>String(song.rank).padStart(2,'0')+'위 · '+song.title+' — '+song.artist)];
@@ -1597,9 +1584,16 @@ async function loadNonAiChartSongs(){
 }
 function renderNonAiSongs(){
  const target=$('nonAiSongsGrid');if(!target)return;
- const ordered=[...nonAiSongs].sort((a,b)=>Number(b.youtube_views||0)-Number(a.youtube_views||0));
- const row=(song,index)=>`<div class="non-ai-row" data-nonai-row="${escapeHTML(song.youtube_id)}"><span class="non-ai-rank">${index+1}위</span><img class="non-ai-thumb" src="https://i.ytimg.com/vi/${encodeURIComponent(song.youtube_id)}/mqdefault.jpg" alt="${escapeHTML(song.title)} 썸네일" loading="lazy" onerror="this.src='https://img.youtube.com/vi/${encodeURIComponent(song.youtube_id)}/hqdefault.jpg'"><div class="non-ai-copy"><div class="non-ai-title">${escapeHTML(song.title)}</div><div class="non-ai-artist">${escapeHTML(song.artist)}</div></div><span class="non-ai-views">${Number(song.youtube_views||0).toLocaleString('ko-KR')}회</span><button type="button" data-nonai-play="${escapeHTML(song.youtube_id)}">▶</button></div>`;
- target.innerHTML=ordered.slice(0,12).map(row).join('')||'<p class="modal-note">등록된 한국음악이 없습니다.</p>';
+ const days=activeChart==='월간'?30:activeChart==='연간'?365:7;
+ const periodLabel=activeChart==='월간'?'최근 30일':activeChart==='연간'?'최근 365일':'최근 7일';
+ const ranked=[...nonAiSongs].map(song=>{const delta=getPeriodViewDelta(song,days);return {...song,rankValue:delta===null?Number(song.youtube_views||0):delta,periodFallback:delta===null};}).sort((a,b)=>b.rankValue-a.rankValue);
+ const hasPeriodData=ranked.some(song=>!song.periodFallback);
+ const heading=document.querySelector('.korea-general-column .layout-column-title');if(heading)heading.textContent='🎤 한국 가요 · '+periodLabel+' 순위';
+ const note=$('weeklyChartNote');if(note)note.textContent=hasPeriodData?periodLabel+' 유튜브 조회수 증가량 기준입니다.':'기간별 조회수 기록을 수집 중입니다. 현재는 누적 조회수 임시 순위로 표시합니다.';
+ const row=(song,index)=>`<div class="non-ai-row" data-nonai-row="${escapeHTML(song.youtube_id)}"><span class="non-ai-rank">${index+1}위</span><img class="non-ai-thumb" src="https://i.ytimg.com/vi/${encodeURIComponent(song.youtube_id)}/mqdefault.jpg" alt="${escapeHTML(song.title)} 썸네일" loading="lazy" onerror="this.src='https://img.youtube.com/vi/${encodeURIComponent(song.youtube_id)}/hqdefault.jpg'"><div class="non-ai-copy"><div class="non-ai-title">${escapeHTML(song.title)}</div><div class="non-ai-artist">${escapeHTML(song.artist)}</div></div><span class="non-ai-views">${song.periodFallback?'누적 ':''}${Number(song.rankValue||0).toLocaleString('ko-KR')}회</span><button type="button" data-nonai-play="${escapeHTML(song.youtube_id)}">▶</button></div>`;
+ const needle=searchTerm.trim().toLocaleLowerCase('ko-KR');
+ const visible=ranked.filter(song=>!needle||[song.title,song.artist].some(v=>String(v||'').toLocaleLowerCase('ko-KR').includes(needle)));
+ target.innerHTML=visible.slice(0,100).map(row).join('')||'<p class="modal-note">등록된 한국 가요가 없습니다.</p>';
  target.querySelectorAll('[data-nonai-play]').forEach(button=>button.addEventListener('click',()=>playNonAiButton(button,target)));
 }
 function playNonAiButton(button,container){
@@ -1611,8 +1605,8 @@ function playNonAiButton(button,container){
 }
 
 async function loadAdminNonAiSongs(){
- const {data,error}=await supabase.from('non_ai_chart_songs').select('id,title,artist,youtube_views,is_active').order('created_at',{ascending:false});const target=$('nonAiAdminList');if(error){target.textContent='비AI 곡 목록 오류: '+error.message;return;}
- target.innerHTML=(data||[]).map(song=>`<div class="ad-admin-item"><span>${escapeHTML(song.title)} · ${escapeHTML(song.artist)}<br><small>${Number(song.youtube_views||0).toLocaleString('ko-KR')}회 · ${song.is_active?'노출 중':'중지'}</small></span><button type="button" data-nonai-toggle="${song.id}" data-active="${song.is_active}">${song.is_active?'중지':'노출'}</button><button type="button" data-nonai-delete="${song.id}">삭제</button></div>`).join('')||'<p>등록된 비AI 공식곡이 없습니다.</p>';
+ const {data,error}=await supabase.from('non_ai_chart_songs').select('id,title,artist,youtube_views,is_active').order('created_at',{ascending:false});const target=$('nonAiAdminList');if(error){target.textContent='한국 가요 목록 오류: '+error.message;return;}
+ target.innerHTML=(data||[]).map(song=>`<div class="ad-admin-item"><span>${escapeHTML(song.title)} · ${escapeHTML(song.artist)}<br><small>${Number(song.youtube_views||0).toLocaleString('ko-KR')}회 · ${song.is_active?'노출 중':'중지'}</small></span><button type="button" data-nonai-toggle="${song.id}" data-active="${song.is_active}">${song.is_active?'중지':'노출'}</button><button type="button" data-nonai-delete="${song.id}">삭제</button></div>`).join('')||'<p>등록된 한국 가요이 없습니다.</p>';
  target.querySelectorAll('[data-nonai-toggle]').forEach(btn=>btn.addEventListener('click',()=>toggleNonAiSong(btn.dataset.nonaiToggle,btn.dataset.active!=='true')));target.querySelectorAll('[data-nonai-delete]').forEach(btn=>btn.addEventListener('click',()=>deleteNonAiSong(btn.dataset.nonaiDelete)));
 }
 async function createNonAiSong(){
@@ -1698,7 +1692,7 @@ async function loadAdminAds(){
  const {data,error}=await supabase.from('chart_ads').select('id,title,artist,youtube_id,placement,is_active').order('created_at',{ascending:false});
  const target=$('adAdminList');
  if(error){target.textContent='광고 목록을 불러오지 못했습니다.';return;}
- target.innerHTML=(data||[]).map(ad=>`<div class="ad-admin-item"><span>${escapeHTML(ad.title)} · ${escapeHTML(ad.artist)}<br><small>AI 일반음악 1~3위 아래 · ${ad.is_active?'노출 중':'중지'}</small></span><button type="button" data-ad-toggle="${ad.id}" data-active="${ad.is_active}">${ad.is_active?'중지':'노출'}</button><button type="button" data-ad-delete="${ad.id}">삭제</button></div>`).join('')||'<p>등록된 광고가 없습니다.</p>';
+ target.innerHTML=(data||[]).map(ad=>`<div class="ad-admin-item"><span>${escapeHTML(ad.title)} · ${escapeHTML(ad.artist)}<br><small>한국 AI음악 순위 아래 · ${ad.is_active?'노출 중':'중지'}</small></span><button type="button" data-ad-toggle="${ad.id}" data-active="${ad.is_active}">${ad.is_active?'중지':'노출'}</button><button type="button" data-ad-delete="${ad.id}">삭제</button></div>`).join('')||'<p>등록된 광고가 없습니다.</p>';
  target.querySelectorAll('[data-ad-toggle]').forEach(btn=>btn.addEventListener('click',()=>toggleAd(btn.dataset.adToggle,btn.dataset.active!=='true')));
  target.querySelectorAll('[data-ad-delete]').forEach(btn=>btn.addEventListener('click',()=>deleteAd(btn.dataset.adDelete)));
 }
@@ -1790,7 +1784,7 @@ $('createNonAiSongBtn').addEventListener('click',createNonAiSong);
 $('cardViewBtn').addEventListener('click',()=>setMainView('card'));
 $('listViewBtn').addEventListener('click',()=>setMainView('list'));
 $('registerBtn').addEventListener('click',registerSong);
-$('chartSearch').addEventListener('input',event=>{searchTerm=event.target.value || '';renderSongs();});
+$('chartSearch').addEventListener('input',event=>{searchTerm=event.target.value || '';renderNonAiSongs();});
 
 shuffleGenreTabsHourly();
 setInterval(shuffleGenreTabsHourly, 60000);
