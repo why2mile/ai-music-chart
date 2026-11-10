@@ -192,6 +192,7 @@ label{
 .non-ai-row{display:flex;align-items:center;gap:6px;min-width:0;padding:8px 7px;background:#1a202a;border:1px solid #303947;border-radius:6px;}
 .non-ai-rank{font-size:12px;font-weight:700;color:#b9e39a;width:24px;flex:none;}
 .non-ai-copy{flex:1;min-width:0;}
+.non-ai-thumb{width:58px;height:34px;object-fit:cover;border-radius:4px;flex:0 0 58px;background:#080b10;}
 .non-ai-title{font-size:12px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
 .non-ai-artist{font-size:10px;color:#9ca5b2;margin-top:3px;}
 .non-ai-views{font-size:9px;color:#9ca5b2;white-space:nowrap;}
@@ -1593,7 +1594,7 @@ async function loadNonAiChartSongs(){
 function renderNonAiSongs(){
  const target=$('nonAiSongsGrid');if(!target)return;
  const ordered=[...nonAiSongs].sort((a,b)=>Number(b.youtube_views||0)-Number(a.youtube_views||0));
- const row=(song,index)=>`<div class="non-ai-row" data-nonai-row="${escapeHTML(song.youtube_id)}"><span class="non-ai-rank">${index+1}위</span><div class="non-ai-copy"><div class="non-ai-title">${escapeHTML(song.title)}</div><div class="non-ai-artist">${escapeHTML(song.artist)}</div></div><span class="non-ai-views">${Number(song.youtube_views||0).toLocaleString('ko-KR')}회</span><button type="button" data-nonai-play="${escapeHTML(song.youtube_id)}">▶</button></div>`;
+ const row=(song,index)=>`<div class="non-ai-row" data-nonai-row="${escapeHTML(song.youtube_id)}"><span class="non-ai-rank">${index+1}위</span><img class="non-ai-thumb" src="https://i.ytimg.com/vi/${encodeURIComponent(song.youtube_id)}/mqdefault.jpg" alt="${escapeHTML(song.title)} 썸네일" loading="lazy" onerror="this.src='https://img.youtube.com/vi/${encodeURIComponent(song.youtube_id)}/hqdefault.jpg'"><div class="non-ai-copy"><div class="non-ai-title">${escapeHTML(song.title)}</div><div class="non-ai-artist">${escapeHTML(song.artist)}</div></div><span class="non-ai-views">${Number(song.youtube_views||0).toLocaleString('ko-KR')}회</span><button type="button" data-nonai-play="${escapeHTML(song.youtube_id)}">▶</button></div>`;
  target.innerHTML=ordered.slice(0,12).map(row).join('')||'<p class="modal-note">등록된 한국음악이 없습니다.</p>';
  target.querySelectorAll('[data-nonai-play]').forEach(button=>button.addEventListener('click',()=>playNonAiButton(button,target)));
 }
