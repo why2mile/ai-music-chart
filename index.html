@@ -1686,11 +1686,9 @@ async function loadSongs(){
  if(error){ message('곡 목록 오류: '+error.message); return; }
 
  allSongs = data || [];
- await loadMyLikes();
- await loadGuestLikes();
- await loadChartAds();
- await loadNonAiChartSongs();
- await loadYoutubeViewHistory();
+ // 곡 목록과 썸네일을 먼저 표시해 좋아요 집계 RPC가 지연되어도 영상 카드가 비어 보이지 않게 한다.
+ renderSongs();
+ await Promise.all([loadMyLikes(),loadGuestLikes(),loadChartAds(),loadNonAiChartSongs(),loadYoutubeViewHistory()]);
  renderSongs();
 }
 
