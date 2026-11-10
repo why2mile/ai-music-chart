@@ -1480,7 +1480,7 @@ function renderSongs(){
  let html='';
  scoredMain.forEach((song,index)=>{html+=songHtml(song,index);if(index===2)html+=adHtml();});
  if(scoredMain.length<3)html+=adHtml();
- mainGrid.innerHTML=html||(activeChart==='실시간'?'<p style="color:#777;padding:20px;">등록된 일반 AI 음악이 없습니다.</p>':'<p style="color:#9ca5b2;padding:20px;">'+(activeChart==='연간'?'최근 365일':'최근 7일')+' 조회수 기록이 아직 충분하지 않습니다. 조회수 기록이 쌓이면 실제 기간별 순위가 표시됩니다.</p>');
+ mainGrid.innerHTML=html||'<p style="color:#9ca5b2;padding:20px;">현재 조건에 맞는 일반 AI 음악이 없습니다. AI 배지 검증곡이 등록되면 표시됩니다.</p>';
  scoredMain.forEach((song,index)=>{
   $('thumb-m-'+index)?.addEventListener('click',()=>playSong(song,'m-'+index));
   $('like-m-'+index)?.addEventListener('click',()=>likeSong(song,'m-'+index));
@@ -1509,7 +1509,7 @@ function renderSongs(){
    <button class="thumb thumb-shorts" id="thumb-s-${index}" type="button"><img src="https://img.youtube.com/vi/${encodeURIComponent(song.youtube_id)}/hqdefault.jpg" alt=""><span class="play-icon">▶</span></button>
    <div class="player-area player-area-shorts" id="player-s-${index}" hidden><div id="yt-player-s-${index}"></div></div>
    <div class="info"><div class="title" style="color:#e9d0f7;">⚡ ${song.rank}위. ${escapeHTML(song.title)}</div><div class="artist">${escapeHTML(song.artist)}</div>
-    <div class="stats">${song.periodIsFallback?'누적 조회수(7일 집계중)':activeChart==='실시간'?'누적 조회수':activeChart==='연간'?'최근 365일 조회수':'최근 7일 조회수'} <b>${Number(song.calculatedScore||0).toLocaleString('ko-KR')}</b> · ♡ ${Number(song.youtube_likes||0).toLocaleString('ko-KR')}</div>
+    <div class="stats">${song.periodIsFallback?'누적 조회수(기간 집계중)':activeChart==='연간'?'최근 365일 조회수':activeChart==='월간'?'최근 30일 조회수':'최근 7일 조회수'} <b>${Number(song.calculatedScore||0).toLocaleString('ko-KR')}</b> · ♡ ${Number(song.youtube_likes||0).toLocaleString('ko-KR')}</div>
     <div class="like-row"><button class="like-button${(likedSongIds.has(song.id)||guestLikedSongIds.has(song.id))?' liked':''}" id="like-s-${index}" type="button">${(likedSongIds.has(song.id)||guestLikedSongIds.has(song.id))?'♥ 취소':'♡ 좋아요'}</button></div>
     <div class="song-action-row"><button class="proposal-button" id="proposal-s-${index}" type="button">곡 사용 제안</button><button id="comments-s-${index}" class="comment-bubble-button" type="button" aria-label="댓글 보기" title="댓글 보기"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 11.5a7.5 7.5 0 0 1-7.5 7.5H6l-3 2v-6.5A7.5 7.5 0 1 1 20 11.5Z"/></svg></button></div>
    </div>
