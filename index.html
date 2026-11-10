@@ -1400,10 +1400,12 @@ function setGenre(genre){
 }
 
 function calculateScores(songsList, period) {
- return [...(songsList||[])].map(song=>{
-  const delta=period==='실시간'?null:getPeriodViewDelta(song,period==='연간'?365:7);
-  return {...song,calculatedScore:period==='실시간'?Number(song.youtube_views||0):(delta===null?Number(song.youtube_views||0):delta),periodIsFallback:period!=='실시간'&&delta===null};
- }).sort((a,b)=>b.calculatedScore-a.calculatedScore);
+ const ranked=[...(songsList||[])].map(song=>{
+  if(period==='실시간')return {...song,calculatedScore:Number(song.youtube_views||0),periodIsFallback:false};
+  const delta=getPeriodViewDelta(song,period==='연간'?365:7);
+  return delta===null?null:{...song,calculatedScore:delta,periodIsFallback:false};
+ }).filter(Boolean);
+ return ranked.sort((a,b)=>b.calculatedScore-a.calculatedScore);
 }
 
 async function loadYoutubeViewHistory(){
@@ -1464,7 +1466,8 @@ function renderSongs(){
  const scoredMain=assignRanks(calculateScores(filtered.filter(song=>!isShorts(song)),activeChart));
  const scoredShorts=assignRanks(calculateScores(filtered.filter(song=>isShorts(song)),activeChart));
  message((activeGenre==='전체'?'전체 장르':activeGenre)+' · '+activeChart+' 차트 (일반 '+scoredMain.length+'곡 / 쇼츠 '+scoredShorts.length+'곡)');
- const note=$('weeklyChartNote');if(note)note.textContent=activeChart==='실시간'?'현재 누적 조회수 기준 실시간 정렬입니다.':(youtubeViewHistory.some(r=>new Date(r.snapshot_date+'T00:00:00')<=new Date(Date.now()-(activeChart==='연간'?365:7)*86400000))?'최근 '+(activeChart==='연간'?'365일':'7일')+' 조회수 증가량 기준입니다.':'최근 '+(activeChart==='연간'?'365일':'7일')+' 조회수 기록을 수집 중입니다. 기록이 쌓이기 전에는 누적 조회수 순서로 임시 표시합니다.');
+ const heading=document.querySelector('.ai-main-column .layout-column-title');if(heading)heading.textContent='🎵 일반 AI 음악 · '+(activeChart==='실시간'?'실시간 순위':activeChart==='주간'?'최근 7일 순위':'최근 365일 순위');
+ const note=$('weeklyChartNote');if(note)note.textContent=activeChart==='실시간'?'현재 저장된 YouTube 조회수 기준입니다. (최근 24시간 증감량과는 구분됩니다.)':(activeChart==='연간'?'최근 365일':'최근 7일')+' 동안 두 번 이상 수집된 조회수 기록의 실제 증가량으로 순위를 계산합니다. 기간 데이터가 없는 곡은 순위에서 제외합니다.';
  renderPeriodRanks('aiMonthlyList',validSongs.filter(song=>!isShorts(song)),30,'최근 30일 조회수 기록 수집 중입니다. 30일이 지나면 실제 증가량 순위를 표시합니다.');
  renderPeriodRanks('aiYearlyList',validSongs.filter(song=>!isShorts(song)),365,'최근 365일 조회수 기록 수집 중입니다. 1년간 기록이 쌓이면 실제 증가량 순위를 표시합니다.');
  renderPeriodRanks('nonAiMonthlyList',nonAiSongs,30,'최근 30일 조회수 기록 수집 중입니다.');
@@ -1489,7 +1492,7 @@ function renderSongs(){
  let html='';
  scoredMain.forEach((song,index)=>{html+=songHtml(song,index);if(index===2)html+=adHtml();});
  if(scoredMain.length<3)html+=adHtml();
- mainGrid.innerHTML=html||'<p style="color:#777;padding:20px;">등록된 일반 AI 음악이 없습니다.</p>';
+ mainGrid.innerHTML=html||(activeChart==='실시간'?'<p style="color:#777;padding:20px;">등록된 일반 AI 음악이 없습니다.</p>':'<p style="color:#9ca5b2;padding:20px;">'+(activeChart==='연간'?'최근 365일':'최근 7일')+' 조회수 기록이 아직 충분하지 않습니다. 조회수 기록이 쌓이면 실제 기간별 순위가 표시됩니다.</p>');
  scoredMain.forEach((song,index)=>{
   $('thumb-m-'+index)?.addEventListener('click',()=>playSong(song,'m-'+index));
   $('like-m-'+index)?.addEventListener('click',()=>likeSong(song,'m-'+index));
