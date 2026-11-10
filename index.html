@@ -712,7 +712,13 @@ label{
 .chart-layout .grid-main .song-action-row{gap:4px}
 .chart-layout .grid-main .song-action-row button{font-size:9px;padding:6px 3px}
 .chart-period-note{font-size:10px;margin:-7px 0 10px;color:#9ca5b2}
-.ai-period-column{display:flex;flex-direction:column;gap:12px}
+.ai-period-column{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;align-content:start}
+.realtime-ticker{grid-column:1/-1;display:flex;align-items:center;gap:9px;min-height:36px;padding:6px 10px;background:#16d83b;color:#071b0b;border-radius:3px;overflow:hidden;white-space:nowrap;font-size:12px;font-weight:700}
+.ticker-live-dot{width:8px;height:8px;flex:0 0 8px;border-radius:50%;background:#fff;box-shadow:0 0 0 3px #ffffff55;animation:tickerPulse 1s infinite}
+.realtime-ticker strong{flex:0 0 auto;font-size:13px}
+.ticker-message{display:inline-block;overflow:hidden;text-overflow:ellipsis;animation:tickerSlide .45s ease both}
+@keyframes tickerPulse{50%{opacity:.35;transform:scale(.8)}}
+@keyframes tickerSlide{from{opacity:0;transform:translateY(9px)}to{opacity:1;transform:translateY(0)}}
 .period-chart{min-width:0;min-height:230px;padding:12px;background:#131820;border:1px solid #343d49;border-radius:9px}
 .period-chart h3,.non-ai-chart h3{margin:0 0 5px;font-size:14px;color:#e6eaf0}
 .period-chart>p,.non-ai-chart>p{font-size:10px;margin:0 0 12px}
@@ -931,6 +937,7 @@ label{
     <p>최근 12개월 기준</p>
     <div class="period-empty">연간 조회수 기록을 쌓은 뒤 순위를 표시합니다.</div>
    </section>
+   <div class="realtime-ticker" role="status" aria-live="polite" aria-atomic="true"><span class="ticker-live-dot"></span><strong>실시간</strong><span id="realtimeTickerText" class="ticker-message">AI 음악 실시간 소식을 확인하고 있습니다.</span></div>
   </div>
   <div class="shorts-column">
    <div class="layout-column-title" style="color:#c686df;">⚡ AI 한국음악 쇼츠</div>
@@ -1383,6 +1390,17 @@ function assignRanks(scoredList){
  });
 }
 
+let realtimeTickerTimer=null,realtimeTickerItems=[],realtimeTickerIndex=0;
+function updateRealtimeTicker(){
+ const el=$('realtimeTickerText'); if(!el)return;
+ el.textContent=realtimeTickerItems.length?realtimeTickerItems[realtimeTickerIndex%realtimeTickerItems.length]:'AI 음악 실시간 소식 · 등록된 곡이 없습니다.';
+ el.classList.remove('ticker-message'); void el.offsetWidth; el.classList.add('ticker-message');
+ if(realtimeTickerItems.length)realtimeTickerIndex=(realtimeTickerIndex+1)%realtimeTickerItems.length;
+}
+function startRealtimeTicker(){
+ if(realtimeTickerTimer)clearInterval(realtimeTickerTimer);
+ updateRealtimeTicker(); realtimeTickerTimer=setInterval(updateRealtimeTicker,2000);
+}
 function renderSongs(){
  const needle=searchTerm.trim().toLocaleLowerCase('ko-KR');
  const validSongs=allSongs.filter(song=>isValidKoreanAIMusic(song)&&(!needle||[song.title,song.artist,song.youtube_id].some(v=>String(v||'').toLocaleLowerCase('ko-KR').includes(needle))));
@@ -1396,6 +1414,9 @@ function renderSongs(){
  const scoredMain=assignRanks(calculateScores(filtered.filter(song=>!isShorts(song)),activeChart));
  const scoredShorts=assignRanks(calculateScores(filtered.filter(song=>isShorts(song)),activeChart));
  message((activeGenre==='전체'?'전체 장르':activeGenre)+' · '+activeChart+' 차트 (일반 '+scoredMain.length+'곡 / 쇼츠 '+scoredShorts.length+'곡)');
+ realtimeTickerItems=scoredMain.slice(0,10).map(song=>String(song.rank).padStart(2,'0')+'위 · '+song.title+' — '+song.artist);
+ if(realtimeTickerIndex>=realtimeTickerItems.length)realtimeTickerIndex=0;
+ updateRealtimeTicker();
  const mainGrid=$('mainSongsGrid');
  mainGrid.classList.toggle('list-view',mainViewMode==='list');
  const adHtml=()=>{const ads=chartAds.slice(0,3);let cards=ads.map(ad=>`<article class="ad-slot"><span class="ad-tag">AD · ${escapeHTML(ad.ad_label||'스폰서 곡')}</span><div class="ad-copy"><div class="ad-title">${escapeHTML(ad.title)}</div><div class="ad-artist">${escapeHTML(ad.artist)}</div></div><button type="button" class="ad-play" data-video-id="${escapeHTML(ad.youtube_id)}">▶ 재생</button></article>`).join('');for(let i=ads.length;i<3;i++)cards+=`<article class="ad-slot ad-slot-placeholder"><span class="ad-tag">AD · 광고 영역</span><div class="ad-copy"><div class="ad-title">음악 홍보 공간 ${i+1}</div><div class="ad-artist">광고곡이 등록되면 표시됩니다.</div></div><button type="button" disabled>광고</button></article>`;return cards;};
@@ -1649,7 +1670,8 @@ supabase.auth.onAuthStateChange((event)=>{
 
 await updateAuth();
 await loadProposalInbox();
-await loadSongs();
+await startRealtimeTicker();
+loadSongs();
 </script>
 </body>
 </html>
