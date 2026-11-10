@@ -210,6 +210,8 @@ label{
 .song-action-row{display:flex;gap:6px;margin-top:8px;}
 .song-action-row button{flex:1;min-width:0;padding:7px 5px;font-size:10px;border-radius:5px;background:#28313c;color:#dce4ec;border:1px solid #3b4654;}
 .song-action-row .proposal-button{background:#283a2a;border-color:#58734c;color:#c6e6ae;}
+.song-action-row .comment-bubble-button{flex:0 0 36px;display:flex;align-items:center;justify-content:center;padding:5px;background:#28313c;border:1px solid #3b4654;}
+.comment-bubble-button svg{width:18px;height:18px;fill:none;stroke:#dce4ec;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;}
 .music-modal{position:fixed;inset:0;z-index:1000;background:rgba(0,0,0,.78);display:none;align-items:center;justify-content:center;padding:18px;}
 .music-modal.open{display:flex;}
 .music-modal-card{width:min(560px,100%);max-height:88vh;overflow:auto;background:#151a22;border:1px solid #3a4654;border-radius:12px;padding:18px;}
@@ -677,12 +679,12 @@ label{
 #mainSongsGrid.list-view .stats{margin:0;white-space:nowrap}
 #mainSongsGrid.list-view .like-row{margin:0;width:82px;flex:none}
 #mainSongsGrid.list-view .like-button{padding:6px}
-.ad-slot{grid-column:auto;min-width:0;min-height:105px;display:flex;flex-direction:column;align-items:flex-start;justify-content:center;gap:6px;padding:9px;margin:4px 0 12px;background:linear-gradient(145deg,#20251d,#171d20);border:1px solid #71865c;border-radius:8px}
+.ad-slot{grid-column:auto;min-width:0;min-height:74px;display:flex;flex-direction:column;align-items:flex-start;justify-content:center;gap:4px;padding:6px;margin:3px 0 8px;background:linear-gradient(145deg,#20251d,#171d20);border:1px solid #71865c;border-radius:8px}
 .ad-slot .ad-tag{font-size:10px;color:#b9e39a;white-space:nowrap}
 .ad-slot .ad-copy{flex:1;min-width:0;width:100%}
-.ad-slot .ad-title{font-size:12px;font-weight:700;color:#f1f2f5;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.ad-slot .ad-artist{font-size:10px;color:#aeb2bd;margin-top:5px}
-.ad-slot button{background:#a6c98c;color:#182015;white-space:nowrap;padding:6px 9px;font-size:10px}
+.ad-slot .ad-title{font-size:11px;font-weight:700;color:#f1f2f5;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ad-slot .ad-artist{font-size:9px;color:#aeb2bd;margin-top:3px}
+.ad-slot button{background:#a6c98c;color:#182015;white-space:nowrap;padding:5px 8px;font-size:9px}
 .ad-slot .ad-player{width:190px;max-width:34%;aspect-ratio:16/9;border:0}
 .ad-slot[hidden]{display:none}
 .profile-actions{display:flex;gap:8px;flex-wrap:wrap;margin:12px 0}
@@ -694,7 +696,7 @@ label{
  #mainSongsGrid.list-view .info{gap:7px;flex-wrap:wrap}
  #mainSongsGrid.list-view .artist{width:auto}
  #mainSongsGrid.list-view .stats{font-size:9px}
- .ad-slot{padding:10px;gap:8px;min-height:80px}
+ .ad-slot{padding:7px;gap:5px;min-height:56px}
  .ad-slot .ad-tag{display:none}
  .ad-slot .ad-title{font-size:12px}
  .ad-slot button{padding:8px 10px}
@@ -876,9 +878,8 @@ label{
   </div>
   <section class="non-ai-chart" id="nonAiChartSection">
    <h3>🎤 비AI 한국음악 순위</h3>
-   <p>BTS · BLACKPINK 공식 일반 음원</p>
-   <div class="non-ai-list" id="nonAiSongsGrid"><p>비AI 공식곡을 불러오는 중입니다.</p></div>
-   <div class="non-ai-continuation"><h4>그 외 한국 인기곡</h4><div class="non-ai-list" id="generalNonAiSongsGrid"><p>일반 한국음악을 불러오는 중입니다.</p></div></div>
+   <p>한국 대중음악 전체 · 공식 뮤직비디오 조회수 순</p>
+   <div class="non-ai-list" id="nonAiSongsGrid"><p>한국음악 순위를 불러오는 중입니다.</p></div>
   </section>
   <div class="shorts-column">
    <div class="layout-column-title" style="color:#c686df;">⚡ AI 쇼츠(Shorts) 차트</div>
@@ -1366,7 +1367,7 @@ function renderSongs(){
     <div class="artist">${escapeHTML(song.artist)}</div>
     <div class="stats">점수: <b>${song.calculatedScore}점</b><br>조회수 ${Number(song.youtube_views||0).toLocaleString('ko-KR')} · ♡ <span id="like-count-m-${index}">${(Number(song.likes||0)+Number(guestLikeCounts.get(song.id)||0)).toLocaleString('ko-KR')}</span></div>
     <div class="like-row"><button class="like-button${(likedSongIds.has(song.id)||guestLikedSongIds.has(song.id))?' liked':''}" id="like-m-${index}" type="button">${(likedSongIds.has(song.id)||guestLikedSongIds.has(song.id))?'♥ 취소':'♡ 좋아요'}</button></div>
-    <div class="song-action-row"><button class="proposal-button" id="proposal-m-${index}" type="button">곡 사용 제안</button><button id="comments-m-${index}" type="button">댓글</button></div>
+    <div class="song-action-row"><button class="proposal-button" id="proposal-m-${index}" type="button">곡 사용 제안</button><button id="comments-m-${index}" class="comment-bubble-button" type="button" aria-label="댓글 보기" title="댓글 보기"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 11.5a7.5 7.5 0 0 1-7.5 7.5H6l-3 2v-6.5A7.5 7.5 0 1 1 20 11.5Z"/></svg></button></div>
    </div>
   </article>`;
  let html='';
@@ -1403,7 +1404,7 @@ function renderSongs(){
    <div class="info"><div class="title" style="color:#e9d0f7;">⚡ ${song.rank}위. ${escapeHTML(song.title)}</div><div class="artist">${escapeHTML(song.artist)}</div>
     <div class="stats">점수: <b>${song.calculatedScore}점</b><br>조회수 ${Number(song.youtube_views||0).toLocaleString('ko-KR')} · ♡ ${Number(song.youtube_likes||0).toLocaleString('ko-KR')}</div>
     <div class="like-row"><button class="like-button${(likedSongIds.has(song.id)||guestLikedSongIds.has(song.id))?' liked':''}" id="like-s-${index}" type="button">${(likedSongIds.has(song.id)||guestLikedSongIds.has(song.id))?'♥ 취소':'♡ 좋아요'}</button></div>
-    <div class="song-action-row"><button class="proposal-button" id="proposal-s-${index}" type="button">곡 사용 제안</button><button id="comments-s-${index}" type="button">댓글</button></div>
+    <div class="song-action-row"><button class="proposal-button" id="proposal-s-${index}" type="button">곡 사용 제안</button><button id="comments-s-${index}" class="comment-bubble-button" type="button" aria-label="댓글 보기" title="댓글 보기"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 11.5a7.5 7.5 0 0 1-7.5 7.5H6l-3 2v-6.5A7.5 7.5 0 1 1 20 11.5Z"/></svg></button></div>
    </div>
   </article>`).join('')||'<p style="color:#777;padding:20px;">등록된 AI 쇼츠가 없습니다.</p>';
  scoredShorts.forEach((song,index)=>{
@@ -1449,7 +1450,7 @@ async function openSongAction(song,mode){
   body.innerHTML=`<p><b>${escapeHTML(song.title)}</b> · ${escapeHTML(song.artist)}</p><p class="modal-note">사용 희망 금액과 사용 목적을 적어 보내면 곡 등록자에게 전달됩니다. 실제 계약과 결제는 당사자 간 협의로 진행됩니다.</p><form id="songProposalForm"><label>제안 금액 (원)</label><input name="offer_price" type="number" min="0" step="1000" required placeholder="예: 100000"><label>사용 목적</label><select name="usage_type" required><option value="">선택하세요</option><option>유튜브 영상·방송</option><option>광고·홍보</option><option>공연·행사</option><option>음원 발매·배포</option><option>기타 상업적 이용</option></select><label>제안 내용</label><textarea name="message" minlength="5" maxlength="2000" required placeholder="사용 범위, 기간, 희망 조건 등을 적어주세요."></textarea><label>연락 이메일</label><input name="contact_email" type="email" maxlength="254" required value="${escapeHTML(user.email||'')}"><button class="modal-submit" type="submit">곡 사용 제안 보내기</button></form>`;
   $('songProposalForm').addEventListener('submit',submitSongProposal);
  }else{
-  body.innerHTML='<div id="songCommentsList"><p>댓글을 불러오는 중입니다.</p></div><form id="songCommentForm"><label>댓글</label><textarea name="content" minlength="1" maxlength="1000" required placeholder="이 곡에 대한 의견을 남겨주세요."></textarea><div id="guestCommentFields"><label>닉네임 (2~20자)</label><input name="guest_nickname" minlength="2" maxlength="20" placeholder="닉네임"><label>비밀번호 (6자 이상)</label><input name="guest_password" type="password" minlength="6" placeholder="댓글 수정·삭제에 사용할 비밀번호"></div><button class="modal-submit" type="submit">댓글 등록</button></form>';
+  body.innerHTML='<div id="songCommentsList"><p>댓글을 불러오는 중입니다.</p></div><form id="songCommentForm"><label>댓글</label><textarea name="content" minlength="1" maxlength="1000" required placeholder="이 곡에 대한 의견을 남겨주세요."></textarea><div id="guestCommentFields"><label>닉네임 (2~20자)</label><input name="guest_nickname" minlength="2" maxlength="20" placeholder="닉네임"><label>숫자 비밀번호 (4자리)</label><input name="guest_password" type="password" inputmode="numeric" pattern="[0-9]{4}" minlength="4" maxlength="4" autocomplete="new-password" placeholder="숫자 4자리" required></div><button class="modal-submit" type="submit">댓글 등록</button></form>';
   const {data:{user}}=await supabase.auth.getUser();if(user)$('guestCommentFields').hidden=true;
   $('songCommentForm').addEventListener('submit',submitSongComment);
   await loadSongComments(song.id);
@@ -1468,7 +1469,7 @@ async function loadSongComments(songId){
 }
 async function submitSongComment(event){
  event.preventDefault();const form=event.currentTarget;const fd=new FormData(form);const {data:{user}}=await supabase.auth.getUser();
- const args={p_song_id:currentActionSong.id,p_content:String(fd.get('content')).trim(),p_guest_nickname:user?null:String(fd.get('guest_nickname')||'').trim(),p_guest_password:user?null:String(fd.get('guest_password')||'')};
+ const guestPassword=String(fd.get('guest_password')||'');if(!user&&!/^\\d{4}$/.test(guestPassword)){message('비밀번호는 숫자 4자리로 입력하세요.');return;}const args={p_song_id:currentActionSong.id,p_content:String(fd.get('content')).trim(),p_guest_nickname:user?null:String(fd.get('guest_nickname')||'').trim(),p_guest_password:user?null:guestPassword};
  const {error}=await supabase.rpc('create_song_comment',args);if(error){message('댓글 등록 오류: '+error.message);return;}
  await loadSongComments(currentActionSong.id);form.reset();message('댓글을 등록했습니다.');
 }
@@ -1481,26 +1482,22 @@ async function loadProposalInbox(){
  target.querySelectorAll('[data-proposal-status]').forEach(btn=>btn.addEventListener('click',async()=>{const {error}=await supabase.from('song_use_proposals').update({status:btn.dataset.proposalStatus,updated_at:new Date().toISOString()}).eq('id',btn.dataset.proposalId);if(error){message('제안 상태 변경 오류: '+error.message);return;}await loadProposalInbox();}));
 }
 async function loadNonAiChartSongs(){
- const {data,error}=await supabase.from('non_ai_chart_songs').select('id,title,artist,youtube_id,youtube_views').eq('is_active',true).order('youtube_views',{ascending:false}).order('sort_order',{ascending:true});
+ const {data,error}=await supabase.from('non_ai_chart_songs').select('id,title,artist,youtube_id,youtube_views').eq('is_active',true).order('youtube_views',{ascending:false});
  if(error){nonAiSongs=[];console.warn('비AI 차트 조회 오류',error.message);return;}nonAiSongs=data||[];
 }
 function renderNonAiSongs(){
  const target=$('nonAiSongsGrid');if(!target)return;
- const headlineSongs=nonAiSongs.filter(song=>['BTS','BLACKPINK'].includes(song.artist));
- const generalSongs=nonAiSongs.filter(song=>!['BTS','BLACKPINK'].includes(song.artist));
- const row=(song,index)=>`<div class="non-ai-row"><span class="non-ai-rank">${index+1}위</span><div class="non-ai-copy"><div class="non-ai-title">${escapeHTML(song.title)}</div><div class="non-ai-artist">${escapeHTML(song.artist)}</div></div><span class="non-ai-views">${Number(song.youtube_views||0).toLocaleString('ko-KR')}회</span><button type="button" data-nonai-play="${escapeHTML(song.youtube_id)}">▶ 재생</button></div>`;
- target.innerHTML=headlineSongs.map(row).join('')||'<p style="color:#87909b;padding:10px;">아직 등록된 BTS·BLACKPINK 공식곡이 없습니다.</p>';
- const generalTarget=$('generalNonAiSongsGrid');
- if(generalTarget)generalTarget.innerHTML=generalSongs.map(row).join('')||'<p class="modal-note">일반 한국음악 곡을 추가하면 조회수 순으로 이곳에 이어집니다.</p>';
+ const ordered=[...nonAiSongs].sort((a,b)=>Number(b.youtube_views||0)-Number(a.youtube_views||0));
+ const row=(song,index)=>`<div class="non-ai-row"><span class="non-ai-rank">${index+1}위</span><div class="non-ai-copy"><div class="non-ai-title">${escapeHTML(song.title)}</div><div class="non-ai-artist">${escapeHTML(song.artist)}</div></div><span class="non-ai-views">${Number(song.youtube_views||0).toLocaleString('ko-KR')}회</span><button type="button" data-nonai-play="${escapeHTML(song.youtube_id)}">▶</button></div>`;
+ target.innerHTML=ordered.map(row).join('')||'<p class="modal-note">등록된 한국음악이 없습니다.</p>';
  target.querySelectorAll('[data-nonai-play]').forEach(button=>button.addEventListener('click',()=>playNonAiButton(button,target)));
- if(generalTarget)generalTarget.querySelectorAll('[data-nonai-play]').forEach(button=>button.addEventListener('click',()=>playNonAiButton(button,generalTarget)));
 }
 function playNonAiButton(button,container){
  const id=button.dataset.nonaiPlay;const old=document.querySelector('iframe[data-playing="true"]');
- if(old&&old.dataset.videoId===id){old.remove();button.textContent='▶ 재생';return;}
+ if(old&&old.dataset.videoId===id){old.remove();button.textContent='▶';return;}
  if(old)old.remove();
  const frame=document.createElement('iframe');frame.className='non-ai-player';frame.dataset.playing='true';frame.dataset.videoId=id;frame.src='https://www.youtube-nocookie.com/embed/'+encodeURIComponent(id)+'?autoplay=1&playsinline=1&rel=0';frame.title='비AI 음악 재생';frame.allow='autoplay; encrypted-media; picture-in-picture';frame.allowFullscreen=true;container.appendChild(frame);
- document.querySelectorAll('[data-nonai-play]').forEach(b=>b.textContent='▶ 재생');button.textContent='재생 중지';
+ document.querySelectorAll('[data-nonai-play]').forEach(b=>b.textContent='▶');button.textContent='■';
 }
 
 async function loadAdminNonAiSongs(){
