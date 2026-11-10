@@ -1615,21 +1615,22 @@ async function deleteNonAiSong(id){if(!confirm('이 비AI 곡을 삭제할까요
 
 async function discoverYoutubeAiMusic(){
  const btn=$('discoverYoutubeAiBtn'),status=$('youtubeDiscoveryStatus'),target=$('youtubeDiscoveryResults');
- btn.disabled=true;btn.textContent='유튜브 검색 중...';status.textContent='유튜브 전체에서 다양한 주제·장르로 후보를 발굴하고 있습니다.';
+ btn.disabled=true;btn.textContent='유튜브 검색 중...';
+ status.textContent='한국어 주제와 장르를 순환 검색하고, 발견한 채널의 최근 업로드도 확인합니다.';
  target.innerHTML='';
  try{
   const {data,error}=await supabase.functions.invoke('youtube-chart');
   if(error) throw error;
   if(!data||data.error) throw new Error(data?.error||'검색 결과를 받지 못했습니다.');
   const songs=data.songs||[];
-  status.textContent='검색어 '+Number(data.search_query_count||0)+'개 · 고유 영상 '+Number(data.unique_videos_found||0)+'개 · 음악 후보 '+Number(data.candidate_count||songs.length)+'개. 실제 AI 배지 검증 전 후보입니다.';
-  target.innerHTML=songs.map((song,index)=>{
-   const duration=Number(song.youtube_duration_seconds)||0;
+  status.textContent='검색 '+Number(data.query_count||0)+'회 · 검색 영상 '+Number(data.unique_search_results||0)+'개 · 조건 후보 '+Number(data.candidate_count||songs.length)+'개 · 채널 재탐색 '+Number(data.channels_followed||0)+'개 · 최근 업로드 '+Number(data.channel_upload_videos||0)+'개 · DB 저장 '+Number(data.persisted?.saved||0)+'개. AI 배지는 아직 별도 검증 전입니다.';
+  target.innerHTML=songs.map(song=>{
+   const duration=Number(song.duration_seconds)||0;
    const time=Math.floor(duration/60)+':'+String(duration%60).padStart(2,'0');
-   return '<div class="ad-admin-item"><span><b>'+escapeHTML(song.title)+'</b> · '+escapeHTML(song.artist||'')+
-    '<br><small>'+time+' · '+Number(song.youtube_views||0).toLocaleString('ko-KR')+'회 · AI 배지 검증 전</small></span>'+
-    '<a href="'+escapeHTML(song.youtube_url)+'" target="_blank" rel="noopener">유튜브 확인</a></div>';
-  }).join('')||'<p>조건에 맞는 후보가 없습니다. 검색어를 확장해야 합니다.</p>';
+   return '<div class="ad-admin-item"><span><b>'+escapeHTML(song.title)+'</b> · '+escapeHTML(song.channel_title||'')+
+    '<br><small>'+time+' · '+Number(song.view_count||0).toLocaleString('ko-KR')+'회 · AI 배지 검증 전</small></span>'+
+    '<a href="'+escapeHTML(song.video_url)+'" target="_blank" rel="noopener">유튜브 확인</a></div>';
+  }).join('')||'<p>이번 회차에서 조건에 맞는 후보가 없습니다. 다음 회차에는 다른 주제로 검색합니다.</p>';
  }catch(error){
   status.textContent='유튜브 검색 오류: '+(error.message||String(error));
  }finally{
