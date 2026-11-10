@@ -912,8 +912,8 @@ label{
  </div>
 
  <div class="chart-tabs" id="chartTabsContainer" role="group" aria-label="기간 선택">
-  <button class="chart-tab active" data-chart="실시간" type="button">실시간 (최근 24시간)</button>
-  <button class="chart-tab" data-chart="주간" type="button">주간 (최근 7일)</button>
+  <button class="chart-tab" data-chart="실시간" type="button">실시간 (최근 24시간)</button>
+  <button class="chart-tab active" data-chart="주간" type="button">주간 (최근 7일)</button>
   <button class="chart-tab" data-chart="연간" type="button">연간 (최근 365일)</button>
  </div>
 
@@ -983,7 +983,8 @@ const $ = id => document.getElementById(id);
 
 let recoveryMode = false;
 let allSongs = [];
-let activeChart = '실시간';
+let youtubeViewHistory = [];
+let activeChart = '주간';
 let activeGenre = '전체';
 let searchTerm = '';
 let chartAds = [];
@@ -1378,10 +1379,33 @@ function setGenre(genre){
 }
 
 function calculateScores(songsList, period) {
- // 실제 누적 유튜브 조회수만으로 순위를 정한다. 좋아요·댓글·사이트 재생은 순위를 뒤집지 않는다.
- return [...(songsList||[])].sort((a,b)=>Number(b.youtube_views||0)-Number(a.youtube_views||0)).map(song=>({...song,calculatedScore:Number(song.youtube_views||0)}));
+ return [...(songsList||[])].map(song=>{
+  const delta=period==='실시간'?null:getPeriodViewDelta(song,period==='연간'?365:7);
+  return {...song,calculatedScore:period==='실시간'?Number(song.youtube_views||0):(delta===null?Number(song.youtube_views||0):delta),periodIsFallback:period!=='실시간'&&delta===null};
+ }).sort((a,b)=>b.calculatedScore-a.calculatedScore);
 }
 
+async function loadYoutubeViewHistory(){
+ const {data,error}=await supabase.from('youtube_view_snapshots').select('youtube_id,snapshot_date,view_count').order('snapshot_date',{ascending:true});
+ if(error){console.warn('조회수 기록 조회 오류',error.message);youtubeViewHistory=[];return;}
+ youtubeViewHistory=data||[];
+}
+function getPeriodViewDelta(song,days){
+ const cutoff=new Date();cutoff.setDate(cutoff.getDate()-days);
+ const rows=youtubeViewHistory.filter(r=>r.youtube_id===song.youtube_id).sort((a,b)=>String(a.snapshot_date).localeCompare(String(b.snapshot_date)));
+ if(rows.length<2)return null;
+ const baseline=rows.filter(r=>new Date(r.snapshot_date+'T23:59:59')<=cutoff).at(-1);
+ const latest=rows.at(-1);
+ if(!baseline||!latest||latest.snapshot_date<=baseline.snapshot_date)return null;
+ return Math.max(0,Number(latest.view_count||0)-Number(baseline.view_count||0));
+}
+function renderPeriodRanks(targetId,songs,days,emptyText){
+ const target=$(targetId);if(!target)return;
+ const ranked=songs.map(song=>({...song,periodViews:getPeriodViewDelta(song,days)})).filter(song=>song.periodViews!==null).sort((a,b)=>b.periodViews-a.periodViews).slice(0,5);
+ if(!ranked.length){target.className='period-empty';target.textContent=emptyText;return;}
+ target.className='period-rank-list';
+ target.innerHTML=ranked.map((song,i)=>'<div class="period-rank-row"><span>'+String(i+1).padStart(2,'0')+'위 · '+escapeHTML(song.title)+'</span><strong>'+Number(song.periodViews).toLocaleString('ko-KR')+'회</strong></div>').join('');
+}
 function assignRanks(scoredList){
  let currentRank = 1;
  return scoredList.map((song, index, arr) => {
@@ -1419,6 +1443,10 @@ function renderSongs(){
  const scoredMain=assignRanks(calculateScores(filtered.filter(song=>!isShorts(song)),activeChart));
  const scoredShorts=assignRanks(calculateScores(filtered.filter(song=>isShorts(song)),activeChart));
  message((activeGenre==='전체'?'전체 장르':activeGenre)+' · '+activeChart+' 차트 (일반 '+scoredMain.length+'곡 / 쇼츠 '+scoredShorts.length+'곡)');
+ const note=$('weeklyChartNote');if(note)note.textContent=activeChart==='실시간'?'현재 누적 조회수 기준 실시간 정렬입니다.':(youtubeViewHistory.some(r=>new Date(r.snapshot_date+'T00:00:00')<=new Date(Date.now()-(activeChart==='연간'?365:7)*86400000))?'최근 '+(activeChart==='연간'?'365일':'7일')+' 조회수 증가량 기준입니다.':'최근 '+(activeChart==='연간'?'365일':'7일')+' 조회수 기록을 수집 중입니다. 기록이 쌓이기 전에는 누적 조회수 순서로 임시 표시합니다.');
+ renderPeriodRanks('aiMonthlyList',validSongs.filter(song=>!isShorts(song)),30,'최근 30일 조회수 기록 수집 중입니다. 30일이 지나면 실제 증가량 순위를 표시합니다.');
+ renderPeriodRanks('aiYearlyList',validSongs.filter(song=>!isShorts(song)),365,'최근 365일 조회수 기록 수집 중입니다. 1년간 기록이 쌓이면 실제 증가량 순위를 표시합니다.');
+ renderPeriodRanks('nonAiMonthlyList',nonAiSongs,30,'최근 30일 조회수 기록 수집 중입니다.');
  realtimeTickerItems=['실시간 AI 음악 소식 · 2초마다 순위 정보가 바뀝니다.',...scoredMain.slice(0,10).map(song=>String(song.rank).padStart(2,'0')+'위 · '+song.title+' — '+song.artist)];
  if(realtimeTickerIndex>=realtimeTickerItems.length)realtimeTickerIndex=0;
  updateRealtimeTicker();
@@ -1627,6 +1655,7 @@ async function loadSongs(){
  await loadGuestLikes();
  await loadChartAds();
  await loadNonAiChartSongs();
+ await loadYoutubeViewHistory();
  renderSongs();
 }
 
