@@ -780,8 +780,8 @@ label{
   <div class="actions"><button class="primary" id="createAdBtn" type="button">광고 등록</button></div>
   <div id="adAdminList"></div>
   <div class="profile-edit">
-   <h3>비AI 인기곡 등록 (BTS / BLACKPINK)</h3>
-   <p>공식 아티스트 채널의 일반 음원만 등록하세요. 조회수는 등록 시점의 수치를 입력하며, 높은 조회수 순으로 표시됩니다.</p>
+   <h3>비AI 한국음악 등록</h3>
+   <p>BTS·BLACKPINK 차트와 그 아래 일반 한국음악 목록으로 나뉘어 조회수 순으로 표시됩니다.</p>
    <label>곡 제목</label><input id="nonAiTitle" maxlength="160" placeholder="공식 곡 제목">
    <label>아티스트</label><input id="nonAiArtist" maxlength="100" placeholder="예: BTS, BLACKPINK, 아이유">
    <label>유튜브 공식 영상 주소</label><input id="nonAiYoutubeUrl" placeholder="https://www.youtube.com/watch?v=XXXXXXXXXXX">
@@ -1391,11 +1391,14 @@ function renderSongs(){
    <div class="info"><div class="title" style="color:#e9d0f7;">⚡ ${song.rank}위. ${escapeHTML(song.title)}</div><div class="artist">${escapeHTML(song.artist)}</div>
     <div class="stats">점수: <b>${song.calculatedScore}점</b><br>조회수 ${Number(song.youtube_views||0).toLocaleString('ko-KR')} · ♡ ${Number(song.youtube_likes||0).toLocaleString('ko-KR')}</div>
     <div class="like-row"><button class="like-button${(likedSongIds.has(song.id)||guestLikedSongIds.has(song.id))?' liked':''}" id="like-s-${index}" type="button">${(likedSongIds.has(song.id)||guestLikedSongIds.has(song.id))?'♥ 취소':'♡ 좋아요'}</button></div>
+    <div class="song-action-row"><button class="proposal-button" id="proposal-s-${index}" type="button">곡 사용 제안</button><button id="comments-s-${index}" type="button">댓글</button></div>
    </div>
   </article>`).join('')||'<p style="color:#777;padding:20px;">등록된 AI 쇼츠가 없습니다.</p>';
  scoredShorts.forEach((song,index)=>{
   $('thumb-s-'+index)?.addEventListener('click',()=>playSong(song,'s-'+index));
   $('like-s-'+index)?.addEventListener('click',()=>likeSong(song,'s-'+index));
+  $('proposal-s-'+index)?.addEventListener('click',()=>openSongAction(song,'proposal'));
+  $('comments-s-'+index)?.addEventListener('click',()=>openSongAction(song,'comments'));
  });
 }
 function shuffleGenreTabsHourly(){
@@ -1452,10 +1455,10 @@ async function loadSongComments(songId){
  target.innerHTML=(data||[]).map(c=>`<div class="comment-entry"><strong>${escapeHTML(c.guest_nickname||'회원')}</strong><span class="modal-note"> · ${new Date(c.created_at).toLocaleString('ko-KR')}</span><p>${escapeHTML(c.content)}</p></div>`).join('')||'<p class="modal-note">첫 댓글을 남겨보세요.</p>';
 }
 async function submitSongComment(event){
- event.preventDefault();const fd=new FormData(event.currentTarget);const {data:{user}}=await supabase.auth.getUser();
+ event.preventDefault();const form=event.currentTarget;const fd=new FormData(form);const {data:{user}}=await supabase.auth.getUser();
  const args={p_song_id:currentActionSong.id,p_content:String(fd.get('content')).trim(),p_guest_nickname:user?null:String(fd.get('guest_nickname')||'').trim(),p_guest_password:user?null:String(fd.get('guest_password')||'')};
  const {error}=await supabase.rpc('create_song_comment',args);if(error){message('댓글 등록 오류: '+error.message);return;}
- await loadSongComments(currentActionSong.id);event.currentTarget.reset();message('댓글을 등록했습니다.');
+ await loadSongComments(currentActionSong.id);form.reset();message('댓글을 등록했습니다.');
 }
 async function loadProposalInbox(){
  const target=$('proposalInboxList');if(!target)return;
@@ -1590,7 +1593,7 @@ setInterval(shuffleGenreTabsHourly, 60000);
 
 supabase.auth.onAuthStateChange((event)=>{
  if(event === 'SIGNED_IN' || event === 'SIGNED_OUT' || event === 'TOKEN_REFRESHED'){
-  loadMyLikes().then(()=>renderSongs());
+  loadMyLikes().then(()=>{renderSongs();loadProposalInbox();});
  }
 });
 
