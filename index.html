@@ -1791,8 +1791,6 @@ $('loadYoutubeCandidatesBtn').addEventListener('click',loadYoutubeDiscoveryCandi
 $('musicModalClose').addEventListener('click',closeMusicModal);
 $('musicActionModal').addEventListener('click',event=>{if(event.target.id==='musicActionModal')closeMusicModal();});
 $('createNonAiSongBtn').addEventListener('click',createNonAiSong);
-$('cardViewBtn').addEventListener('click',()=>setMainView('card'));
-$('listViewBtn').addEventListener('click',()=>setMainView('list'));
 $('registerBtn').addEventListener('click',registerSong);
 $('chartSearch').addEventListener('input',event=>{searchTerm=event.target.value || '';renderNonAiSongs();});
 
