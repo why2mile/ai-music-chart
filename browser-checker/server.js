@@ -38,7 +38,7 @@ app.get("/self-test", async (_req, res) => {
       let page;
       try {
         page = await browser.newPage({ locale: "en-US", userAgent: "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 Chrome/120.0.0.0 Safari/537.36" });
-        await page.goto(`https://www.youtube.com/watch?v=${videoId}&hl=en&gl=US`, { waitUntil: "domcontentloaded", timeout: 30000 });
+        await page.goto(`https://www.youtube.com/watch?v=${videoId}&hl=en&gl=US`, { waitUntil: "domcontentloaded", timeout: 8000 });
         await page.waitForSelector("#title-row", { timeout: 15000 });
         const found = await page.evaluate(() => {
           const row = document.querySelector("#title-row");
