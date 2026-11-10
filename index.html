@@ -1448,7 +1448,7 @@ function renderSongs(){
  });
  const scoredMain=assignRanks(calculateScores(filtered.filter(song=>!isShorts(song)),activeChart));
  const scoredShorts=assignRanks(calculateScores(filtered.filter(song=>isShorts(song)),activeChart));
- message((activeGenre==='전체'?'전체 장르':activeGenre)+' · '+activeChart+' 차트 (일반 '+scoredMain.length+'곡 / 쇼츠 '+scoredShorts.length+'곡)');
+ message('한국 가요 · '+activeChart+' 차트');
  const periodLabel=activeChart==='연간'?'최근 365일':activeChart==='월간'?'최근 30일':'최근 7일';
  const heading=document.querySelector('.ai-main-column .layout-column-title');if(heading)heading.textContent='🎵 일반 AI 음악 · '+periodLabel+' 순위';
  const hasPeriodData=filtered.some(song=>getPeriodViewDelta(song,activeChart==='연간'?365:activeChart==='월간'?30:7)!==null);
