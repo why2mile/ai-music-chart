@@ -29,6 +29,38 @@ function normalizeVideoId(value) {
   return null;
 }
 
+app.get("/self-test", async (_req, res) => {
+  let browser;
+  try {
+    browser = await chromium.launch({ headless: true, args: ["--no-sandbox", "--disable-setuid-sandbox", "--disable-dev-shm-usage", "--disable-gpu"] });
+    const results = [];
+    for (const videoId of ["XUl9vv_JWKc", "AW58Ofv_QeU"]) {
+      let page;
+      try {
+        page = await browser.newPage({ locale: "en-US", userAgent: "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 Chrome/120.0.0.0 Safari/537.36" });
+        await page.goto(`https://www.youtube.com/watch?v=${videoId}&hl=en&gl=US`, { waitUntil: "domcontentloaded", timeout: 30000 });
+        await page.waitForSelector("#title-row", { timeout: 15000 });
+        const found = await page.evaluate(() => {
+          const row = document.querySelector("#title-row");
+          const labels = row ? [...row.querySelectorAll("yt-metadata-badge-renderer")].map(el => el.querySelector("badge-shape")?.getAttribute("aria-label") || el.textContent || "").map(x => x.trim()).filter(Boolean) : [];
+          const pattern = /(?:content\\s+was\\s+made\\s+with\\s+ai|made\\s+with\\s+ai|generated\\s+with\\s+ai|ai[- ]generated|altered\\s+or\\s+synthetic)/i;
+          return { title: document.querySelector("h1 yt-formatted-string")?.textContent?.trim() || "", labels, ai_label: labels.some(x => pattern.test(x)) };
+        });
+        results.push({ video_id: videoId, ...found, status: "checked" });
+      } catch (e) {
+        results.push({ video_id: videoId, ai_label: null, status: "check_failed", error: String(e?.message || e).slice(0, 200) });
+      } finally {
+        if (page) await page.close().catch(() => {});
+      }
+    }
+    return res.json({ results });
+  } catch (e) {
+    return res.status(503).json({ error: "browser_unavailable", detail: String(e?.message || e).slice(0, 200) });
+  } finally {
+    if (browser) await browser.close().catch(() => {});
+  }
+});
+
 app.post("/verify", async (req, res) => {
   if (!SERVICE_TOKEN || req.get("x-service-token") !== SERVICE_TOKEN) {
     return res.status(401).json({ error: "unauthorized" });
