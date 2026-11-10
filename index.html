@@ -1301,12 +1301,13 @@ function setChart(category){
 
 function setGenre(genre){
  activeGenre = genre;
- document.querySelectorAll('.genre-tab').function calculateScores(songsList, period) {
+ document.querySelectorAll('.genre-tab').forEach(b=>b.classList.toggle('active', b.dataset.genre === genre));
+ renderSongs();
+}
+
+function calculateScores(songsList, period) {
  // 실제 누적 유튜브 조회수만으로 순위를 정한다. 좋아요·댓글·사이트 재생은 순위를 뒤집지 않는다.
  return [...(songsList||[])].sort((a,b)=>Number(b.youtube_views||0)-Number(a.youtube_views||0)).map(song=>({...song,calculatedScore:Number(song.youtube_views||0)}));
-}
-Number(score.toFixed(2)) };
- }).sort((a,b) => b.calculatedScore - a.calculatedScore);
 }
 
 function assignRanks(scoredList){
@@ -1334,7 +1335,7 @@ function renderSongs(){
  message((activeGenre==='전체'?'전체 장르':activeGenre)+' · '+activeChart+' 차트 (일반 '+scoredMain.length+'곡 / 쇼츠 '+scoredShorts.length+'곡)');
  const mainGrid=$('mainSongsGrid');
  mainGrid.classList.toggle('list-view',mainViewMode==='list');
- const adHtml=()=>{const ads=chartAds.slice(0,3);let cards=ads.map(ad=>`<article class="ad-slot"><span class="ad-tag">AD · ${escapeHTML(ad.ad_label||'스폰서 곡')}</span><div class="ad-copy"><div class="ad-title">${escapeHTML(ad.title)}</div><div class="ad-artist">${escapeHTML(ad.artist)}</div></div><button type="button" class="ad-play" data-video-id="${escapeHTML(ad.youtube_id)}">▶ 재생</button></article>`).join('');for(let i=ads.length;i<3;i++)cards+=`<article class="ad-slot ad-slot-placeholder"><span class="ad-tag">AD · 광고 영역</span><div class="ad-copy"><div class="ad-title">음악 홍보 공간 ${i+1}</div><div class="ad-artist">광고곡이 등록되면 표시됩니다.</div></div><button type="button" disabled>광고 대기</button></article>`;return cards;};
+ const adHtml=()=>{const ads=chartAds.slice(0,3);let cards=ads.map(ad=>`<article class="ad-slot"><span class="ad-tag">AD · ${escapeHTML(ad.ad_label||'스폰서 곡')}</span><div class="ad-copy"><div class="ad-title">${escapeHTML(ad.title)}</div><div class="ad-artist">${escapeHTML(ad.artist)}</div></div><button type="button" class="ad-play" data-video-id="${escapeHTML(ad.youtube_id)}">▶ 재생</button></article>`).join('');for(let i=ads.length;i<3;i++)cards+=`<article class="ad-slot ad-slot-placeholder"><span class="ad-tag">AD · 광고 영역</span><div class="ad-copy"><div class="ad-title">음악 홍보 공간 ${i+1}</div><div class="ad-artist">광고곡이 등록되면 표시됩니다.</div></div><button type="button" disabled>광고</button></article>`;return cards;};
  const songHtml=(song,index)=>`
   <article class="card">
    <button class="thumb" id="thumb-m-${index}" type="button"><img src="https://img.youtube.com/vi/${encodeURIComponent(song.youtube_id)}/hqdefault.jpg" alt=""><span class="play-icon">▶</span></button>
