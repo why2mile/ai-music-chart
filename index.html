@@ -703,52 +703,55 @@ label{
  .ad-slot .ad-player{max-width:30%}
 }
 
-/* Sketch-based chart layout */
-.chart-layout{display:grid;grid-template-columns:minmax(0,1.65fr) minmax(150px,.82fr) minmax(190px,.95fr);gap:10px;align-items:start;margin-top:20px}
-.chart-layout>.ai-main-column,.chart-layout>.ai-period-column,.chart-layout>.shorts-column{min-width:0}
-.chart-layout .grid-main{grid-template-columns:repeat(3,minmax(0,1fr));gap:7px}
+/* Three-column chart layout matching the supplied sketch */
+.chart-layout{display:grid;grid-template-columns:minmax(0,1.55fr) minmax(280px,1fr) minmax(250px,.82fr);gap:14px;align-items:start;margin-top:20px}
+.chart-layout>.ai-main-column,.chart-layout>.non-ai-column,.chart-layout>.shorts-column{min-width:0;margin:0}
+.chart-layout .grid-main{grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
 .chart-layout .grid-main .info{padding:8px}
 .chart-layout .grid-main .title{font-size:11px}
 .chart-layout .grid-main .song-action-row{gap:4px}
 .chart-layout .grid-main .song-action-row button{font-size:9px;padding:6px 3px}
 .chart-period-note{font-size:10px;margin:-7px 0 10px;color:#9ca5b2}
-.ai-period-column{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;align-content:start}
-.ai-period-column .realtime-ticker{grid-column:1/-1!important;display:flex!important;align-items:center;gap:9px;min-height:36px;padding:6px 10px;background:#16d83b!important;background-image:none!important;color:#071b0b!important;border-radius:3px;overflow:hidden;white-space:nowrap;font-size:12px;font-weight:700;opacity:1!important}
+.realtime-ticker{display:flex;align-items:center;gap:9px;width:100%;min-height:38px;margin:12px 0;padding:7px 11px;background:#19df42;color:#071b0b;border-radius:4px;overflow:hidden;white-space:nowrap;font-size:12px;font-weight:700}
 .ticker-live-dot{width:8px;height:8px;flex:0 0 8px;border-radius:50%;background:#fff;box-shadow:0 0 0 3px #ffffff55;animation:tickerPulse 1s infinite}
 .realtime-ticker strong{flex:0 0 auto;font-size:13px}
-.ticker-message{display:inline-block;overflow:hidden;text-overflow:ellipsis;animation:tickerSlide .45s ease both}
+.ticker-message{display:inline-block;min-width:0;overflow:hidden;text-overflow:ellipsis;animation:tickerSlide .45s ease both}
 @keyframes tickerPulse{50%{opacity:.35;transform:scale(.8)}}
 @keyframes tickerSlide{from{opacity:0;transform:translateY(9px)}to{opacity:1;transform:translateY(0)}}
-.period-chart{min-width:0;min-height:230px;padding:12px;background:#131820;border:1px solid #343d49;border-radius:9px}
+.ai-period-column{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;align-content:start;margin-top:12px}
+.period-chart{min-width:0;min-height:190px;padding:11px;background:#131820;border:1px solid #343d49;border-radius:9px}
 .period-chart h3,.non-ai-chart h3{margin:0 0 5px;font-size:14px;color:#e6eaf0}
 .period-chart>p,.non-ai-chart>p{font-size:10px;margin:0 0 12px}
-.period-empty{display:flex;align-items:center;justify-content:center;min-height:150px;padding:12px;text-align:center;color:#9ca5b2;font-size:11px;line-height:1.7;border:1px dashed #394453;border-radius:6px;background:#10151c}
-.chart-layout .grid-shorts{grid-template-columns:repeat(2,minmax(0,1fr));gap:7px}
+.period-empty{display:flex;align-items:center;justify-content:center;min-height:120px;padding:12px;text-align:center;color:#9ca5b2;font-size:11px;line-height:1.7;border:1px dashed #394453;border-radius:6px;background:#10151c}
+.period-rank-list{display:flex;flex-direction:column;gap:5px}
+.period-rank-row{display:flex;justify-content:space-between;gap:8px;padding:5px 7px;background:#1a202a;border-radius:5px;font-size:10px}
+.period-rank-row strong{color:#b9e39a;white-space:nowrap}
+.non-ai-column{padding:12px;background:#131820;border:1px solid #343d49;border-radius:10px}
+.non-ai-column .non-ai-list{gap:5px}
+.non-ai-column .non-ai-row{padding:7px 6px}
+.non-ai-monthly{margin-top:16px;padding-top:13px;border-top:1px solid #38414e}
+.non-ai-monthly h4{margin:0 0 5px;font-size:13px;color:#dce5ef}
+.non-ai-monthly>p{font-size:10px;margin:0 0 10px}
+.non-ai-monthly .period-empty{min-height:110px}
+.chart-layout .grid-shorts{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
 .chart-layout .grid-shorts .info{padding:7px}
 .chart-layout .grid-shorts .title{font-size:10px}
-.chart-layout .grid-shorts .artist{font-size:9px}
-.chart-layout .grid-shorts .stats{font-size:9px}
+.chart-layout .grid-shorts .artist,.chart-layout .grid-shorts .stats{font-size:9px}
 .chart-layout .grid-shorts .song-action-row button{font-size:9px;padding:5px 2px}
-.non-ai-bottom{display:grid;grid-template-columns:minmax(0,1.4fr) minmax(220px,1fr);gap:12px;margin-top:18px;align-items:stretch}
-.non-ai-bottom .non-ai-chart{margin:0;min-width:0}
-.non-ai-monthly .period-empty{min-height:220px}
-@media(max-width:1024px){
- .chart-layout{grid-template-columns:minmax(0,1.5fr) minmax(170px,.9fr)}
+@media(max-width:1100px){
+ .chart-layout{grid-template-columns:minmax(0,1.25fr) minmax(260px,.9fr)}
  .chart-layout>.ai-main-column{grid-column:1;grid-row:1}
- .chart-layout>.ai-period-column{grid-column:2;grid-row:1}
+ .chart-layout>.non-ai-column{grid-column:2;grid-row:1}
  .chart-layout>.shorts-column{grid-column:1/-1;grid-row:2}
  .chart-layout .grid-shorts{grid-template-columns:repeat(4,minmax(0,1fr))}
 }
 @media(max-width:760px){
- .chart-layout{grid-template-columns:1fr}
- .chart-layout>.ai-main-column,.chart-layout>.ai-period-column,.chart-layout>.shorts-column{grid-column:1;grid-row:auto}
- .chart-layout .grid-main{grid-template-columns:repeat(2,minmax(0,1fr))}
- .chart-layout .grid-shorts{grid-template-columns:repeat(2,minmax(0,1fr))}
- .ai-period-column{display:grid;grid-template-columns:repeat(2,minmax(0,1fr))}
- .period-chart{min-height:180px;padding:9px}
- .period-empty{min-height:110px;font-size:10px}
- .non-ai-bottom{grid-template-columns:1fr}
- .non-ai-monthly .period-empty{min-height:120px}
+ .chart-layout{grid-template-columns:1fr;gap:16px}
+ .chart-layout>.ai-main-column,.chart-layout>.non-ai-column,.chart-layout>.shorts-column{grid-column:1;grid-row:auto}
+ .chart-layout .grid-main,.chart-layout .grid-shorts{grid-template-columns:repeat(2,minmax(0,1fr))}
+ .ai-period-column{grid-template-columns:repeat(2,minmax(0,1fr))}
+ .period-chart{min-height:160px;padding:9px}
+ .period-empty{min-height:95px;font-size:10px}
 }
 
 </style>
@@ -921,39 +924,38 @@ label{
  </div>
 
  <div class="chart-layout">
-  <div class="ai-main-column">
-   <div class="layout-column-title">🎵 일반 AI 음악 · 7일 순위</div>
-   <p class="chart-period-note">최근 7일 집계 화면 · 현재 곡 데이터는 누적 조회수 기준으로 표시</p>
+  <section class="ai-main-column">
+   <div class="layout-column-title">🎵 일반 AI 음악 · 최근 7일 순위</div>
+   <p class="chart-period-note" id="weeklyChartNote">최근 7일 조회수 변화를 집계합니다. 데이터 수집 초기에는 임시 누적 조회수 순서로 표시합니다.</p>
    <section class="grid-main" id="mainSongsGrid"></section>
-  </div>
-  <div class="ai-period-column">
-   <section class="period-chart">
-    <h3>📅 월간 AI 음악 순위</h3>
-    <p>최근 1개월 기준</p>
-    <div class="period-empty">월간 조회수 기록을 쌓은 뒤 순위를 표시합니다.</div>
-   </section>
-   <section class="period-chart">
-    <h3>🏆 1년간 AI 음악 순위</h3>
-    <p>최근 12개월 기준</p>
-    <div class="period-empty">연간 조회수 기록을 쌓은 뒤 순위를 표시합니다.</div>
-   </section>
-   <div class="realtime-ticker" role="status" aria-live="polite" aria-atomic="true" style="display:flex!important;align-items:center;gap:9px;min-height:36px;padding:6px 10px;background:#16d83b!important;color:#071b0b!important;border-radius:3px;overflow:hidden;white-space:nowrap;font-size:12px;font-weight:700;grid-column:1/-1;"><span class="ticker-live-dot"></span><strong>실시간</strong><span id="realtimeTickerText" class="ticker-message" style="display:inline-block;min-width:0;overflow:hidden;text-overflow:ellipsis;">AI 음악 실시간 소식을 확인하고 있습니다.</span></div>
-  </div>
-  <div class="shorts-column">
-   <div class="layout-column-title" style="color:#c686df;">⚡ AI 한국음악 쇼츠</div>
-   <section class="grid-shorts" id="shortsGrid"></section>
-  </div>
- </div>
- <div class="non-ai-bottom">
-  <section class="non-ai-chart" id="nonAiChartSection">
+   <div class="realtime-ticker" role="status" aria-live="polite" aria-atomic="true">
+    <span class="ticker-live-dot"></span><strong>실시간</strong>
+    <span id="realtimeTickerText" class="ticker-message">AI 음악 실시간 소식을 확인하고 있습니다.</span>
+   </div>
+   <div class="ai-period-column">
+    <section class="period-chart">
+     <h3>📅 월간 AI 음악 순위</h3><p>최근 30일 조회수 증가량</p>
+     <div class="period-empty" id="aiMonthlyList">최근 30일 데이터 수집 중입니다.</div>
+    </section>
+    <section class="period-chart">
+     <h3>🏆 1년간 AI 음악 순위</h3><p>최근 365일 조회수 증가량</p>
+     <div class="period-empty" id="aiYearlyList">최근 365일 데이터 수집 중입니다.</div>
+    </section>
+   </div>
+  </section>
+  <section class="non-ai-chart non-ai-column" id="nonAiChartSection">
    <h3>🎤 한국 일반음악 유튜브 역대 순위</h3>
    <p>한국 대중음악 공식 영상 · 누적 조회수 기준</p>
    <div class="non-ai-list" id="nonAiSongsGrid"><p>한국음악 순위를 불러오는 중입니다.</p></div>
+   <div class="non-ai-monthly">
+    <h4>📆 1개월간 유튜브 한국 일반음악 순위</h4>
+    <p>최근 30일 조회수 증가량</p>
+    <div class="period-empty" id="nonAiMonthlyList">최근 30일 데이터 수집 중입니다.</div>
+   </div>
   </section>
-  <section class="non-ai-chart non-ai-monthly">
-   <h3>📆 1개월간 유튜브 한국 일반음악 순위</h3>
-   <p>최근 30일 조회수 기준</p>
-   <div class="period-empty">최근 30일 조회수 기록을 확보한 뒤 순위를 표시합니다.</div>
+  <section class="shorts-column">
+   <div class="layout-column-title" style="color:#c686df;">⚡ AI 한국음악 쇼츠</div>
+   <section class="grid-shorts" id="shortsGrid"></section>
   </section>
  </div>
 </section>
