@@ -702,6 +702,49 @@ label{
  .ad-slot button{padding:8px 10px}
  .ad-slot .ad-player{max-width:30%}
 }
+
+/* Sketch-based chart layout */
+.chart-layout{display:grid;grid-template-columns:minmax(0,1.65fr) minmax(150px,.82fr) minmax(190px,.95fr);gap:10px;align-items:start;margin-top:20px}
+.chart-layout>.ai-main-column,.chart-layout>.ai-period-column,.chart-layout>.shorts-column{min-width:0}
+.chart-layout .grid-main{grid-template-columns:repeat(3,minmax(0,1fr));gap:7px}
+.chart-layout .grid-main .info{padding:8px}
+.chart-layout .grid-main .title{font-size:11px}
+.chart-layout .grid-main .song-action-row{gap:4px}
+.chart-layout .grid-main .song-action-row button{font-size:9px;padding:6px 3px}
+.chart-period-note{font-size:10px;margin:-7px 0 10px;color:#9ca5b2}
+.ai-period-column{display:flex;flex-direction:column;gap:12px}
+.period-chart{min-width:0;min-height:230px;padding:12px;background:#131820;border:1px solid #343d49;border-radius:9px}
+.period-chart h3,.non-ai-chart h3{margin:0 0 5px;font-size:14px;color:#e6eaf0}
+.period-chart>p,.non-ai-chart>p{font-size:10px;margin:0 0 12px}
+.period-empty{display:flex;align-items:center;justify-content:center;min-height:150px;padding:12px;text-align:center;color:#9ca5b2;font-size:11px;line-height:1.7;border:1px dashed #394453;border-radius:6px;background:#10151c}
+.chart-layout .grid-shorts{grid-template-columns:repeat(2,minmax(0,1fr));gap:7px}
+.chart-layout .grid-shorts .info{padding:7px}
+.chart-layout .grid-shorts .title{font-size:10px}
+.chart-layout .grid-shorts .artist{font-size:9px}
+.chart-layout .grid-shorts .stats{font-size:9px}
+.chart-layout .grid-shorts .song-action-row button{font-size:9px;padding:5px 2px}
+.non-ai-bottom{display:grid;grid-template-columns:minmax(0,1.4fr) minmax(220px,1fr);gap:12px;margin-top:18px;align-items:stretch}
+.non-ai-bottom .non-ai-chart{margin:0;min-width:0}
+.non-ai-monthly .period-empty{min-height:220px}
+@media(max-width:1024px){
+ .chart-layout{grid-template-columns:minmax(0,1.5fr) minmax(170px,.9fr)}
+ .chart-layout>.ai-main-column{grid-column:1;grid-row:1}
+ .chart-layout>.ai-period-column{grid-column:2;grid-row:1}
+ .chart-layout>.shorts-column{grid-column:1/-1;grid-row:2}
+ .chart-layout .grid-shorts{grid-template-columns:repeat(4,minmax(0,1fr))}
+}
+@media(max-width:760px){
+ .chart-layout{grid-template-columns:1fr}
+ .chart-layout>.ai-main-column,.chart-layout>.ai-period-column,.chart-layout>.shorts-column{grid-column:1;grid-row:auto}
+ .chart-layout .grid-main{grid-template-columns:repeat(2,minmax(0,1fr))}
+ .chart-layout .grid-shorts{grid-template-columns:repeat(2,minmax(0,1fr))}
+ .ai-period-column{display:grid;grid-template-columns:repeat(2,minmax(0,1fr))}
+ .period-chart{min-height:180px;padding:9px}
+ .period-empty{min-height:110px;font-size:10px}
+ .non-ai-bottom{grid-template-columns:1fr}
+ .non-ai-monthly .period-empty{min-height:120px}
+}
+
 </style>
 </head>
 
@@ -873,18 +916,38 @@ label{
 
  <div class="chart-layout">
   <div class="ai-main-column">
-   <div class="layout-column-title">🎵 일반 AI 음악 차트</div>
+   <div class="layout-column-title">🎵 일반 AI 음악 · 7일 순위</div>
+   <p class="chart-period-note">최근 7일 집계 화면 · 현재 곡 데이터는 누적 조회수 기준으로 표시</p>
    <section class="grid-main" id="mainSongsGrid"></section>
   </div>
-  <section class="non-ai-chart" id="nonAiChartSection">
-   <h3>🎤 비AI 한국음악 순위</h3>
-   <p>한국 대중음악 전체 · 공식 뮤직비디오 조회수 순</p>
-   <div class="non-ai-list" id="nonAiSongsGrid"><p>한국음악 순위를 불러오는 중입니다.</p></div>
-  </section>
+  <div class="ai-period-column">
+   <section class="period-chart">
+    <h3>📅 월간 AI 음악 순위</h3>
+    <p>최근 1개월 기준</p>
+    <div class="period-empty">월간 조회수 기록을 쌓은 뒤 순위를 표시합니다.</div>
+   </section>
+   <section class="period-chart">
+    <h3>🏆 1년간 AI 음악 순위</h3>
+    <p>최근 12개월 기준</p>
+    <div class="period-empty">연간 조회수 기록을 쌓은 뒤 순위를 표시합니다.</div>
+   </section>
+  </div>
   <div class="shorts-column">
-   <div class="layout-column-title" style="color:#c686df;">⚡ AI 쇼츠(Shorts) 차트</div>
+   <div class="layout-column-title" style="color:#c686df;">⚡ AI 한국음악 쇼츠</div>
    <section class="grid-shorts" id="shortsGrid"></section>
   </div>
+ </div>
+ <div class="non-ai-bottom">
+  <section class="non-ai-chart" id="nonAiChartSection">
+   <h3>🎤 한국 일반음악 유튜브 역대 순위</h3>
+   <p>한국 대중음악 공식 영상 · 누적 조회수 기준</p>
+   <div class="non-ai-list" id="nonAiSongsGrid"><p>한국음악 순위를 불러오는 중입니다.</p></div>
+  </section>
+  <section class="non-ai-chart non-ai-monthly">
+   <h3>📆 1개월간 유튜브 한국 일반음악 순위</h3>
+   <p>최근 30일 조회수 기준</p>
+   <div class="period-empty">최근 30일 조회수 기록을 확보한 뒤 순위를 표시합니다.</div>
+  </section>
  </div>
 </section>
 
