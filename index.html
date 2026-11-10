@@ -616,6 +616,39 @@ label{
  .grid-shorts{grid-template-columns:repeat(2,minmax(0,1fr))}
  .community-panel{flex-direction:column;align-items:flex-start}
 }
+
+.view-switch{display:flex;gap:7px;margin:12px 0}
+.view-switch button{padding:7px 12px;font-size:11px}
+.view-switch button.active{background:#a6c98c;color:#182015}
+#mainSongsGrid.list-view{display:block}
+#mainSongsGrid.list-view .card{display:block;margin-bottom:7px;border-radius:7px}
+#mainSongsGrid.list-view .thumb{display:none}
+#mainSongsGrid.list-view .info{display:flex;align-items:center;gap:12px;padding:9px 12px;min-width:0}
+#mainSongsGrid.list-view .title{flex:1;margin:0;white-space:nowrap;display:block;text-overflow:ellipsis;min-width:0}
+#mainSongsGrid.list-view .artist{width:125px;flex:none}
+#mainSongsGrid.list-view .stats{margin:0;white-space:nowrap}
+#mainSongsGrid.list-view .like-row{margin:0;width:82px;flex:none}
+#mainSongsGrid.list-view .like-button{padding:6px}
+.ad-slot{grid-column:1/-1;min-height:96px;display:flex;align-items:center;gap:16px;padding:14px 18px;margin:4px 0 12px;background:linear-gradient(100deg,#20251d,#171d20);border:1px solid #71865c;border-radius:10px}
+.ad-slot .ad-tag{font-size:10px;color:#b9e39a;white-space:nowrap}
+.ad-slot .ad-copy{flex:1;min-width:0}
+.ad-slot .ad-title{font-size:15px;font-weight:700;color:#f1f2f5;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ad-slot .ad-artist{font-size:12px;color:#aeb2bd;margin-top:5px}
+.ad-slot button{background:#a6c98c;color:#182015;white-space:nowrap}
+.ad-slot .ad-player{width:190px;max-width:34%;aspect-ratio:16/9;border:0}
+.ad-slot[hidden]{display:none}
+.profile-actions{display:flex;gap:8px;flex-wrap:wrap;margin:12px 0}
+.profile-edit{border-top:1px solid #303540;margin-top:14px;padding-top:14px}
+@media(max-width:760px){
+ #mainSongsGrid.list-view .info{gap:7px;flex-wrap:wrap}
+ #mainSongsGrid.list-view .artist{width:auto}
+ #mainSongsGrid.list-view .stats{font-size:9px}
+ .ad-slot{padding:10px;gap:8px;min-height:80px}
+ .ad-slot .ad-tag{display:none}
+ .ad-slot .ad-title{font-size:12px}
+ .ad-slot button{padding:8px 10px}
+ .ad-slot .ad-player{max-width:30%}
+}
 </style>
 </head>
 
@@ -682,8 +715,21 @@ label{
 </section>
 
 <section class="panel" id="memberPanel" hidden>
- <div id="userInfo" style="margin-bottom:10px;"></div>
- <button class="secondary" id="logoutBtn" type="button">로그아웃</button>
+ <h2>회원 메뉴</h2>
+ <div class="profile-actions">
+  <button class="secondary" id="showProfileBtn" type="button">내 정보</button>
+  <button class="secondary" id="editProfileBtn" type="button">내 정보 수정</button>
+  <button class="secondary" id="logoutBtn" type="button">로그아웃</button>
+ </div>
+ <div id="userInfo" hidden></div>
+ <div class="profile-edit" id="profileView" hidden></div>
+ <div class="profile-edit" id="profileEdit" hidden>
+  <label>닉네임</label><input id="profileNickname" maxlength="30" placeholder="사이트에서 사용할 닉네임">
+  <label>이메일</label><input id="profileEmail" type="email" placeholder="이메일 주소">
+  <label>새 비밀번호 (변경할 때만 입력)</label><input id="profilePassword" type="password" minlength="6" placeholder="새 비밀번호 6자 이상">
+  <div class="actions"><button class="primary" id="saveProfileBtn" type="button">수정 내용 저장</button><button class="secondary" id="cancelProfileBtn" type="button">취소</button></div>
+  <p style="font-size:11px">이메일 변경은 새 이메일 주소로 확인 메일을 받은 뒤 완료됩니다.</p>
+ </div>
 </section>
 
 <section class="panel" id="registerPanel" hidden>
@@ -745,7 +791,11 @@ label{
   <button class="chart-tab" data-chart="연간" type="button">연간 (최근 365일)</button>
  </div>
 
- <div class="chart-search"><input id="chartSearch" type="search" placeholder="곡 제목 · 아티스트 · 채널 검색" aria-label="곡 제목, 아티스트, 채널 검색"></div>
+ <div class="chart-search"><input id="chartSearch" type="search" placeholder="곡 제목 · 아티스트 검색" aria-label="곡 제목과 아티스트 검색"></div>
+ <div class="view-switch" role="group" aria-label="차트 보기 방식">
+  <button class="secondary active" id="cardViewBtn" type="button">앨범형</button>
+  <button class="secondary" id="listViewBtn" type="button">한줄형</button>
+ </div>
 
  <div class="chart-layout">
   <div>
@@ -786,6 +836,8 @@ let allSongs = [];
 let activeChart = '실시간';
 let activeGenre = '전체';
 let searchTerm = '';
+let chartAds = [];
+let mainViewMode = 'card';
 
 // 🎯 수동 허용 ID (직접 등록하신 트로트 곡 및 예외 수동 허용곡)
 const manualKoreanSongIds = new Set(['uTEhWOTuUuY', 'qC28Gpn87V4']);
@@ -849,6 +901,35 @@ async function updateAuth(){
  $('registerPanel').hidden = !loggedIn;
  $('passwordUpdatePanel').hidden = true;
  $('userInfo').textContent = loggedIn ? session.user.email + ' 로그인 중' : '';
+ if(loggedIn){
+  const meta=session.user.user_metadata || {};
+  $('profileView').innerHTML='<b>이메일</b>: '+escapeHTML(session.user.email)+'<br><b>닉네임</b>: '+escapeHTML(meta.nickname || '미설정');
+  $('profileNickname').value=meta.nickname || '';
+  $('profileEmail').value=session.user.email || '';
+  $('profilePassword').value='';
+ }
+}
+
+async function saveProfile(){
+ const nickname=$('profileNickname').value.trim();
+ const email=$('profileEmail').value.trim();
+ const password=$('profilePassword').value;
+ if(nickname.length>30){message('닉네임은 30자 이내로 입력하세요.');return;}
+ if(password&&password.length<6){message('비밀번호는 6자 이상이어야 합니다.');return;}
+ const changes={data:{nickname}};
+ if(email)changes.email=email;
+ if(password)changes.password=password;
+ const {error}=await supabase.auth.updateUser(changes);
+ if(error){message('정보 수정 오류: '+error.message);return;}
+ $('profileEdit').hidden=true;
+ message(email!==''?'회원정보를 저장했습니다. 이메일 변경은 확인 메일을 확인하세요.':'회원정보가 저장됐습니다.');
+ await updateAuth();
+}
+function setMainView(mode){
+ mainViewMode=mode;
+ $('cardViewBtn').classList.toggle('active',mode==='card');
+ $('listViewBtn').classList.toggle('active',mode==='list');
+ renderSongs();
 }
 
 async function signup(){
@@ -1178,93 +1259,83 @@ function assignRanks(scoredList){
 }
 
 function renderSongs(){
- const needle = searchTerm.trim().toLocaleLowerCase('ko-KR');
- const validSongs = allSongs.filter(song => isValidKoreanAIMusic(song) && (!needle || [song.title,song.artist,song.youtube_id].some(v => String(v || '').toLocaleLowerCase('ko-KR').includes(needle))));
-
- const filtered = validSongs.filter(song => {
-  if(activeGenre === '신곡'){
-   const pubDate = new Date(song.created_at || song.published_at || new Date());
-   return (new Date() - pubDate) / (1000 * 60 * 60 * 24) <= 14;
+ const needle=searchTerm.trim().toLocaleLowerCase('ko-KR');
+ const validSongs=allSongs.filter(song=>isValidKoreanAIMusic(song)&&(!needle||[song.title,song.artist,song.youtube_id].some(v=>String(v||'').toLocaleLowerCase('ko-KR').includes(needle))));
+ const filtered=validSongs.filter(song=>{
+  if(activeGenre==='신곡'){
+   const pubDate=new Date(song.created_at||song.published_at||new Date());
+   return (new Date()-pubDate)/86400000<=14;
   }
-  if(activeGenre !== '전체' && String(song.genre || '').trim() !== activeGenre) return false;
-  return true;
+  return activeGenre==='전체'||String(song.genre||'').trim()===activeGenre;
  });
-
- const mainSongsList = filtered.filter(song => !isShorts(song));
- const shortsSongsList = filtered.filter(song => isShorts(song));
-
- const scoredMain = assignRanks(calculateScores(mainSongsList, activeChart));
- const scoredShorts = assignRanks(calculateScores(shortsSongsList, activeChart));
-
- message((activeGenre === '전체' ? '전체 장르' : activeGenre) + ' · ' + activeChart + ' 차트 (일반 ' + scoredMain.length + '곡 / 쇼츠 ' + scoredShorts.length + '곡)');
-
- const mainGrid = $('mainSongsGrid');
- if(scoredMain.length === 0){
-  mainGrid.innerHTML = '<p style="grid-column:span 3;color:#777;padding:20px;">등록된 일반 AI 음악이 없습니다.</p>';
- }else{
-  mainGrid.innerHTML = scoredMain.map((song,index)=>`
-   <article class="card">
-    <button class="thumb" id="thumb-m-${index}" type="button">
-     <img src="https://img.youtube.com/vi/${encodeURIComponent(song.youtube_id)}/hqdefault.jpg" alt="">
-     <span class="play-icon">▶</span>
-    </button>
-    <div class="player-area" id="player-m-${index}" hidden>
-     <div id="yt-player-m-${index}"></div>
-    </div>
-    <div class="info">
-     <div class="title">${song.rank <= 9 ? '0'+song.rank : song.rank}위. ${escapeHTML(song.title)}</div>
-     <div class="artist">${escapeHTML(song.artist)}</div>
-     <div class="stats">
-      점수: <b>${song.calculatedScore}점</b><br>
-      조회수 ${Number(song.youtube_views || 0).toLocaleString('ko-KR')} · ♡ <span id="like-count-m-${index}">${(Number(song.likes || 0)+Number(guestLikeCounts.get(song.id) || 0)).toLocaleString('ko-KR')}</span>
-     </div>
-     <div class="like-row">
-      <button class="like-button${(likedSongIds.has(song.id) || guestLikedSongIds.has(song.id)) ? ' liked' : ''}" id="like-m-${index}" type="button">${(likedSongIds.has(song.id) || guestLikedSongIds.has(song.id)) ? '♥ 취소' : '♡ 좋아요'}</button>
-     </div>
-    </div>
-   </article>
-  `).join('');
-
-  scoredMain.forEach((song,index)=>{
-   $('thumb-m-'+index).addEventListener('click',()=>playSong(song,'m-'+index));
-   $('like-m-'+index).addEventListener('click',()=>likeSong(song,'m-'+index));
+ const scoredMain=assignRanks(calculateScores(filtered.filter(song=>!isShorts(song)),activeChart));
+ const scoredShorts=assignRanks(calculateScores(filtered.filter(song=>isShorts(song)),activeChart));
+ message((activeGenre==='전체'?'전체 장르':activeGenre)+' · '+activeChart+' 차트 (일반 '+scoredMain.length+'곡 / 쇼츠 '+scoredShorts.length+'곡)');
+ const mainGrid=$('mainSongsGrid');
+ mainGrid.classList.toggle('list-view',mainViewMode==='list');
+ const adsAt=new Map();
+ chartAds.filter(ad=>ad.placement==='between_3_4'||ad.placement==='between_6_7').forEach(ad=>{
+  const rank=ad.placement==='between_3_4'?3:6;
+  if(!adsAt.has(rank))adsAt.set(rank,[]);
+  adsAt.get(rank).push(ad);
+ });
+ const adHtml=ad=>`
+  <article class="ad-slot">
+   <span class="ad-tag">AD · ${escapeHTML(ad.ad_label||'스폰서 곡')}</span>
+   <div class="ad-copy"><div class="ad-title">${escapeHTML(ad.title)}</div><div class="ad-artist">${escapeHTML(ad.artist)}</div></div>
+   <button type="button" class="ad-play" data-video-id="${escapeHTML(ad.youtube_id)}">▶ 재생</button>
+  </article>`;
+ const songHtml=(song,index)=>`
+  <article class="card">
+   <button class="thumb" id="thumb-m-${index}" type="button"><img src="https://img.youtube.com/vi/${encodeURIComponent(song.youtube_id)}/hqdefault.jpg" alt=""><span class="play-icon">▶</span></button>
+   <div class="player-area" id="player-m-${index}" hidden><div id="yt-player-m-${index}"></div></div>
+   <div class="info">
+    <div class="title">${String(song.rank).padStart(2,'0')}위. ${escapeHTML(song.title)}</div>
+    <div class="artist">${escapeHTML(song.artist)}</div>
+    <div class="stats">점수: <b>${song.calculatedScore}점</b><br>조회수 ${Number(song.youtube_views||0).toLocaleString('ko-KR')} · ♡ <span id="like-count-m-${index}">${(Number(song.likes||0)+Number(guestLikeCounts.get(song.id)||0)).toLocaleString('ko-KR')}</span></div>
+    <div class="like-row"><button class="like-button${(likedSongIds.has(song.id)||guestLikedSongIds.has(song.id))?' liked':''}" id="like-m-${index}" type="button">${(likedSongIds.has(song.id)||guestLikedSongIds.has(song.id))?'♥ 취소':'♡ 좋아요'}</button></div>
+   </div>
+  </article>`;
+ let html='';
+ scoredMain.forEach((song,index)=>{
+  html+=songHtml(song,index);
+  if(adsAt.has(song.rank))adsAt.get(song.rank).forEach(ad=>html+=adHtml(ad));
+ });
+ mainGrid.innerHTML=html||'<p style="color:#777;padding:20px;">등록된 일반 AI 음악이 없습니다.</p>';
+ scoredMain.forEach((song,index)=>{
+  $('thumb-m-'+index)?.addEventListener('click',()=>playSong(song,'m-'+index));
+  $('like-m-'+index)?.addEventListener('click',()=>likeSong(song,'m-'+index));
+ });
+ mainGrid.querySelectorAll('.ad-play').forEach((button,index)=>{
+  button.addEventListener('click',()=>{
+   const id=button.dataset.videoId;
+   const existing=button.parentElement.querySelector('iframe');
+   if(existing){existing.remove();button.textContent='▶ 재생';return;}
+   const iframe=document.createElement('iframe');
+   iframe.className='ad-player';
+   iframe.src='https://www.youtube-nocookie.com/embed/'+encodeURIComponent(id)+'?autoplay=1&playsinline=1&rel=0';
+   iframe.title='광고 음악 재생';
+   iframe.allow='autoplay; encrypted-media; picture-in-picture';
+   iframe.allowFullscreen=true;
+   button.parentElement.appendChild(iframe);
+   button.textContent='재생 중지';
   });
- }
-
- const shortsGrid = $('shortsGrid');
- if(scoredShorts.length === 0){
-  shortsGrid.innerHTML = '<p style="grid-column:span 2;color:#777;padding:20px;">등록된 AI 쇼츠가 없습니다.</p>';
- }else{
-  shortsGrid.innerHTML = scoredShorts.map((song,index)=>`
-   <article class="card card-shorts">
-    <button class="thumb thumb-shorts" id="thumb-s-${index}" type="button">
-     <img src="https://img.youtube.com/vi/${encodeURIComponent(song.youtube_id)}/hqdefault.jpg" alt="">
-     <span class="play-icon">▶</span>
-    </button>
-    <div class="player-area player-area-shorts" id="player-s-${index}" hidden>
-     <div id="yt-player-s-${index}"></div>
-    </div>
-    <div class="info">
-     <div class="title" style="color:#e9d0f7;">⚡ ${song.rank}위. ${escapeHTML(song.title)}</div>
-     <div class="artist">${escapeHTML(song.artist)}</div>
-     <div class="stats">
-      점수: <b>${song.calculatedScore}점</b><br>
-      조회수 ${Number(song.youtube_views || 0).toLocaleString('ko-KR')} · ♡ ${Number(song.youtube_likes || 0).toLocaleString('ko-KR')}
-     </div>
-     <div class="like-row">
-      <button class="like-button${(likedSongIds.has(song.id) || guestLikedSongIds.has(song.id)) ? ' liked' : ''}" id="like-s-${index}" type="button">${(likedSongIds.has(song.id) || guestLikedSongIds.has(song.id)) ? '♥ 취소' : '♡ 좋아요'}</button>
-     </div>
-    </div>
-   </article>
-  `).join('');
-
-  scoredShorts.forEach((song,index)=>{
-   $('thumb-s-'+index).addEventListener('click',()=>playSong(song,'s-'+index));
-   $('like-s-'+index).addEventListener('click',()=>likeSong(song,'s-'+index));
-  });
- }
+ });
+ const shortsGrid=$('shortsGrid');
+ shortsGrid.innerHTML=scoredShorts.map((song,index)=>`
+  <article class="card card-shorts">
+   <button class="thumb thumb-shorts" id="thumb-s-${index}" type="button"><img src="https://img.youtube.com/vi/${encodeURIComponent(song.youtube_id)}/hqdefault.jpg" alt=""><span class="play-icon">▶</span></button>
+   <div class="player-area player-area-shorts" id="player-s-${index}" hidden><div id="yt-player-s-${index}"></div></div>
+   <div class="info"><div class="title" style="color:#e9d0f7;">⚡ ${song.rank}위. ${escapeHTML(song.title)}</div><div class="artist">${escapeHTML(song.artist)}</div>
+    <div class="stats">점수: <b>${song.calculatedScore}점</b><br>조회수 ${Number(song.youtube_views||0).toLocaleString('ko-KR')} · ♡ ${Number(song.youtube_likes||0).toLocaleString('ko-KR')}</div>
+    <div class="like-row"><button class="like-button${(likedSongIds.has(song.id)||guestLikedSongIds.has(song.id))?' liked':''}" id="like-s-${index}" type="button">${(likedSongIds.has(song.id)||guestLikedSongIds.has(song.id))?'♥ 취소':'♡ 좋아요'}</button></div>
+   </div>
+  </article>`).join('')||'<p style="color:#777;padding:20px;">등록된 AI 쇼츠가 없습니다.</p>';
+ scoredShorts.forEach((song,index)=>{
+  $('thumb-s-'+index)?.addEventListener('click',()=>playSong(song,'s-'+index));
+  $('like-s-'+index)?.addEventListener('click',()=>likeSong(song,'s-'+index));
+ });
 }
-
 function shuffleGenreTabsHourly(){
  const container = $('genreTabsContainer');
  if(!container) return;
@@ -1288,6 +1359,12 @@ function shuffleGenreTabsHourly(){
  if(newBtn) container.appendChild(newBtn);
 }
 
+async function loadChartAds(){
+ const {data,error}=await supabase.from('chart_ads').select('id,title,artist,youtube_id,ad_label,placement,sort_order').order('sort_order',{ascending:true});
+ if(error){chartAds=[];console.warn('광고 목록을 불러오지 못했습니다.',error.message);return;}
+ chartAds=data||[];
+}
+
 async function loadSongs(){
  const {data,error} = await supabase
   .from('songs')
@@ -1299,6 +1376,7 @@ async function loadSongs(){
  allSongs = data || [];
  await loadMyLikes();
  await loadGuestLikes();
+ await loadChartAds();
  renderSongs();
 }
 
@@ -1323,6 +1401,12 @@ $('loginBtn').addEventListener('click',login);
 $('resetPasswordBtn').addEventListener('click',resetPassword);
 $('saveNewPasswordBtn').addEventListener('click',saveNewPassword);
 $('logoutBtn').addEventListener('click',logout);
+$('showProfileBtn').addEventListener('click',()=>{$('profileView').hidden=false;$('profileEdit').hidden=true;});
+$('editProfileBtn').addEventListener('click',()=>{$('profileView').hidden=true;$('profileEdit').hidden=false;});
+$('cancelProfileBtn').addEventListener('click',()=>{$('profileEdit').hidden=true;});
+$('saveProfileBtn').addEventListener('click',saveProfile);
+$('cardViewBtn').addEventListener('click',()=>setMainView('card'));
+$('listViewBtn').addEventListener('click',()=>setMainView('list'));
 $('registerBtn').addEventListener('click',registerSong);
 $('chartSearch').addEventListener('input',event=>{searchTerm=event.target.value || '';renderSongs();});
 
