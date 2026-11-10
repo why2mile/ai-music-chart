@@ -713,7 +713,7 @@ label{
 .chart-layout .grid-main .song-action-row button{font-size:9px;padding:6px 3px}
 .chart-period-note{font-size:10px;margin:-7px 0 10px;color:#9ca5b2}
 .ai-period-column{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;align-content:start}
-.realtime-ticker{grid-column:1/-1;display:flex;align-items:center;gap:9px;min-height:36px;padding:6px 10px;background:#16d83b;color:#071b0b;border-radius:3px;overflow:hidden;white-space:nowrap;font-size:12px;font-weight:700}
+.ai-period-column .realtime-ticker{grid-column:1/-1!important;display:flex!important;align-items:center;gap:9px;min-height:36px;padding:6px 10px;background:#16d83b!important;background-image:none!important;color:#071b0b!important;border-radius:3px;overflow:hidden;white-space:nowrap;font-size:12px;font-weight:700;opacity:1!important}
 .ticker-live-dot{width:8px;height:8px;flex:0 0 8px;border-radius:50%;background:#fff;box-shadow:0 0 0 3px #ffffff55;animation:tickerPulse 1s infinite}
 .realtime-ticker strong{flex:0 0 auto;font-size:13px}
 .ticker-message{display:inline-block;overflow:hidden;text-overflow:ellipsis;animation:tickerSlide .45s ease both}
@@ -1414,7 +1414,7 @@ function renderSongs(){
  const scoredMain=assignRanks(calculateScores(filtered.filter(song=>!isShorts(song)),activeChart));
  const scoredShorts=assignRanks(calculateScores(filtered.filter(song=>isShorts(song)),activeChart));
  message((activeGenre==='전체'?'전체 장르':activeGenre)+' · '+activeChart+' 차트 (일반 '+scoredMain.length+'곡 / 쇼츠 '+scoredShorts.length+'곡)');
- realtimeTickerItems=scoredMain.slice(0,10).map(song=>String(song.rank).padStart(2,'0')+'위 · '+song.title+' — '+song.artist);
+ realtimeTickerItems=['실시간 AI 음악 소식 · 2초마다 순위 정보가 바뀝니다.',...scoredMain.slice(0,10).map(song=>String(song.rank).padStart(2,'0')+'위 · '+song.title+' — '+song.artist)];
  if(realtimeTickerIndex>=realtimeTickerItems.length)realtimeTickerIndex=0;
  updateRealtimeTicker();
  const mainGrid=$('mainSongsGrid');
