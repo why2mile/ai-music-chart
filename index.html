@@ -1705,6 +1705,10 @@ async function loadSongs(){
  const {data,error} = await supabase
   .from('songs')
   .select('id,title,artist,youtube_id,genre,plays,likes,chart_category,youtube_views,youtube_likes,youtube_comments,created_at,video_type,duration_seconds,user_id,is_hidden,ai_label_verified')
+  .eq('ai_label_verified',true)
+  .eq('is_hidden',false)
+  .gte('duration_seconds',60)
+  .lte('duration_seconds',480)
   .order('youtube_views',{ascending:false,nullsFirst:false});
 
  if(error){ message('곡 목록 오류: '+error.message); return; }
