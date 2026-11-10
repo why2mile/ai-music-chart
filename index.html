@@ -953,20 +953,19 @@ function getYoutubeId(url){
 // 🛡️ 유연하고 안정적인 검증 필터
 function isValidKoreanAIMusic(song){
  if(song.is_hidden) return false;
- if(manualKoreanSongIds.has(song.youtube_id)) return true;
-
- const title = String(song.title || '');
- const text = (title + ' ' + (song.artist || '') + ' ' + (song.genre || '')).toLowerCase();
- const hasKoreanTitle = /[가-힣]/.test(title);
- const hasJapaneseOrChinese = /[\u3040-\u30ff\u3400-\u9fff]/.test(title);
- if(!hasKoreanTitle || hasJapaneseOrChinese) return false;
-
- const excluded = /강의|튜토리얼|사용법|사용 방법|만드는 법|만드는 방법|제작 방법|하는 방법|발매하는 방법|체크리스트|업그레이드 해보기|음원제작|플레이리스트|30분 듣기|듣기 좋은|프롬프트 공유|수익화|돈 버는|부업|저작권|리뷰|후기|비교|뉴스|인터뷰|해설|분석|how[\s-]?to|tutorial|review|explained|reaction|news|interview|변호사tv|소송|주간 수노/i;
- if(excluded.test(text)) return false;
-
- const music = /노래|음악|뮤직비디오|뮤비|자작곡|official audio|official music|official mv|audio|music video|suno|수노|udio|ai cover|ai 커버/i;
- if(!music.test(title)) return false;
- return true;
+ // 자동 수집곡은 제목의 AI 문구가 아니라 실제 유튜브 제목 아래 AI 배지 검증값만 인정한다.
+ if(song.ai_label_verified !== true) return false;
+ const duration=Number(song.duration_seconds||0);
+ if(duration<20 || duration>360) return false;
+ const title=String(song.title||'');
+ const text=(title+' '+(song.artist||'')+' '+(song.genre||'')).toLowerCase();
+ const hasKoreanTitle=/[가-힣]/.test(title);
+ const hasJapaneseOrChinese=/[\u3040-\u30ff\u3400-\u9fff]/.test(title);
+ if(!hasKoreanTitle||hasJapaneseOrChinese)return false;
+ const excluded=/강의|튜토리얼|사용법|사용 방법|만드는 법|만드는 방법|제작 방법|하는 방법|발매하는 방법|체크리스트|업그레이드 해보기|음원제작|플레이리스트|30분 듣기|듣기 좋은|프롬프트 공유|수익화|돈 버는|부업|저작권|리뷰|후기|비교|뉴스|인터뷰|해설|분석|how[\s-]?to|tutorial|review|explained|reaction|news|interview|변호사tv|소송|주간 수노/i;
+ if(excluded.test(text))return false;
+ const music=/노래|음악|뮤직비디오|뮤비|자작곡|official audio|official music|official mv|audio|music video|suno|수노|udio|ai cover|ai 커버/i;
+ return music.test(title);
 }
 
 function isShorts(song){
@@ -1302,33 +1301,11 @@ function setChart(category){
 
 function setGenre(genre){
  activeGenre = genre;
- document.querySelectorAll('.genre-tab').forEach(b=>b.classList.toggle('active', b.dataset.genre === genre));
- renderSongs();
+ document.querySelectorAll('.genre-tab').function calculateScores(songsList, period) {
+ // 실제 누적 유튜브 조회수만으로 순위를 정한다. 좋아요·댓글·사이트 재생은 순위를 뒤집지 않는다.
+ return [...(songsList||[])].sort((a,b)=>Number(b.youtube_views||0)-Number(a.youtube_views||0)).map(song=>({...song,calculatedScore:Number(song.youtube_views||0)}));
 }
-
-function calculateScores(songsList, period) {
- if (!songsList || songsList.length === 0) return [];
-
- // 기간별 조회수 스냅샷이 없으므로 실제 누적 지표 기준으로 산정한다.
- // 조회수 비중을 높이고 좋아요·댓글은 보조 지표로만 반영한다.
- const rawData = songsList.map(song => ({
-  song,
-  views: Math.log10(Number(song.youtube_views || 0) + 1),
-  likes: Math.log10(Number(song.youtube_likes || 0) + 1),
-  comments: Math.log10(Number(song.youtube_comments || 0) + 1),
-  siteMetric: Math.log10(Number(song.plays || 0) + Number(song.likes || 0) + Number(guestLikeCounts.get(song.id) || 0) + 1)
- }));
- const maxViews = Math.max(...rawData.map(d => d.views), 1);
- const maxLikes = Math.max(...rawData.map(d => d.likes), 1);
- const maxComments = Math.max(...rawData.map(d => d.comments), 1);
- const maxSite = Math.max(...rawData.map(d => d.siteMetric), 1);
- return rawData.map(d => {
-  const V = d.views / maxViews * 100;
-  const L = d.likes / maxLikes * 100;
-  const C = d.comments / maxComments * 100;
-  const S = d.siteMetric / maxSite * 100;
-  const score = 0.78 * V + 0.12 * L + 0.05 * C + 0.05 * S;
-  return { ...d.song, calculatedScore: Number(score.toFixed(2)) };
+Number(score.toFixed(2)) };
  }).sort((a,b) => b.calculatedScore - a.calculatedScore);
 }
 
@@ -1365,7 +1342,7 @@ function renderSongs(){
    <div class="info">
     <div class="title">${String(song.rank).padStart(2,'0')}위. ${escapeHTML(song.title)}</div>
     <div class="artist">${escapeHTML(song.artist)}</div>
-    <div class="stats">점수: <b>${song.calculatedScore}점</b><br>조회수 ${Number(song.youtube_views||0).toLocaleString('ko-KR')} · ♡ <span id="like-count-m-${index}">${(Number(song.likes||0)+Number(guestLikeCounts.get(song.id)||0)).toLocaleString('ko-KR')}</span></div>
+    <div class="stats">유튜브 조회수 <b>${Number(song.youtube_views||0).toLocaleString('ko-KR')}</b> · ♡ <span id="like-count-m-${index}">${(Number(song.likes||0)+Number(guestLikeCounts.get(song.id)||0)).toLocaleString('ko-KR')}</span></div>
     <div class="like-row"><button class="like-button${(likedSongIds.has(song.id)||guestLikedSongIds.has(song.id))?' liked':''}" id="like-m-${index}" type="button">${(likedSongIds.has(song.id)||guestLikedSongIds.has(song.id))?'♥ 취소':'♡ 좋아요'}</button></div>
     <div class="song-action-row"><button class="proposal-button" id="proposal-m-${index}" type="button">곡 사용 제안</button><button id="comments-m-${index}" class="comment-bubble-button" type="button" aria-label="댓글 보기" title="댓글 보기"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 11.5a7.5 7.5 0 0 1-7.5 7.5H6l-3 2v-6.5A7.5 7.5 0 1 1 20 11.5Z"/></svg></button></div>
    </div>
@@ -1550,7 +1527,7 @@ async function deleteAd(id){
 async function loadSongs(){
  const {data,error} = await supabase
   .from('songs')
-  .select('id,title,artist,youtube_id,genre,plays,likes,chart_category,youtube_views,youtube_likes,youtube_comments,created_at,video_type,duration_seconds,user_id,is_hidden')
+  .select('id,title,artist,youtube_id,genre,plays,likes,chart_category,youtube_views,youtube_likes,youtube_comments,created_at,video_type,duration_seconds,user_id,is_hidden,ai_label_verified')
   .order('youtube_views',{ascending:false,nullsFirst:false});
 
  if(error){ message('곡 목록 오류: '+error.message); return; }
