@@ -1701,6 +1701,23 @@ async function deleteAd(id){
  await loadAdminAds();await loadChartAds();renderSongs();
 }
 
+async function refreshYoutubeViews(){
+ try{
+  const {data,error}=await supabase.functions.invoke('youtube-stats-refresh',{method:'POST',body:{}});
+  if(error) throw error;
+  if(data?.updated_count>0){
+   console.info('유튜브 조회수 갱신 완료',data.updated_count);
+   await loadSongs();
+  }else if(data?.skipped){
+   console.info('유튜브 조회수는 최근 6시간 이내 갱신되어 건너뜁니다.');
+  }else if(data?.error){
+   console.warn('유튜브 조회수 갱신 오류',data.error);
+  }
+ }catch(error){
+  console.warn('유튜브 조회수 갱신 실패',error?.message||String(error));
+ }
+}
+
 async function loadSongs(){
  const {data,error} = await supabase
   .from('songs')
@@ -1767,6 +1784,7 @@ supabase.auth.onAuthStateChange((event)=>{
 await updateAuth();
 await loadProposalInbox();
 await loadSongs();
+await refreshYoutubeViews();
 startRealtimeTicker();
 </script>
 </body>
