@@ -704,7 +704,7 @@ label{
 }
 
 /* Three-column chart layout matching the supplied sketch */
-.chart-layout{display:grid;grid-template-columns:minmax(0,1.55fr) minmax(280px,1fr) minmax(250px,.82fr);gap:14px;align-items:start;margin-top:20px}
+.chart-layout{display:grid;grid-template-columns:minmax(0,1.25fr) minmax(0,1.25fr) minmax(190px,.72fr);gap:14px;align-items:start;margin-top:20px}
 .chart-layout>.ai-main-column,.chart-layout>.non-ai-column,.chart-layout>.shorts-column{min-width:0;margin:0}
 .chart-layout .grid-main{grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
 .chart-layout .grid-main .info{padding:8px}
@@ -739,11 +739,26 @@ label{
 .chart-layout .grid-shorts .artist,.chart-layout .grid-shorts .stats{font-size:9px}
 .chart-layout .grid-shorts .song-action-row button{font-size:9px;padding:5px 2px}
 @media(max-width:1100px){
- .chart-layout{grid-template-columns:minmax(0,1.25fr) minmax(260px,.9fr)}
+ .chart-layout{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}
  .chart-layout>.ai-main-column{grid-column:1;grid-row:1}
  .chart-layout>.non-ai-column{grid-column:2;grid-row:1}
  .chart-layout>.shorts-column{grid-column:1/-1;grid-row:2}
- .chart-layout .grid-shorts{grid-template-columns:repeat(4,minmax(0,1fr))}
+ .chart-layout .grid-shorts{grid-template-columns:repeat(3,minmax(0,1fr))}
+}
+.non-ai-column .ai-period-column{margin:0 0 16px;grid-template-columns:repeat(2,minmax(0,1fr));}
+.non-ai-column .period-chart{min-height:150px;padding:8px;}
+.non-ai-column .period-chart h3{font-size:12px;}
+.non-ai-column .period-rank-row{font-size:9px;padding:4px 5px;}
+.non-ai-player{display:block;grid-column:1/-1;width:100%;aspect-ratio:16/9;margin:0 0 8px;border:0;border-radius:8px;}
+.non-ai-row{flex-wrap:nowrap;}
+.non-ai-column .non-ai-row{padding:5px 5px;gap:4px;}
+.non-ai-column .non-ai-rank{width:20px;font-size:10px;}
+.non-ai-column .non-ai-title{font-size:10px;}
+.non-ai-column .non-ai-artist{font-size:9px;}
+.non-ai-column .non-ai-views{font-size:8px;}
+.non-ai-column .non-ai-row button{padding:4px 5px;font-size:9px;}
+@media(max-width:760px){
+ .non-ai-column .ai-period-column{grid-template-columns:repeat(2,minmax(0,1fr));}
 }
 @media(max-width:760px){
  .chart-layout{grid-template-columns:1fr;gap:16px}
@@ -927,28 +942,29 @@ label{
   <button class="secondary active" id="cardViewBtn" type="button">앨범형</button>
   <button class="secondary" id="listViewBtn" type="button">한줄형</button>
  </div>
+ <div class="realtime-ticker" role="status" aria-live="polite" aria-atomic="true">
+  <span class="ticker-live-dot"></span><strong>실시간</strong>
+  <span id="realtimeTickerText" class="ticker-message">AI 음악 실시간 소식을 확인하고 있습니다.</span>
+ </div>
 
  <div class="chart-layout">
   <section class="ai-main-column">
    <div class="layout-column-title">🎵 일반 AI 음악 · 최근 7일 순위</div>
    <p class="chart-period-note" id="weeklyChartNote">최근 7일 조회수 변화를 집계합니다. 데이터 수집 초기에는 임시 누적 조회수 순서로 표시합니다.</p>
    <section class="grid-main" id="mainSongsGrid"></section>
-   <div class="realtime-ticker" role="status" aria-live="polite" aria-atomic="true">
-    <span class="ticker-live-dot"></span><strong>실시간</strong>
-    <span id="realtimeTickerText" class="ticker-message">AI 음악 실시간 소식을 확인하고 있습니다.</span>
-   </div>
+   
+  </section>
+  <section class="non-ai-chart non-ai-column" id="nonAiChartSection">
    <div class="ai-period-column">
     <section class="period-chart">
-     <h3>📅 월간 AI 음악 순위</h3><p>최근 30일 조회수 증가량</p>
+     <h3>📅 월간 AI 음악 순위</h3><p>최근 30일 조회수 증가량 · 최대 12위</p>
      <div class="period-empty" id="aiMonthlyList">최근 30일 데이터 수집 중입니다.</div>
     </section>
     <section class="period-chart">
-     <h3>🏆 1년간 AI 음악 순위</h3><p>최근 365일 조회수 증가량</p>
+     <h3>🏆 1년간 AI 음악 순위</h3><p>최근 365일 조회수 증가량 · 최대 12위</p>
      <div class="period-empty" id="aiYearlyList">최근 365일 데이터 수집 중입니다.</div>
     </section>
    </div>
-  </section>
-  <section class="non-ai-chart non-ai-column" id="nonAiChartSection">
    <h3>🎤 한국 일반음악 유튜브 역대 순위</h3>
    <p>한국 대중음악 공식 영상 · 누적 조회수 기준</p>
    <div class="non-ai-list" id="nonAiSongsGrid"><p>한국음악 순위를 불러오는 중입니다.</p></div>
@@ -1034,7 +1050,7 @@ function isValidKoreanAIMusic(song){
  // 자동 수집곡은 제목의 AI 문구가 아니라 실제 유튜브 제목 아래 AI 배지 검증값만 인정한다.
  if(song.ai_label_verified !== true) return false;
  const duration=Number(song.duration_seconds||0);
- if(duration<20 || duration>360) return false;
+ if(duration<20 || duration>480) return false;
  const title=String(song.title||'');
  const text=(title+' '+(song.artist||'')+' '+(song.genre||'')).toLowerCase();
  const hasKoreanTitle=/[가-힣]/.test(title);
@@ -1406,7 +1422,7 @@ function getPeriodViewDelta(song,days){
 }
 function renderPeriodRanks(targetId,songs,days,emptyText){
  const target=$(targetId);if(!target)return;
- const ranked=songs.map(song=>({...song,periodViews:getPeriodViewDelta(song,days)})).filter(song=>song.periodViews!==null).sort((a,b)=>b.periodViews-a.periodViews).slice(0,5);
+ const ranked=songs.map(song=>({...song,periodViews:getPeriodViewDelta(song,days)})).filter(song=>song.periodViews!==null).sort((a,b)=>b.periodViews-a.periodViews).slice(0,12);
  if(!ranked.length){target.className='period-empty';target.textContent=emptyText;return;}
  target.className='period-rank-list';
  target.innerHTML=ranked.map((song,i)=>'<div class="period-rank-row"><span>'+String(i+1).padStart(2,'0')+'위 · '+escapeHTML(song.title)+'</span><strong>'+Number(song.periodViews).toLocaleString('ko-KR')+'회</strong></div>').join('');
@@ -1588,15 +1604,15 @@ async function loadNonAiChartSongs(){
 function renderNonAiSongs(){
  const target=$('nonAiSongsGrid');if(!target)return;
  const ordered=[...nonAiSongs].sort((a,b)=>Number(b.youtube_views||0)-Number(a.youtube_views||0));
- const row=(song,index)=>`<div class="non-ai-row"><span class="non-ai-rank">${index+1}위</span><div class="non-ai-copy"><div class="non-ai-title">${escapeHTML(song.title)}</div><div class="non-ai-artist">${escapeHTML(song.artist)}</div></div><span class="non-ai-views">${Number(song.youtube_views||0).toLocaleString('ko-KR')}회</span><button type="button" data-nonai-play="${escapeHTML(song.youtube_id)}">▶</button></div>`;
- target.innerHTML=ordered.map(row).join('')||'<p class="modal-note">등록된 한국음악이 없습니다.</p>';
+ const row=(song,index)=>`<div class="non-ai-row" data-nonai-row="${escapeHTML(song.youtube_id)}"><span class="non-ai-rank">${index+1}위</span><div class="non-ai-copy"><div class="non-ai-title">${escapeHTML(song.title)}</div><div class="non-ai-artist">${escapeHTML(song.artist)}</div></div><span class="non-ai-views">${Number(song.youtube_views||0).toLocaleString('ko-KR')}회</span><button type="button" data-nonai-play="${escapeHTML(song.youtube_id)}">▶</button></div>`;
+ target.innerHTML=ordered.slice(0,12).map(row).join('')||'<p class="modal-note">등록된 한국음악이 없습니다.</p>';
  target.querySelectorAll('[data-nonai-play]').forEach(button=>button.addEventListener('click',()=>playNonAiButton(button,target)));
 }
 function playNonAiButton(button,container){
  const id=button.dataset.nonaiPlay;const old=document.querySelector('iframe[data-playing="true"]');
  if(old&&old.dataset.videoId===id){old.remove();button.textContent='▶';return;}
  if(old)old.remove();
- const frame=document.createElement('iframe');frame.className='non-ai-player';frame.dataset.playing='true';frame.dataset.videoId=id;frame.src='https://www.youtube-nocookie.com/embed/'+encodeURIComponent(id)+'?autoplay=1&playsinline=1&rel=0';frame.title='비AI 음악 재생';frame.allow='autoplay; encrypted-media; picture-in-picture';frame.allowFullscreen=true;container.appendChild(frame);
+ const frame=document.createElement('iframe');frame.className='non-ai-player';frame.dataset.playing='true';frame.dataset.videoId=id;frame.src='https://www.youtube-nocookie.com/embed/'+encodeURIComponent(id)+'?autoplay=1&playsinline=1&rel=0';frame.title='한국 일반음악 재생';frame.allow='autoplay; encrypted-media; picture-in-picture';frame.allowFullscreen=true;const row=button.closest('.non-ai-row');(row||container).insertAdjacentElement('afterend',frame);
  document.querySelectorAll('[data-nonai-play]').forEach(b=>b.textContent='▶');button.textContent='■';
 }
 
