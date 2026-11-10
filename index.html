@@ -639,6 +639,9 @@ label{
 .ad-slot[hidden]{display:none}
 .profile-actions{display:flex;gap:8px;flex-wrap:wrap;margin:12px 0}
 .profile-edit{border-top:1px solid #303540;margin-top:14px;padding-top:14px}
+.ad-admin-item{display:flex;align-items:center;gap:10px;justify-content:space-between;padding:10px 0;border-bottom:1px solid #303540;font-size:12px}
+.ad-admin-item span{flex:1;min-width:0}
+.ad-admin-item button{padding:6px 9px;font-size:11px}
 @media(max-width:760px){
  #mainSongsGrid.list-view .info{gap:7px;flex-wrap:wrap}
  #mainSongsGrid.list-view .artist{width:auto}
@@ -730,6 +733,16 @@ label{
   <div class="actions"><button class="primary" id="saveProfileBtn" type="button">수정 내용 저장</button><button class="secondary" id="cancelProfileBtn" type="button">취소</button></div>
   <p style="font-size:11px">이메일 변경은 새 이메일 주소로 확인 메일을 받은 뒤 완료됩니다.</p>
  </div>
+ <section class="panel profile-edit" id="adAdminPanel" hidden>
+  <h3>광고 관리</h3>
+  <p>광고곡을 등록하고 노출 위치와 기간을 관리합니다. 활성화된 광고만 차트에 표시됩니다.</p>
+  <label>광고에 표시할 곡 제목</label><input id="adTitle" maxlength="160" placeholder="곡 제목">
+  <label>가수 / 광고주</label><input id="adArtist" maxlength="100" placeholder="가수 또는 광고주명">
+  <label>유튜브 영상 주소</label><input id="adYoutubeUrl" placeholder="https://www.youtube.com/watch?v=XXXXXXXXXXX">
+  <label>광고 위치</label><select id="adPlacement"><option value="between_3_4">일반 차트 3위와 4위 사이</option><option value="between_6_7">일반 차트 6위와 7위 사이</option></select>
+  <div class="actions"><button class="primary" id="createAdBtn" type="button">광고 등록</button></div>
+  <div id="adAdminList"></div>
+ </section>
 </section>
 
 <section class="panel" id="registerPanel" hidden>
@@ -902,6 +915,9 @@ async function updateAuth(){
  $('passwordUpdatePanel').hidden = true;
  $('userInfo').textContent = loggedIn ? session.user.email + ' 로그인 중' : '';
  if(loggedIn){
+  const {data:isAdmin}=await supabase.rpc('is_chart_admin');
+  $('adAdminPanel').hidden=!isAdmin;
+  if(isAdmin) await loadAdminAds();
   const meta=session.user.user_metadata || {};
   $('profileView').innerHTML='<b>이메일</b>: '+escapeHTML(session.user.email)+'<br><b>닉네임</b>: '+escapeHTML(meta.nickname || '미설정');
   $('profileNickname').value=meta.nickname || '';
@@ -917,7 +933,7 @@ async function saveProfile(){
  if(nickname.length>30){message('닉네임은 30자 이내로 입력하세요.');return;}
  if(password&&password.length<6){message('비밀번호는 6자 이상이어야 합니다.');return;}
  const changes={data:{nickname}};
- if(email)changes.email=email;
+ if(email && email!==currentUser?.email)changes.email=email;
  if(password)changes.password=password;
  const {error}=await supabase.auth.updateUser(changes);
  if(error){message('정보 수정 오류: '+error.message);return;}
@@ -1360,9 +1376,37 @@ function shuffleGenreTabsHourly(){
 }
 
 async function loadChartAds(){
- const {data,error}=await supabase.from('chart_ads').select('id,title,artist,youtube_id,ad_label,placement,sort_order').order('sort_order',{ascending:true});
+ const {data,error}=await supabase.from('chart_ads').select('id,title,artist,youtube_id,ad_label,placement,sort_order').eq('is_active',true).order('sort_order',{ascending:true});
  if(error){chartAds=[];console.warn('광고 목록을 불러오지 못했습니다.',error.message);return;}
  chartAds=data||[];
+}
+async function loadAdminAds(){
+ const {data,error}=await supabase.from('chart_ads').select('id,title,artist,youtube_id,placement,is_active').order('created_at',{ascending:false});
+ const target=$('adAdminList');
+ if(error){target.textContent='광고 목록을 불러오지 못했습니다.';return;}
+ target.innerHTML=(data||[]).map(ad=>`<div class="ad-admin-item"><span>${escapeHTML(ad.title)} · ${escapeHTML(ad.artist)}<br><small>${ad.placement==='between_3_4'?'3~4위 사이':'6~7위 사이'} · ${ad.is_active?'노출 중':'중지'}</small></span><button type="button" data-ad-toggle="${ad.id}" data-active="${ad.is_active}">${ad.is_active?'중지':'노출'}</button><button type="button" data-ad-delete="${ad.id}">삭제</button></div>`).join('')||'<p>등록된 광고가 없습니다.</p>';
+ target.querySelectorAll('[data-ad-toggle]').forEach(btn=>btn.addEventListener('click',()=>toggleAd(btn.dataset.adToggle,btn.dataset.active!=='true')));
+ target.querySelectorAll('[data-ad-delete]').forEach(btn=>btn.addEventListener('click',()=>deleteAd(btn.dataset.adDelete)));
+}
+async function createAd(){
+ const title=$('adTitle').value.trim(),artist=$('adArtist').value.trim(),youtubeId=getYoutubeId($('adYoutubeUrl').value.trim());
+ if(!title||!artist||!youtubeId){message('제목, 가수, 올바른 유튜브 주소를 입력하세요.');return;}
+ const {error}=await supabase.from('chart_ads').insert({title,artist,youtube_id:youtubeId,placement:$('adPlacement').value,is_active:false});
+ if(error){message('광고 등록 오류: '+error.message);return;}
+ $('adTitle').value='';$('adArtist').value='';$('adYoutubeUrl').value='';
+ message('광고를 등록했습니다. 광고 관리 목록에서 노출을 켜면 차트에 표시됩니다.');
+ await loadAdminAds();
+}
+async function toggleAd(id,active){
+ const {error}=await supabase.from('chart_ads').update({is_active:active}).eq('id',id);
+ if(error){message('광고 상태 변경 오류: '+error.message);return;}
+ await loadAdminAds();await loadChartAds();renderSongs();
+}
+async function deleteAd(id){
+ if(!confirm('이 광고를 삭제할까요?'))return;
+ const {error}=await supabase.from('chart_ads').delete().eq('id',id);
+ if(error){message('광고 삭제 오류: '+error.message);return;}
+ await loadAdminAds();await loadChartAds();renderSongs();
 }
 
 async function loadSongs(){
@@ -1405,6 +1449,7 @@ $('showProfileBtn').addEventListener('click',()=>{$('profileView').hidden=false;
 $('editProfileBtn').addEventListener('click',()=>{$('profileView').hidden=true;$('profileEdit').hidden=false;});
 $('cancelProfileBtn').addEventListener('click',()=>{$('profileEdit').hidden=true;});
 $('saveProfileBtn').addEventListener('click',saveProfile);
+$('createAdBtn').addEventListener('click',createAd);
 $('cardViewBtn').addEventListener('click',()=>setMainView('card'));
 $('listViewBtn').addEventListener('click',()=>setMainView('list'));
 $('registerBtn').addEventListener('click',registerSong);
