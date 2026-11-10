@@ -755,7 +755,7 @@ label{
   <label>광고에 표시할 곡 제목</label><input id="adTitle" maxlength="160" placeholder="곡 제목">
   <label>가수 / 광고주</label><input id="adArtist" maxlength="100" placeholder="가수 또는 광고주명">
   <label>유튜브 영상 주소</label><input id="adYoutubeUrl" placeholder="https://www.youtube.com/watch?v=XXXXXXXXXXX">
-  <label>광고 위치</label><select id="adPlacement"><option value="between_3_4">일반 차트 3위와 4위 사이</option><option value="between_6_7">일반 차트 6위와 7위 사이</option></select>
+  <label>광고 위치</label><select id="adPlacement"><option value="between_3_4">AI 일반음악 1~3위 바로 아래 (광고 3칸)</option></select>
   <div class="actions"><button class="primary" id="createAdBtn" type="button">광고 등록</button></div>
   <div id="adAdminList"></div>
   <div class="profile-edit">
@@ -1320,7 +1320,7 @@ function renderSongs(){
  message((activeGenre==='전체'?'전체 장르':activeGenre)+' · '+activeChart+' 차트 (일반 '+scoredMain.length+'곡 / 쇼츠 '+scoredShorts.length+'곡)');
  const mainGrid=$('mainSongsGrid');
  mainGrid.classList.toggle('list-view',mainViewMode==='list');
- const adHtml=()=>{const ads=chartAds.filter(ad=>ad.placement==='between_3_4').slice(0,3);let cards=ads.map(ad=>`<article class="ad-slot"><span class="ad-tag">AD · ${escapeHTML(ad.ad_label||'스폰서 곡')}</span><div class="ad-copy"><div class="ad-title">${escapeHTML(ad.title)}</div><div class="ad-artist">${escapeHTML(ad.artist)}</div></div><button type="button" class="ad-play" data-video-id="${escapeHTML(ad.youtube_id)}">▶ 재생</button></article>`).join('');for(let i=ads.length;i<3;i++)cards+=`<article class="ad-slot ad-slot-placeholder"><span class="ad-tag">AD · 광고 영역</span><div class="ad-copy"><div class="ad-title">음악 홍보 공간 ${i+1}</div><div class="ad-artist">광고곡이 등록되면 표시됩니다.</div></div><button type="button" disabled>광고 대기</button></article>`;return cards;};
+ const adHtml=()=>{const ads=chartAds.slice(0,3);let cards=ads.map(ad=>`<article class="ad-slot"><span class="ad-tag">AD · ${escapeHTML(ad.ad_label||'스폰서 곡')}</span><div class="ad-copy"><div class="ad-title">${escapeHTML(ad.title)}</div><div class="ad-artist">${escapeHTML(ad.artist)}</div></div><button type="button" class="ad-play" data-video-id="${escapeHTML(ad.youtube_id)}">▶ 재생</button></article>`).join('');for(let i=ads.length;i<3;i++)cards+=`<article class="ad-slot ad-slot-placeholder"><span class="ad-tag">AD · 광고 영역</span><div class="ad-copy"><div class="ad-title">음악 홍보 공간 ${i+1}</div><div class="ad-artist">광고곡이 등록되면 표시됩니다.</div></div><button type="button" disabled>광고 대기</button></article>`;return cards;};
  const songHtml=(song,index)=>`
   <article class="card">
    <button class="thumb" id="thumb-m-${index}" type="button"><img src="https://img.youtube.com/vi/${encodeURIComponent(song.youtube_id)}/hqdefault.jpg" alt=""><span class="play-icon">▶</span></button>
@@ -1425,7 +1425,7 @@ async function loadAdminAds(){
  const {data,error}=await supabase.from('chart_ads').select('id,title,artist,youtube_id,placement,is_active').order('created_at',{ascending:false});
  const target=$('adAdminList');
  if(error){target.textContent='광고 목록을 불러오지 못했습니다.';return;}
- target.innerHTML=(data||[]).map(ad=>`<div class="ad-admin-item"><span>${escapeHTML(ad.title)} · ${escapeHTML(ad.artist)}<br><small>${ad.placement==='between_3_4'?'3~4위 사이':'6~7위 사이'} · ${ad.is_active?'노출 중':'중지'}</small></span><button type="button" data-ad-toggle="${ad.id}" data-active="${ad.is_active}">${ad.is_active?'중지':'노출'}</button><button type="button" data-ad-delete="${ad.id}">삭제</button></div>`).join('')||'<p>등록된 광고가 없습니다.</p>';
+ target.innerHTML=(data||[]).map(ad=>`<div class="ad-admin-item"><span>${escapeHTML(ad.title)} · ${escapeHTML(ad.artist)}<br><small>AI 일반음악 1~3위 아래 · ${ad.is_active?'노출 중':'중지'}</small></span><button type="button" data-ad-toggle="${ad.id}" data-active="${ad.is_active}">${ad.is_active?'중지':'노출'}</button><button type="button" data-ad-delete="${ad.id}">삭제</button></div>`).join('')||'<p>등록된 광고가 없습니다.</p>';
  target.querySelectorAll('[data-ad-toggle]').forEach(btn=>btn.addEventListener('click',()=>toggleAd(btn.dataset.adToggle,btn.dataset.active!=='true')));
  target.querySelectorAll('[data-ad-delete]').forEach(btn=>btn.addEventListener('click',()=>deleteAd(btn.dataset.adDelete)));
 }
