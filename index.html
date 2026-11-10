@@ -1626,11 +1626,35 @@ async function discoverYoutubeAiMusic(){
  status.textContent='한국어 주제와 장르를 순환 검색하고, 발견한 채널의 최근 업로드도 확인합니다.';
  target.innerHTML='';
  try{
-  const {data,error}=await supabase.functions.invoke('youtube-chart');
-  if(error) throw error;
+  const {data,error}=await supabase.functions.invoke('youtube-chart',{method:'POST',body:{batch:10}});
+  if(error){
+   let detail=error.message||String(error);
+   if(error.context && typeof error.context.clone==='function'){
+    try{
+     const response=error.context.clone();
+     const body=await response.json();
+     detail=body.error||body.message||detail;
+    }catch(_){}
+   }
+   throw new Error(detail);
+  }
   if(!data||data.error) throw new Error(data?.error||'검색 결과를 받지 못했습니다.');
   const songs=data.songs||[];
-  status.textContent='검색 '+Number(data.query_count||0)+'회 · 검색 영상 '+Number(data.unique_search_results||0)+'개 · 조건 후보 '+Number(data.candidate_count||songs.length)+'개 · 채널 재탐색 '+Number(data.channels_followed||0)+'개 · 최근 업로드 '+Number(data.channel_upload_videos||0)+'개 · 후보 저장 '+Number(data.persisted?.saved||0)+'개 · 채널 저장 '+Number(data.channel_persisted?.saved||0)+'개 · 주제 저장 '+Number(data.topics_persisted?.saved||0)+'개'+(data.persisted?.error?' · 후보 저장 오류: '+data.persisted.error:'')+(data.channel_persisted?.error?' · 채널 저장 오류: '+data.channel_persisted.error:'')+(data.topics_persisted?.error?' · 주제 저장 오류: '+data.topics_persisted.error:'')+'. AI 배지는 별도 검증 전입니다.';
+  const [candidateDb,channelDb,topicDb]=await Promise.all([
+   supabase.from('youtube_discovery_candidates').select('youtube_id',{count:'exact',head:true}),
+   supabase.from('youtube_discovery_channels').select('channel_id',{count:'exact',head:true}),
+   supabase.from('youtube_discovery_topics').select('topic',{count:'exact',head:true})
+  ]);
+  const dbErrors=[candidateDb.error,channelDb.error,topicDb.error].filter(Boolean);
+  const dbStatus=dbErrors.length
+   ? ' · DB 확인 오류: '+dbErrors.map(e=>e.message).join(' / ')
+   : ' · DB 누적 후보 '+Number(candidateDb.count||0)+'개 · 채널 '+Number(channelDb.count||0)+'개 · 주제 '+Number(topicDb.count||0)+'개';
+  const saveErrors=[
+   data.persisted?.error||data.persisted?.reason,
+   data.channel_persisted?.error||data.channel_persisted?.reason,
+   data.topics_persisted?.error||data.topics_persisted?.reason
+  ].filter(Boolean);
+  status.textContent='검색 '+Number(data.query_count||0)+'회 · 검색 영상 '+Number(data.unique_search_results||0)+'개 · 조건 후보 '+Number(data.candidate_count||songs.length)+'개 · 채널 재탐색 '+Number(data.channels_followed||0)+'개 · 최근 업로드 '+Number(data.channel_upload_videos||0)+'개 · 후보 저장 요청 '+Number(data.persisted?.saved||0)+'개 · 채널 저장 요청 '+Number(data.channel_persisted?.saved||0)+'개 · 주제 저장 요청 '+Number(data.topics_persisted?.saved||0)+'개'+dbStatus+(saveErrors.length?' · 저장 세부사항: '+saveErrors.join(' / '):'')+'. AI 배지는 별도 검증 전입니다.';
   target.innerHTML=songs.map(song=>{
    const duration=Number(song.duration_seconds)||0;
    const time=Math.floor(duration/60)+':'+String(duration%60).padStart(2,'0');
@@ -1644,7 +1668,6 @@ async function discoverYoutubeAiMusic(){
   btn.disabled=false;btn.textContent='유튜브 전체 검색 실행';
  }
 }
-
 async function loadChartAds(){
  const {data,error}=await supabase.from('chart_ads').select('id,title,artist,youtube_id,ad_label,placement,sort_order').eq('is_active',true).order('sort_order',{ascending:true});
  if(error){chartAds=[];console.warn('광고 목록을 불러오지 못했습니다.',error.message);return;}
