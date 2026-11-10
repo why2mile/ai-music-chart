@@ -4,6 +4,9 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="referrer" content="strict-origin-when-cross-origin">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Noto+Sans+JP:wght@300;400;500;600;700&family=Noto+Sans+KR:wght@300;400;500;600;700&family=Noto+Sans+SC:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <title>AI MUSIC CHART</title>
 
 <style>
@@ -13,9 +16,10 @@ body{
  margin:0;
  background:#090a0d;
  color:#e9e9ed;
- font-family:"Pretendard","Noto Sans KR","Malgun Gothic",Arial,sans-serif;
+ font-family:"Inter","Noto Sans KR","Noto Sans JP","Noto Sans SC",Arial,sans-serif;
  font-weight:400;
- letter-spacing:-0.35px;
+ letter-spacing:-0.12px;
+ line-height:1.55;
 }
 
 header{
@@ -192,7 +196,15 @@ label{
 .non-ai-artist{font-size:10px;color:#9ca5b2;margin-top:3px;}
 .non-ai-views{font-size:9px;color:#9ca5b2;white-space:nowrap;}
 .non-ai-row button{padding:5px 6px;font-size:9px;background:#303a48;color:#e8edf4;flex:none;}
-.non-ai-continuation{margin-top:16px;padding-top:12px;border-top:1px solid #38414e;}
+.non-ai-continuation{margin-top:16px;padding-top:14px;border-top:1px solid #38414e;}
+.non-ai-continuation h4{display:flex;align-items:center;gap:8px;font-size:14px;font-weight:650;letter-spacing:0;color:#dce5ef;}
+.non-ai-continuation h4:before{content:"";width:3px;height:15px;border-radius:2px;background:#a6c98c;display:inline-block;}
+.non-ai-continuation .non-ai-row{background:#111820;}
+.non-ai-row{line-height:1.35;}
+.non-ai-title{letter-spacing:0;font-weight:600;}
+.non-ai-artist{letter-spacing:0;}
+.non-ai-rank{font-variant-numeric:tabular-nums;}
+.layout-column-title{font-weight:650;letter-spacing:0;font-size:15px;}
 .non-ai-continuation h4{margin:0 0 8px;font-size:13px;color:#cbd5e1;}
 .ad-slot-placeholder button,.ad-slot-placeholder .ad-artist{display:none!important;}
 .song-action-row{display:flex;gap:6px;margin-top:8px;}
@@ -866,7 +878,7 @@ label{
    <h3>🎤 비AI 한국음악 순위</h3>
    <p>BTS · BLACKPINK 공식 일반 음원</p>
    <div class="non-ai-list" id="nonAiSongsGrid"><p>비AI 공식곡을 불러오는 중입니다.</p></div>
-   <div class="non-ai-continuation"><h4>일반 한국음악 이어보기</h4><div class="non-ai-list" id="generalNonAiSongsGrid"><p>일반 한국음악을 불러오는 중입니다.</p></div></div>
+   <div class="non-ai-continuation"><h4>그 외 한국 인기곡</h4><div class="non-ai-list" id="generalNonAiSongsGrid"><p>일반 한국음악을 불러오는 중입니다.</p></div></div>
   </section>
   <div class="shorts-column">
    <div class="layout-column-title" style="color:#c686df;">⚡ AI 쇼츠(Shorts) 차트</div>
