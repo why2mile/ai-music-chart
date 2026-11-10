@@ -178,20 +178,20 @@ label{
  font-weight:600;
 }
 
-.chart-layout{display:block;margin-top:20px;}
-.chart-layout > div{margin-bottom:30px;}
-.grid-shorts{grid-template-columns:repeat(4,minmax(0,1fr));}
-.non-ai-chart{margin:28px 0 34px;padding:18px;background:#131820;border:1px solid #343d49;border-radius:12px;}
+.chart-layout{display:grid;grid-template-columns:minmax(0,3fr) minmax(190px,1fr) minmax(190px,1fr);gap:12px;align-items:start;margin-top:20px;}
+.chart-layout > div,.chart-layout > section{min-width:0;margin:0;}
+.ai-main-column,.shorts-column{min-width:0;}
+.non-ai-chart{min-width:0;margin:0;padding:12px;background:#131820;border:1px solid #343d49;border-radius:10px;}
 .non-ai-chart h3{margin:0 0 5px;font-size:17px;color:#e6eaf0;}
 .non-ai-chart p{font-size:11px;margin:0 0 14px;}
-.non-ai-list{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:7px 14px;}
-.non-ai-row{display:flex;align-items:center;gap:10px;min-width:0;padding:9px 11px;background:#1a202a;border:1px solid #303947;border-radius:7px;}
+.non-ai-list{display:flex;flex-direction:column;gap:6px;}
+.non-ai-row{display:flex;align-items:center;gap:6px;min-width:0;padding:8px 7px;background:#1a202a;border:1px solid #303947;border-radius:6px;}
 .non-ai-rank{font-size:12px;font-weight:700;color:#b9e39a;width:24px;flex:none;}
 .non-ai-copy{flex:1;min-width:0;}
 .non-ai-title{font-size:12px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
 .non-ai-artist{font-size:10px;color:#9ca5b2;margin-top:3px;}
-.non-ai-views{font-size:10px;color:#9ca5b2;white-space:nowrap;}
-.non-ai-row button{padding:6px 9px;font-size:10px;background:#303a48;color:#e8edf4;flex:none;}
+.non-ai-views{font-size:9px;color:#9ca5b2;white-space:nowrap;}
+.non-ai-row button{padding:5px 6px;font-size:9px;background:#303a48;color:#e8edf4;flex:none;}
 .non-ai-player{grid-column:1/-1;width:100%;aspect-ratio:16/9;border:0;border-radius:8px;}
 .ad-slot-placeholder{border-style:dashed;background:#131820;border-color:#4a5544;}
 .ad-slot-placeholder .ad-title{color:#b8c1b0;font-weight:500;}
@@ -611,7 +611,10 @@ label{
 }
 
 @media(max-width:1024px){
- .chart-layout{grid-template-columns:1fr;}
+ .chart-layout{grid-template-columns:minmax(0,2.2fr) minmax(180px,1fr);}
+ .chart-layout > div:first-child{grid-column:1;grid-row:1;}
+ .chart-layout > section.non-ai-chart{grid-column:2;grid-row:1;}
+ .chart-layout > div:last-child{grid-column:1/-1;}
  .grid-main{grid-template-columns:repeat(3,minmax(0,1fr))}
  .grid-shorts{grid-template-columns:repeat(4,minmax(0,1fr))}
 }
@@ -642,12 +645,12 @@ label{
 #mainSongsGrid.list-view .stats{margin:0;white-space:nowrap}
 #mainSongsGrid.list-view .like-row{margin:0;width:82px;flex:none}
 #mainSongsGrid.list-view .like-button{padding:6px}
-.ad-slot{grid-column:1/-1;min-height:96px;display:flex;align-items:center;gap:16px;padding:14px 18px;margin:4px 0 12px;background:linear-gradient(100deg,#20251d,#171d20);border:1px solid #71865c;border-radius:10px}
+.ad-slot{grid-column:auto;min-width:0;min-height:105px;display:flex;flex-direction:column;align-items:flex-start;justify-content:center;gap:6px;padding:9px;margin:4px 0 12px;background:linear-gradient(145deg,#20251d,#171d20);border:1px solid #71865c;border-radius:8px}
 .ad-slot .ad-tag{font-size:10px;color:#b9e39a;white-space:nowrap}
-.ad-slot .ad-copy{flex:1;min-width:0}
-.ad-slot .ad-title{font-size:15px;font-weight:700;color:#f1f2f5;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.ad-slot .ad-artist{font-size:12px;color:#aeb2bd;margin-top:5px}
-.ad-slot button{background:#a6c98c;color:#182015;white-space:nowrap}
+.ad-slot .ad-copy{flex:1;min-width:0;width:100%}
+.ad-slot .ad-title{font-size:12px;font-weight:700;color:#f1f2f5;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ad-slot .ad-artist{font-size:10px;color:#aeb2bd;margin-top:5px}
+.ad-slot button{background:#a6c98c;color:#182015;white-space:nowrap;padding:6px 9px;font-size:10px}
 .ad-slot .ad-player{width:190px;max-width:34%;aspect-ratio:16/9;border:0}
 .ad-slot[hidden]{display:none}
 .profile-actions{display:flex;gap:8px;flex-wrap:wrap;margin:12px 0}
@@ -803,7 +806,7 @@ label{
   <div>
    <div class="eyebrow">STRICT KOREAN AI MUSIC CHART</div>
    <h2>공식 AI 뮤직 차트</h2>
-   <p>일반 음악(가로 3열)과 쇼츠 차트(가로 2열) 분리 집계</p>
+   <p>왼쪽 AI 일반음악 · 가운데 비AI 한국음악 · 오른쪽 AI 쇼츠</p>
   </div>
  </div>
 
@@ -834,16 +837,16 @@ label{
  </div>
 
  <div class="chart-layout">
-  <div>
+  <div class="ai-main-column">
    <div class="layout-column-title">🎵 일반 AI 음악 차트</div>
    <section class="grid-main" id="mainSongsGrid"></section>
   </div>
   <section class="non-ai-chart" id="nonAiChartSection">
-   <h3>🎤 BTS · BLACKPINK 비AI 인기곡 차트</h3>
-   <p>공식 아티스트의 일반 음원만 별도 집계합니다. AI 음악 차트와 순위·점수는 합산하지 않습니다.</p>
+   <h3>🎤 비AI 한국음악 순위</h3>
+   <p>BTS · BLACKPINK 공식 일반 음원</p>
    <div class="non-ai-list" id="nonAiSongsGrid"><p>비AI 공식곡을 불러오는 중입니다.</p></div>
   </section>
-  <div>
+  <div class="shorts-column">
    <div class="layout-column-title" style="color:#c686df;">⚡ AI 쇼츠(Shorts) 차트</div>
    <section class="grid-shorts" id="shortsGrid"></section>
   </div>
@@ -1317,8 +1320,7 @@ function renderSongs(){
  message((activeGenre==='전체'?'전체 장르':activeGenre)+' · '+activeChart+' 차트 (일반 '+scoredMain.length+'곡 / 쇼츠 '+scoredShorts.length+'곡)');
  const mainGrid=$('mainSongsGrid');
  mainGrid.classList.toggle('list-view',mainViewMode==='list');
- const adAt=placement=>chartAds.find(ad=>ad.placement===placement);
- const adHtml=placement=>{const ad=adAt(placement);if(!ad)return `<article class="ad-slot ad-slot-placeholder"><span class="ad-tag">AD · 광고 영역</span><div class="ad-copy"><div class="ad-title">광고·음악 홍보 공간</div><div class="ad-artist">광고곡이 등록되면 이 위치에 표시됩니다.</div></div><button type="button" disabled>등록 대기</button></article>`;return `<article class="ad-slot"><span class="ad-tag">AD · ${escapeHTML(ad.ad_label||'스폰서 곡')}</span><div class="ad-copy"><div class="ad-title">${escapeHTML(ad.title)}</div><div class="ad-artist">${escapeHTML(ad.artist)}</div></div><button type="button" class="ad-play" data-video-id="${escapeHTML(ad.youtube_id)}">▶ 재생</button></article>`;};
+ const adHtml=()=>{const ads=chartAds.filter(ad=>ad.placement==='between_3_4').slice(0,3);let cards=ads.map(ad=>`<article class="ad-slot"><span class="ad-tag">AD · ${escapeHTML(ad.ad_label||'스폰서 곡')}</span><div class="ad-copy"><div class="ad-title">${escapeHTML(ad.title)}</div><div class="ad-artist">${escapeHTML(ad.artist)}</div></div><button type="button" class="ad-play" data-video-id="${escapeHTML(ad.youtube_id)}">▶ 재생</button></article>`).join('');for(let i=ads.length;i<3;i++)cards+=`<article class="ad-slot ad-slot-placeholder"><span class="ad-tag">AD · 광고 영역</span><div class="ad-copy"><div class="ad-title">음악 홍보 공간 ${i+1}</div><div class="ad-artist">광고곡이 등록되면 표시됩니다.</div></div><button type="button" disabled>광고 대기</button></article>`;return cards;};
  const songHtml=(song,index)=>`
   <article class="card">
    <button class="thumb" id="thumb-m-${index}" type="button"><img src="https://img.youtube.com/vi/${encodeURIComponent(song.youtube_id)}/hqdefault.jpg" alt=""><span class="play-icon">▶</span></button>
@@ -1330,9 +1332,9 @@ function renderSongs(){
     <div class="like-row"><button class="like-button${(likedSongIds.has(song.id)||guestLikedSongIds.has(song.id))?' liked':''}" id="like-m-${index}" type="button">${(likedSongIds.has(song.id)||guestLikedSongIds.has(song.id))?'♥ 취소':'♡ 좋아요'}</button></div>
    </div>
   </article>`;
- let html='';let firstAdInserted=false,secondAdInserted=false;
- scoredMain.forEach((song,index)=>{html+=songHtml(song,index);if(index===2){html+=adHtml('between_3_4');firstAdInserted=true;}if(index===5){html+=adHtml('between_6_7');secondAdInserted=true;}});
- if(!firstAdInserted)html+=adHtml('between_3_4');if(!secondAdInserted)html+=adHtml('between_6_7');
+ let html='';
+ scoredMain.forEach((song,index)=>{html+=songHtml(song,index);if(index===2)html+=adHtml();});
+ if(scoredMain.length<3)html+=adHtml();
  mainGrid.innerHTML=html||'<p style="color:#777;padding:20px;">등록된 일반 AI 음악이 없습니다.</p>';
  scoredMain.forEach((song,index)=>{
   $('thumb-m-'+index)?.addEventListener('click',()=>playSong(song,'m-'+index));
