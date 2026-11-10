@@ -837,6 +837,11 @@ label{
   <p style="font-size:11px">이메일 변경은 새 이메일 주소로 확인 메일을 받은 뒤 완료됩니다.</p>
  </div>
  <section class="panel profile-edit" id="adAdminPanel" hidden>
+  <h3>유튜브 전체 한국 AI 음악 발굴</h3>
+  <p>유튜브에서 사랑·이별·작별·비·슬픔·희망·환희와 트로트·발라드·힙합 등 다양한 주제로 후보를 찾습니다. 검색 후보는 실제 영상의 AI 배지를 확인하기 전까지 차트에 등록되지 않습니다.</p>
+  <div class="actions"><button class="primary" id="discoverYoutubeAiBtn" type="button">유튜브 전체 검색 실행</button></div>
+  <p id="youtubeDiscoveryStatus" aria-live="polite"></p>
+  <div id="youtubeDiscoveryResults"></div>
   <h3>광고 관리</h3>
   <p>광고곡을 등록하고 노출 위치와 기간을 관리합니다. 활성화된 광고만 차트에 표시됩니다.</p>
   <label>광고에 표시할 곡 제목</label><input id="adTitle" maxlength="160" placeholder="곡 제목">
@@ -1608,6 +1613,30 @@ async function createNonAiSong(){
 async function toggleNonAiSong(id,active){const {error}=await supabase.from('non_ai_chart_songs').update({is_active:active}).eq('id',id);if(error){message('비AI 곡 상태 변경 오류: '+error.message);return;}await loadNonAiChartSongs();renderNonAiSongs();await loadAdminNonAiSongs();}
 async function deleteNonAiSong(id){if(!confirm('이 비AI 곡을 삭제할까요?'))return;const {error}=await supabase.from('non_ai_chart_songs').delete().eq('id',id);if(error){message('비AI 곡 삭제 오류: '+error.message);return;}await loadNonAiChartSongs();renderNonAiSongs();await loadAdminNonAiSongs();}
 
+async function discoverYoutubeAiMusic(){
+ const btn=$('discoverYoutubeAiBtn'),status=$('youtubeDiscoveryStatus'),target=$('youtubeDiscoveryResults');
+ btn.disabled=true;btn.textContent='유튜브 검색 중...';status.textContent='유튜브 전체에서 다양한 주제·장르로 후보를 발굴하고 있습니다.';
+ target.innerHTML='';
+ try{
+  const {data,error}=await supabase.functions.invoke('youtube-chart');
+  if(error) throw error;
+  if(!data||data.error) throw new Error(data?.error||'검색 결과를 받지 못했습니다.');
+  const songs=data.songs||[];
+  status.textContent='검색어 '+Number(data.search_query_count||0)+'개 · 고유 영상 '+Number(data.unique_videos_found||0)+'개 · 음악 후보 '+Number(data.candidate_count||songs.length)+'개. 실제 AI 배지 검증 전 후보입니다.';
+  target.innerHTML=songs.map((song,index)=>{
+   const duration=Number(song.youtube_duration_seconds)||0;
+   const time=Math.floor(duration/60)+':'+String(duration%60).padStart(2,'0');
+   return '<div class="ad-admin-item"><span><b>'+escapeHTML(song.title)+'</b> · '+escapeHTML(song.artist||'')+
+    '<br><small>'+time+' · '+Number(song.youtube_views||0).toLocaleString('ko-KR')+'회 · AI 배지 검증 전</small></span>'+
+    '<a href="'+escapeHTML(song.youtube_url)+'" target="_blank" rel="noopener">유튜브 확인</a></div>';
+  }).join('')||'<p>조건에 맞는 후보가 없습니다. 검색어를 확장해야 합니다.</p>';
+ }catch(error){
+  status.textContent='유튜브 검색 오류: '+(error.message||String(error));
+ }finally{
+  btn.disabled=false;btn.textContent='유튜브 전체 검색 실행';
+ }
+}
+
 async function loadChartAds(){
  const {data,error}=await supabase.from('chart_ads').select('id,title,artist,youtube_id,ad_label,placement,sort_order').eq('is_active',true).order('sort_order',{ascending:true});
  if(error){chartAds=[];console.warn('광고 목록을 불러오지 못했습니다.',error.message);return;}
@@ -1685,6 +1714,7 @@ $('editProfileBtn').addEventListener('click',()=>{$('profileView').hidden=true;$
 $('cancelProfileBtn').addEventListener('click',()=>{$('profileEdit').hidden=true;});
 $('saveProfileBtn').addEventListener('click',saveProfile);
 $('createAdBtn').addEventListener('click',createAd);
+$('discoverYoutubeAiBtn').addEventListener('click',discoverYoutubeAiMusic);
 $('musicModalClose').addEventListener('click',closeMusicModal);
 $('musicActionModal').addEventListener('click',event=>{if(event.target.id==='musicActionModal')closeMusicModal();});
 $('createNonAiSongBtn').addEventListener('click',createNonAiSong);
