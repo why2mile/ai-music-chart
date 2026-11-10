@@ -258,8 +258,9 @@ label{
  transition:transform .25s;
 }
 
+.thumb-shorts{aspect-ratio:9/8;overflow:hidden;}
 .thumb-shorts img{
- aspect-ratio:9/8;
+ width:100%;height:100%;aspect-ratio:auto;
  object-fit:cover;
 }
 
@@ -297,9 +298,8 @@ label{
  background:#000;
 }
 
-.player-area-shorts{
- aspect-ratio:9/8;
-}
+.player-area-shorts{aspect-ratio:9/8;}
+.player-area-shorts > div{width:100%;height:100%;}
 
 .player-area iframe{
  width:100%;
