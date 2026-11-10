@@ -1456,6 +1456,7 @@ function renderSongs(){
  const allTime=validSongs.filter(song=>!isShorts(song)).sort((a,b)=>Number(b.youtube_views||0)-Number(a.youtube_views||0)).slice(0,12);
  const allTimeTarget=$('aiAllTimeList');if(allTimeTarget){allTimeTarget.className='period-rank-list';allTimeTarget.innerHTML=allTime.map((song,i)=>'<div class="period-rank-row"><span>'+String(i+1).padStart(2,'0')+'위 · '+escapeHTML(song.title)+'</span><strong>'+Number(song.youtube_views||0).toLocaleString('ko-KR')+'회</strong></div>').join('')||'<p>AI 배지 검증곡이 없습니다.</p>';}
  renderNonAiSongs();
+ return;
 
  renderPeriodRanks('nonAiMonthlyList',nonAiSongs,30,'최근 30일 조회수 기록 수집 중입니다.');
  realtimeTickerItems=['실시간 AI 음악 소식 · 2초마다 순위 정보가 바뀝니다.',...scoredMain.slice(0,10).map(song=>String(song.rank).padStart(2,'0')+'위 · '+song.title+' — '+song.artist)];
