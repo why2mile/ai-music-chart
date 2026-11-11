@@ -807,6 +807,10 @@ main#home{max-width:1524px;margin:0 auto;padding:0 22px}.kn-dashboard{max-width:
 @media(max-width:1050px){.kn-ranking-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.kn-people-list{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media(max-width:650px){.kn-ranking-grid{grid-template-columns:1fr}.kn-people-list{grid-template-columns:repeat(2,minmax(0,1fr))}.kn-ranking-heading{display:block}.kn-data-updated{display:block;margin-top:8px}}
 
+
+.kn-channel-list .kn-avatar{overflow:hidden;flex:0 0 34px}.kn-channel-list .kn-avatar img{width:100%;height:100%;object-fit:cover}.kn-overall-list{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:0 14px;margin-top:12px}.kn-overall-row{display:grid;grid-template-columns:24px 76px minmax(0,1fr);gap:8px;align-items:center;padding:7px 0;border-bottom:1px solid #2d3246}.kn-overall-row>b{color:#f0c76a;font-size:12px}.kn-overall-row img{width:76px;height:48px;object-fit:cover;border-radius:5px}.kn-overall-row a{text-decoration:none;min-width:0}.kn-overall-row strong{display:block;color:#f1f2f6;font-size:10px;line-height:1.35;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}.kn-overall-row small{display:block;color:#aab2c4;font-size:9px;margin-top:4px}
+@media(max-width:650px){.kn-overall-list{grid-template-columns:1fr}}
+
 </style>
 </head>
 
@@ -829,7 +833,7 @@ main#home{max-width:1524px;margin:0 auto;padding:0 22px}.kn-dashboard{max-width:
  <section class="kn-hero">
   <div class="kn-hero-copy"><div class="kn-kicker">KOREA TREND INDEX · DAILY BRIEFING</div><h1>오늘의 인기 영상 <em>TOP 100</em></h1><p>대한민국 유튜브에서 지금 가장 주목받는 관심사와 이슈를 한눈에</p><a href="#kn-top100">전체 순위 보기 <b>→</b></a></div>
   <div class="kn-hero-visual"><div class="kn-glow"></div><div class="kn-hero-play">▶</div><span class="kn-hero-label">WHAT KOREA WATCHES</span></div>
-  <aside class="kn-keywords"><h3>🔥 오늘의 주요 키워드</h3><ol><li><i>1</i> 경제·금융</li><li><i>2</i> 정치·사회</li><li><i>3</i> 인공지능</li><li><i>4</i> 부동산</li><li><i>5</i> 국제정세</li></ol><div class="kn-keyword-chart"><span></span><span></span><span></span><span></span><span></span></div></aside>
+  <aside class="kn-keywords"><h3>🔥 오늘의 주요 키워드</h3><ol id="kn-keyword-items"><li><i>1</i> 키워드 수집 중</li></ol><div class="kn-keyword-chart"><span></span><span></span><span></span><span></span><span></span></div></aside>
  </section>
  <div class="kn-main-grid">
   <section class="kn-panel kn-category-panel" id="kn-categories"><div class="kn-panel-head"><h2>🗂 분야별 인기 TOP 100</h2><a href="#kn-top100">분야 전체 보기 →</a></div>
@@ -837,7 +841,7 @@ main#home{max-width:1524px;margin:0 auto;padding:0 22px}.kn-dashboard{max-width:
     <a href="#kn-top100"><b>🏛</b>정치·시사</a><a href="#kn-top100"><b>💰</b>경제·금융</a><a href="#kn-top100"><b>📈</b>돈벌이·사업</a><a href="#kn-top100"><b>🛡</b>군사·밀리터리</a><a href="#kn-top100"><b>🌐</b>국제정세</a><a href="#kn-top100"><b>🏭</b>산업·기업</a><a href="#kn-top100"><b>🏠</b>부동산</a><a href="#kn-top100"><b>💄</b>뷰티·패션</a><a href="#kn-top100"><b>🎮</b>게임</a><a href="#kn-top100"><b>🎵</b>음악</a><a href="#kn-top100"><b>🎬</b>연예·방송</a><a href="#kn-top100"><b>⚽</b>스포츠</a><a href="#kn-top100"><b>🤖</b>IT·AI</a><a href="#kn-top100"><b>🔬</b>과학·기술</a><a href="#kn-top100"><b>🌱</b>농업·식품</a><a href="#kn-top100"><b>✈️</b>여행·문화</a><a href="#kn-top100"><b>📚</b>교육·지식</a><a href="#kn-top100"><b>🐾</b>생활·반려</a>
    </div><div class="kn-feature"><div class="kn-feature-image"><span>WEEKLY FEATURE</span><b>오늘 가장 주목받는 이슈</b></div><strong>분야별 대표 콘텐츠</strong><p>가장 높은 관심을 얻은 영상과 관련 키워드를 보여주는 영역입니다.</p></div></div>
   </section>
-  <section class="kn-panel" id="kn-channels"><div class="kn-panel-head"><h2>🏆 오늘의 인기 채널 TOP 10</h2><a href="#kn-channels">더보기 →</a></div><div class="kn-channel-list"><div><i>1</i><b class="kn-avatar">K</b><span>인기 채널 데이터 연동 대기</span><strong>—</strong></div><div><i>2</i><b class="kn-avatar">N</b><span>구독자 증가 순위</span><strong>—</strong></div><div><i>3</i><b class="kn-avatar">T</b><span>급상승 채널</span><strong>—</strong></div><div><i>4</i><b class="kn-avatar">M</b><span>분야별 인기 채널</span><strong>—</strong></div><div><i>5</i><b class="kn-avatar">P</b><span>신규 주목 채널</span><strong>—</strong></div></div></section>
+  <section class="kn-panel" id="kn-channels"><div class="kn-panel-head"><h2>🏆 오늘의 인기 채널 TOP 10</h2><a href="#kn-channels">더보기 →</a></div><div class="kn-channel-list" id="kn-channel-list"><div>인기 채널 데이터를 수집하고 있습니다.</div></div></section>
   <section class="kn-panel" id="kn-rising"><div class="kn-panel-head"><h2>✉ 급상승 영상 TOP 10</h2><a href="#kn-rising">더보기 →</a></div><div class="kn-rising-list"><div><b>01</b><span class="kn-thumb kn-thumb-a">TREND</span><span><strong>급상승 영상 데이터 연결 대기</strong><small>조회수 증가량 · 업로드 시간</small></span></div><div><b>02</b><span class="kn-thumb kn-thumb-b">ISSUE</span><span><strong>실시간 인기 영상</strong><small>분야별 관심도 분석</small></span></div><div><b>03</b><span class="kn-thumb kn-thumb-c">NOW</span><span><strong>오늘의 주목 콘텐츠</strong><small>조회수 증가율 기준</small></span></div></div></section>
  </div>
  <section class="kn-panel kn-people-panel" id="kn-trends"><div class="kn-panel-head"><h2>🔥 지금 뜨는 인물 <span class="kn-hot">TOP 10</span></h2><span class="kn-people-method">관련 영상의 최근 24시간 조회수 합계</span></div><div id="kn-people-list" class="kn-people-list"><div class="kn-loading">유튜브 인물 관련 영상을 수집하고 있습니다.</div></div></section>
@@ -863,7 +867,7 @@ main#home{max-width:1524px;margin:0 auto;padding:0 22px}.kn-dashboard{max-width:
   </div>
  </section>
  <section class="kn-panel kn-data-footer" id="kn-analysis"><div><span class="kn-kicker">DATA & INSIGHT</span><h2>대한민국의 관심은 어떻게 움직이고 있을까?</h2><p>조회수 증가량, 채널 성장, 분야별 순위 변동을 누적 데이터로 분석합니다.</p></div><div class="kn-data-stats"><span><b>24H</b>일간 변화</span><span><b>7D</b>주간 흐름</span><span><b>30D</b>월간 추세</span></div></section>
- <section class="kn-panel kn-top100" id="kn-top100"><div class="kn-panel-head"><h2>종합 인기 TOP 100</h2><span>전체 분야 통합 순위 · 데이터 연동 예정</span></div><p>실제 순위 데이터가 연결되면 이곳에 통합 랭킹이 표시됩니다.</p></section>
+ <section class="kn-panel kn-top100" id="kn-top100"><div class="kn-panel-head"><h2>종합 인기 TOP 100</h2><span>전체 분야 통합 순위 · 데이터 연동 예정</span></div><p>최근 24시간 조회수 증가량 기준 · 데이터 수집 초기에는 현재 조회수순으로 임시 표시</p><div id="kn-overall-list" class="kn-overall-list"></div></section>
 </section>
 <div id="knSearchStatus" class="kn-search-status" aria-live="polite"></div>
 
@@ -1049,6 +1053,18 @@ async function loadKoreaNowTrends(){
   const peopleTarget=$('kn-people-list');
   if(peopleTarget){
    peopleTarget.innerHTML=(data.people||[]).slice(0,10).map((p,i)=>'<div class="kn-person-card"><span class="kn-person-rank">'+(i+1)+'</span><img src="'+escapeHTML(p.thumbnail_url||'')+'" alt="" loading="lazy"><span><b>'+escapeHTML(p.name)+'</b><small>'+(p.views_24h===null?'24시간 집계 중':fmt(p.views_24h)+'회 · 관련영상 '+p.video_count+'개')+'</small></span></div>').join('');
+  }
+  const channelTarget=$('kn-channel-list');
+  if(channelTarget)channelTarget.innerHTML=(data.channels||[]).slice(0,10).map((c,i)=>'<div><i>'+(i+1)+'</i><b class="kn-avatar">'+(c.avatar?'<img src="'+escapeHTML(c.avatar)+'" alt="">':escapeHTML((c.title||'?').slice(0,1)))+'</b><span>'+escapeHTML(c.title)+'</span><strong>'+fmt(c.subscribers)+'명</strong></div>').join('')||'<div>채널 데이터가 없습니다.</div>';
+  const overallTarget=$('kn-overall-list');
+  if(overallTarget)overallTarget.innerHTML=(data.overall||[]).slice(0,100).map((v,i)=>'<div class="kn-overall-row"><b>'+(i+1)+'</b><img src="'+escapeHTML(v.thumbnail_url||'')+'" alt="" loading="lazy"><a href="'+escapeHTML(v.video_url||'#')+'" target="_blank" rel="noopener"><strong>'+escapeHTML(v.title)+'</strong><small>'+escapeHTML(v.channel_title)+' · '+(v.views_24h===null?'24시간 집계 중':fmt(v.views_24h)+'회 증가')+'</small></a></div>').join('');
+  const keywordTarget=$('kn-keyword-items');
+  if(keywordTarget){
+   const stop=new Set(['오늘','영상','유튜브','한국','대한민국','관련','공개','공식','채널','조회수','뉴스','shorts','official','youtube','the','and','with','from','this']);
+   const counts=new Map();
+   for(const v of (data.overall||[])){for(const w of String(v.title||'').toLowerCase().match(/[가-힣]{2,}|[a-z0-9]{3,}/g)||[]){if(!stop.has(w))counts.set(w,(counts.get(w)||0)+1);}}
+   const top=[...counts].sort((a,b)=>b[1]-a[1]).slice(0,5);
+   keywordTarget.innerHTML=top.map(([word,count],i)=>'<li><i>'+(i+1)+'</i> '+escapeHTML(word)+' <small style="margin-left:auto;color:#9da7bc">'+count+'건</small></li>').join('')||'<li>키워드 수집 중</li>';
   }
   if(status)status.textContent='최근 갱신 '+new Date(data.updated_at).toLocaleString('ko-KR')+' · 24시간 비교 가능 영상 '+fmt(data.coverage?.ready_24h||0)+'개';
  }catch(e){
