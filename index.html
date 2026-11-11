@@ -815,6 +815,31 @@ main#home{max-width:1524px;margin:0 auto;padding:0 22px}.kn-dashboard{max-width:
 
 .kn-rising-list .kn-thumb{overflow:hidden}.kn-rising-list .kn-thumb img{width:100%;height:100%;object-fit:cover}.kn-rising-list a{color:inherit;text-decoration:none}.kn-rising-list>div{grid-template-columns:22px 82px minmax(0,1fr)}.kn-channel-list>div:nth-child(n+7),.kn-rising-list>div:nth-child(n+7){display:none}.kn-rising-list>div:nth-child(n+4){display:grid}.kn-rising-list>div{padding:6px 0}
 
+
+/* Company, contact and partnership footer */
+.site-footer{margin-top:56px;background:#10131f;color:#eef1f8;border-top:1px solid #292e40;padding:42px 22px 20px}
+.site-footer-inner{max-width:1480px;margin:0 auto}
+.footer-about{max-width:760px;margin-bottom:34px}
+.footer-brand{font-size:25px;font-weight:800;letter-spacing:-.7px;color:#fff}
+.footer-brand span{color:#9d8bff}
+.footer-about h2{font-size:19px;font-weight:650;margin:15px 0 9px}
+.footer-about p,.footer-inquiry>p{font-size:13px;line-height:1.75;color:#aeb5c7;margin:0}
+.footer-contact{margin-top:12px!important}
+.site-footer a{color:#c4b8ff;text-decoration:none}
+.site-footer a:hover{text-decoration:underline}
+.footer-inquiry-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px}
+.footer-inquiry{border:1px solid #30364a;border-radius:12px;padding:22px;background:#171b2b;min-width:0}
+.footer-inquiry h3{font-size:17px;margin:0 0 7px;color:#fff}
+.footer-inquiry>p{margin-bottom:17px}
+.footer-mail-form{display:grid;gap:11px}
+.footer-mail-form label{display:grid;gap:6px;font-size:12px;color:#d9deea}
+.footer-mail-form input,.footer-mail-form textarea{width:100%;box-sizing:border-box;border:1px solid #3b4259;border-radius:7px;background:#101421;color:#fff;padding:10px 11px;font:inherit;font-size:13px;outline:none}
+.footer-mail-form input:focus,.footer-mail-form textarea:focus{border-color:#9d8bff}
+.footer-mail-form textarea{resize:vertical;min-height:82px}
+.footer-mail-form button{justify-self:start;border:0;border-radius:7px;background:#7564d8;color:#fff;padding:11px 16px;font-size:13px;font-weight:700;cursor:pointer}
+.footer-mail-form button:hover{background:#8878e8}
+.footer-bottom{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;border-top:1px solid #292e40;margin-top:28px;padding-top:17px;color:#81899e;font-size:11px}
+@media(max-width:700px){.site-footer{padding:32px 15px 18px;margin-top:38px}.footer-inquiry-grid{grid-template-columns:1fr}.footer-about h2{font-size:17px}.footer-inquiry{padding:17px}}
 </style>
 
 <style id="top100-user-overrides">
@@ -1082,16 +1107,54 @@ main#home{max-width:1524px;margin:0 auto;padding:0 22px}.kn-dashboard{max-width:
  </div>
 </section>
 
-<section class="community-panel" id="communitySection">
- <div>
-  <div class="eyebrow">CREATOR COMMUNITY</div>
-  <h2>창작자의 음악을 소개하세요</h2>
-  <p>AI 음악을 만드는 창작자라면 회원 로그인 후 곡 등록을 신청할 수 있습니다.</p>
- </div>
- <a href="#registerPanel" class="community-button">내 음악 등록하기 →</a>
-</section>
-
 </main>
+
+<footer class="site-footer" id="siteFooter">
+ <div class="site-footer-inner">
+  <section class="footer-about">
+   <div class="footer-brand">TOP100 <span>KOREA</span></div>
+   <h2>대한민국 유튜브 트렌드를 한눈에</h2>
+   <p>TOP100 KOREA는 유튜브에서 주목받는 영상과 분야별 인기 흐름을 모아 소개하는 트렌드 플랫폼입니다. 다양한 관심사와 콘텐츠를 쉽고 빠르게 발견할 수 있도록 정보를 정리하고 전달합니다.</p>
+   <p class="footer-contact">문의 <a href="mailto:why2mile@gmail.com">why2mile@gmail.com</a></p>
+  </section>
+  <div class="footer-inquiry-grid">
+   <section class="footer-inquiry">
+    <h3>광고 제휴</h3>
+    <p>사이트 내 광고 게재와 브랜드 홍보를 위한 제휴 문의를 보내주세요.</p>
+    <form class="footer-mail-form" data-mail-subject="[TOP100 KOREA] 광고 제휴 문의">
+     <label>회사·담당자명<input name="name" type="text" placeholder="회사명 또는 담당자명" required></label>
+     <label>회신 이메일<input name="email" type="email" placeholder="답변받을 이메일 주소" required></label>
+     <label>문의 내용<textarea name="message" rows="3" placeholder="광고 형태, 희망 일정 등 문의 내용을 적어주세요." required></textarea></label>
+     <button type="submit">광고 제휴 문의 보내기 →</button>
+    </form>
+   </section>
+   <section class="footer-inquiry">
+    <h3>업무 제휴</h3>
+    <p>콘텐츠, 서비스, 데이터 및 기타 협력 제안을 기다립니다.</p>
+    <form class="footer-mail-form" data-mail-subject="[TOP100 KOREA] 업무 제휴 문의">
+     <label>회사·담당자명<input name="name" type="text" placeholder="회사명 또는 담당자명" required></label>
+     <label>회신 이메일<input name="email" type="email" placeholder="답변받을 이메일 주소" required></label>
+     <label>제휴 제안<textarea name="message" rows="3" placeholder="제휴 목적과 제안 내용을 적어주세요." required></textarea></label>
+     <button type="submit">업무 제휴 문의 보내기 →</button>
+    </form>
+   </section>
+  </div>
+  <div class="footer-bottom"><span>© 2026 TOP100 KOREA. All rights reserved.</span><span>Contact: <a href="mailto:why2mile@gmail.com">why2mile@gmail.com</a></span></div>
+ </div>
+</footer>
+
+<script>
+document.querySelectorAll('.footer-mail-form').forEach(form => {
+ form.addEventListener('submit', event => {
+  event.preventDefault();
+  if (!form.reportValidity()) return;
+  const data = new FormData(form);
+  const subject = form.dataset.mailSubject || '[TOP100 KOREA] 문의';
+  const body = '회사·담당자명: ' + data.get('name') + '\\n회신 이메일: ' + data.get('email') + '\\n\\n문의 내용:\\n' + data.get('message');
+  window.location.href = 'mailto:why2mile@gmail.com?subject=' + encodeURIComponent(subject) + '&body=' + encodeURIComponent(body);
+ });
+});
+</script>
 <div class="music-modal" id="musicActionModal" role="dialog" aria-modal="true" aria-labelledby="musicModalTitle"><div class="music-modal-card"><div class="music-modal-head"><h3 id="musicModalTitle">곡 사용 제안</h3><button class="music-modal-close" id="musicModalClose" type="button">닫기</button></div><div id="musicModalBody"></div></div></div>
 <script type="module">
 import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm';
