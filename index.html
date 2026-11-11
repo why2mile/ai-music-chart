@@ -946,7 +946,7 @@ label{
  <div class="chart-layout">
   <section class="ai-main-column"><div class="layout-column-title">🎵 한국 AI 음악 · 통합 인기 TOP 100</div><p class="chart-period-note" id="weeklyChartNote">외부 플랫폼 인기 90%와 우리 사이트 참여도 10%를 합산합니다.</p><section class="grid-main" id="mainSongsGrid"></section></section>
   <section class="non-ai-chart non-ai-column" id="nonAiChartSection">
-   <section class="period-chart alltime-ai-chart"><h3>🏆 역대 AI 음악 순위</h3><p>등록된 한국어 음악 영상 · 유튜브 누적 조회수 기준</p><div class="period-empty" id="aiAllTimeList">한국어 음악 영상을 불러오는 중입니다.</div></section>
+   <section class="period-chart alltime-ai-chart"><h3>🏆 역대 AI 음악 순위</h3><p>AI 표기·운영 선별 곡 · 유튜브 누적 조회수 기준</p><div class="period-empty" id="aiAllTimeList">AI 음악을 불러오는 중입니다.</div></section><section class="non-ai-continuation"><h4>🇰🇷 역대 한국 유튜브 노래 순위</h4><p class="chart-period-note">한국 대중음악 인기 영상 · 누적 조회수 기준</p><div class="non-ai-list" id="nonAiSongsGrid"><p class="modal-note">한국 유튜브 음악 순위를 불러오는 중입니다.</p></div></section>
    
   </section>
   <section class="shorts-column"><div class="layout-column-title" style="color:#c686df;">⚡ AI 한국음악 쇼츠</div><section class="grid-shorts" id="shortsGrid"></section></section>
@@ -989,7 +989,7 @@ let currentActionMode = 'proposal';
 let mainViewMode = 'card';
 
 // 🎯 수동 허용 ID (직접 등록하신 트로트 곡 및 예외 수동 허용곡)
-const manualKoreanSongIds = new Set(['uTEhWOTuUuY', 'qC28Gpn87V4']);
+const manualKoreanSongIds = new Set(['uTEhWOTuUuY','qC28Gpn87V4','GxChUrrY4bc','EfzxsDsWmlI','8miWB5E7PK0','l2-iM08Ko14','UWN-n9COpX8','dnI1jogO7BI','Co08IapAsO8','1OMzPONPMGQ','tzYONTevZiI','TbQpYspyHzs','jCBLdpxEymM']);
 
 function message(text){
  $('status').textContent = text;
@@ -1026,10 +1026,11 @@ function isEligibleKoreanSong(song){
  const title=String(song.title||'');
  const text=(title+' '+(song.artist||'')+' '+(song.genre||'')).toLowerCase();
  if(!/[가-힣]/.test(title) || /[\u3040-\u30ff\u3400-\u9fff]/.test(title)) return false;
- const excluded=/강의|튜토리얼|사용법|사용 방법|만드는 법|만드는 방법|제작 방법|하는 방법|발매하는 방법|체크리스트|업그레이드 해보기|음원제작|플레이리스트|30분 듣기|듣기 좋은|프롬프트 공유|수익화|돈 버는|부업|저작권|리뷰|후기|비교|뉴스|인터뷰|해설|분석|how[\s-]?to|tutorial|review|explained|reaction|news|interview|변호사tv|소송|주간 수노/i;
- return !excluded.test(text);
+ const excluded=/강의|튜토리얼|사용법|사용 방법|만드는 법|만드는 방법|제작 방법|하는 방법|발매하는 방법|체크리스트|업그레이드 해보기|음원제작|플레이리스트|30분 듣기|듣기 좋은|프롬프트 공유|수익화|돈 버는|부업|저작권|리뷰|후기|비교|뉴스|인터뷰|해설|분석|how[\s-]?to|tutorial|review|explained|reaction|news|interview|변호사tv|소송|주간 수노|cover|커버|remix|리믹스/i;
+ if(excluded.test(text)) return false;
+ const aiMarker=/\bai\b|ai음악|ai노래|ai보컬|ai작곡|ai자작곡|ai 작곡|ai 자작곡|suno|udio|수노|유디오|인공지능/i;
+ return song.chart_category==='korean_ai' || manualKoreanSongIds.has(song.youtube_id) || aiMarker.test(text);
 }
-
 function isShorts(song){
  return String(song.video_type || '').toLowerCase() === 'shorts';
 }
@@ -1624,7 +1625,7 @@ function renderNonAiSongs(){
  const target=$('nonAiSongsGrid');if(!target)return;
  const ordered=[...nonAiSongs].sort((a,b)=>Number(b.youtube_views||0)-Number(a.youtube_views||0));
  const row=(song,index)=>`<div class="non-ai-row" data-nonai-row="${escapeHTML(song.youtube_id)}"><span class="non-ai-rank">${index+1}위</span><img class="non-ai-thumb" src="https://i.ytimg.com/vi/${encodeURIComponent(song.youtube_id)}/mqdefault.jpg" alt="${escapeHTML(song.title)} 썸네일" loading="lazy" onerror="this.src='https://img.youtube.com/vi/${encodeURIComponent(song.youtube_id)}/hqdefault.jpg'"><div class="non-ai-copy"><div class="non-ai-title">${escapeHTML(song.title)}</div><div class="non-ai-artist">${escapeHTML(song.artist)}</div></div><span class="non-ai-views">${Number(song.youtube_views||0).toLocaleString('ko-KR')}회</span><button type="button" data-nonai-play="${escapeHTML(song.youtube_id)}">▶</button></div>`;
- target.innerHTML=ordered.slice(0,12).map(row).join('')||'<p class="modal-note">등록된 한국음악이 없습니다.</p>';
+ target.innerHTML=ordered.slice(0,14).map(row).join('')||'<p class="modal-note">등록된 한국음악이 없습니다.</p>';
  target.querySelectorAll('[data-nonai-play]').forEach(button=>button.addEventListener('click',()=>playNonAiButton(button,target)));
 }
 function playNonAiButton(button,container){
@@ -1757,7 +1758,7 @@ async function loadSongs(){
  allSongs = data || [];
  // 곡 목록과 썸네일을 먼저 표시해 좋아요 집계 RPC가 지연되어도 영상 카드가 비어 보이지 않게 한다.
  renderSongs();
- await Promise.all([loadMyLikes(),loadGuestLikes(),loadChartAds(),loadYoutubeViewHistory(),loadExternalScores(),loadSiteCommentCounts()]);
+ await Promise.all([loadMyLikes(),loadGuestLikes(),loadChartAds(),loadYoutubeViewHistory(),loadExternalScores(),loadSiteCommentCounts(),loadNonAiChartSongs()]);
  if(!$('adAdminPanel').hidden) await loadAdminExternalScores();
  renderSongs();
 }
