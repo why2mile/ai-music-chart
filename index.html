@@ -1088,7 +1088,7 @@ function renderKoreaIssueTab(data){
  const isShort=v=>v.is_short===true||(Number(v.duration_seconds||0)>0&&Number(v.duration_seconds)<=180);
  const shorts=unique.filter(isShort).sort((a,b)=>Number(b.view_count||0)-Number(a.view_count||0));
  const others=unique.filter(v=>!isShort(v)).sort((a,b)=>Number(b.view_count||0)-Number(a.view_count||0));
- koreaIssueVideos=[...shorts,...others];
+ koreaIssueVideos=shorts.length?shorts:others;
  koreaIssuePage=0;
  renderKoreaIssuePage();
 }
@@ -1101,7 +1101,7 @@ function renderKoreaIssuePage(){
  const labels={"정치·시사":"정치","스포츠":"스포츠","개그·유머":"개그","게임":"게임","건강·의료":"건강","여행·문화":"문화","군사·밀리터리":"군사","돈벌이·사업":"돈벌이"};
  host.classList.toggle("has-shorts",videos.some(v=>v.is_short===true||(Number(v.duration_seconds||0)>0&&Number(v.duration_seconds)<=180)));
  host.innerHTML=videos.map(v=>{const short=v.is_short===true||(Number(v.duration_seconds||0)>0&&Number(v.duration_seconds)<=180);return '<a class="kn-issue-video'+(short?' is-short':'')+'" href="'+escapeHTML(v.video_url||"#")+'" target="_blank" rel="noopener"><img src="'+escapeHTML(v.thumbnail_url||"")+'" alt="" loading="lazy"><b>['+escapeHTML(labels[v.issueCategory]||v.issueCategory)+'] '+escapeHTML(v.title||"")+'</b><small>'+escapeHTML(v.channel_title||"")+(short?' · 쇼츠':'')+'</small></a>';}).join("")||'<div class="kn-issue-empty">분야별 영상을 수집하고 있습니다.</div>';
- const label=$("kn-issue-page-label");if(label)label.textContent="쇼츠 우선 · "+(koreaIssueVideos.length?Math.min(koreaIssuePage*pageSize+1,koreaIssueVideos.length):0)+"–"+Math.min((koreaIssuePage+1)*pageSize,koreaIssueVideos.length)+" / "+koreaIssueVideos.length;
+ const label=$("kn-issue-page-label");if(label)label.textContent=(koreaIssueVideos.some(v=>v.is_short===true||(Number(v.duration_seconds||0)>0&&Number(v.duration_seconds)<=180))?"쇼츠 영상 · ":"분야별 영상 · ")+(koreaIssueVideos.length?Math.min(koreaIssuePage*pageSize+1,koreaIssueVideos.length):0)+"–"+Math.min((koreaIssuePage+1)*pageSize,koreaIssueVideos.length)+" / "+koreaIssueVideos.length;
  const next=$("kn-issue-next");if(next)next.disabled=koreaIssueVideos.length<=pageSize;
 }
 $("kn-issue-next")?.addEventListener("click",()=>{koreaIssuePage++;renderKoreaIssuePage();});
