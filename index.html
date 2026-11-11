@@ -1394,7 +1394,7 @@ function calculateScores(songsList,period){
  for(const row of [...externalScores].filter(r=>new Date(r.snapshot_date+'T23:59:59')>=cutoff).sort((a,b)=>String(b.snapshot_date).localeCompare(String(a.snapshot_date)))){
   const key=row.song_id+'|'+row.platform;if(!latestBySongPlatform.has(key))latestBySongPlatform.set(key,row);
  }
- const activePlatforms=new Set([...latestBySongPlatform.values()].map(r=>r.platform));
+ const activePlatforms=new Set([...latestBySongPlatform.values()].map(r=>r.platform).filter(p=>p!=='youtube'));
  const extWeight=30+[...activePlatforms].reduce((sum,p)=>sum+(PLATFORM_WEIGHTS[p]||0),0);
  return songs.map(song=>{
   let weighted=(youtubeScore.get(song.id)||0)*30;
@@ -1775,6 +1775,7 @@ async function loadSongs(){
  // 곡 목록과 썸네일을 먼저 표시해 좋아요 집계 RPC가 지연되어도 영상 카드가 비어 보이지 않게 한다.
  renderSongs();
  await Promise.all([loadMyLikes(),loadGuestLikes(),loadChartAds(),loadYoutubeViewHistory(),loadExternalScores(),loadSiteCommentCounts()]);
+ if(!$('adAdminPanel').hidden) await loadAdminExternalScores();
  renderSongs();
 }
 
