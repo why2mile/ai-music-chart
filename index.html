@@ -860,7 +860,7 @@ main#home{max-width:1524px;margin:0 auto;padding:0 22px}.kn-dashboard{max-width:
  <a class="kn-brand" href="#home"><span class="kn-play">▶</span><span><b>TOP100 유튜브 KOREA</b><small>오늘 한국인이 관심이 많은 영상만 모았다</small></span></a>
  <form class="kn-search" onsubmit="event.preventDefault();document.getElementById('knSearchStatus').textContent='검색 기능은 데이터 연동 단계에서 활성화됩니다.'"><input aria-label="검색어" placeholder="검색어를 입력하세요..."><button aria-label="검색" type="submit">⌕</button></form>
  <div class="kn-update"><span>▦</span><div><b>오늘 업데이트</b><small id="kn-header-updated">유튜브 데이터 수집 중</small></div></div>
- <a class="header-login" id="headerLogin" href="#authPanel">로그인</a>
+ <div class="kn-member-actions"><a class="header-login" id="headerLogin" href="#authPanel">로그인</a><a class="header-login" id="headerSignup" href="#authPanel">회원가입</a><a class="header-login" id="headerLogout" href="#memberPanel" hidden>로그아웃</a></div>
 </header>
 <nav class="kn-nav" aria-label="주요 메뉴">
  <a class="active" href="#home">⌂ 홈</a><a href="#kn-top100" data-kn-view="overall">종합 TOP 100</a><a href="#kn-trends">오늘의 트렌드</a><a href="#kn-top100" data-kn-view="rising">급상승 영상</a><a href="#kn-weekly">주간 핫이슈</a><a href="#kn-channels">인기 유튜버</a><a href="#kn-analysis">통계·분석</a><a href="#chartSection">AI 음악 차트</a>
@@ -871,36 +871,58 @@ main#home{max-width:1524px;margin:0 auto;padding:0 22px}.kn-dashboard{max-width:
 <section class="kn-dashboard" aria-label="TOP100 유튜브 KOREA 메인 대시보드">
  
  <section class="kn-hero kn-issue-hero" aria-label="주요 분야별 이슈 영상">
-  <div class="kn-issue-head"><div><div class="kn-kicker">KOREA TREND INDEX · LIVE ISSUES</div><h1>지금 주목받는 분야별 영상 이슈</h1></div><div class="kn-issue-controls"><span class="kn-issue-rotation" id="kn-issue-page-label">분야별 주요 영상</span><button type="button" id="kn-issue-prev" class="kn-issue-next" aria-label="이전 영상 보기">‹</button><button type="button" id="kn-issue-next" class="kn-issue-next" aria-label="다음 영상 보기">›</button></div></div>
+  <div class="kn-issue-head"><div><h1>최근 핫이슈 영상</h1></div><div class="kn-issue-controls"><span class="kn-issue-rotation" id="kn-issue-page-label">분야별 주요 영상</span><button type="button" id="kn-issue-prev" class="kn-issue-next" aria-label="이전 영상 보기">‹</button><button type="button" id="kn-issue-next" class="kn-issue-next" aria-label="다음 영상 보기">›</button></div></div>
   <div class="kn-issue-videos" id="kn-issue-videos"><div class="kn-issue-empty">주요 이슈 영상을 불러오는 중입니다.</div></div>
  </section>
- <div class="kn-main-grid">
-  <section class="kn-panel kn-category-panel" id="kn-categories"><div class="kn-panel-head"><h2>🗂 분야별 인기 TOP 100</h2><a href="#kn-category-rankings">분야 전체 보기 →</a></div>
-   <div class="kn-category-list kn-category-issue-list">
-    <a href="#kn-top100" data-kn-category="정치·시사"><span class="kn-cat-label"><b>🏛</b><strong>정치·시사</strong></span><span class="kn-cat-issue" id="kn-issue-0">이슈 수집 중</span></a>
-    <a href="#kn-top100" data-kn-category="경제·금융"><span class="kn-cat-label"><b>💰</b><strong>경제·금융</strong></span><span class="kn-cat-issue" id="kn-issue-1">이슈 수집 중</span></a>
-    <a href="#kn-top100" data-kn-category="돈벌이·사업"><span class="kn-cat-label"><b>📈</b><strong>돈벌이·사업</strong></span><span class="kn-cat-issue" id="kn-issue-2">이슈 수집 중</span></a>
-    <a href="#kn-top100" data-kn-category="군사·밀리터리"><span class="kn-cat-label"><b>🛡</b><strong>군사·밀리터리</strong></span><span class="kn-cat-issue" id="kn-issue-3">이슈 수집 중</span></a>
-    <a href="#kn-top100" data-kn-category="국제정세"><span class="kn-cat-label"><b>🌐</b><strong>국제정세</strong></span><span class="kn-cat-issue" id="kn-issue-4">이슈 수집 중</span></a>
-    <a href="#kn-top100" data-kn-category="산업·기업"><span class="kn-cat-label"><b>🏭</b><strong>산업·기업</strong></span><span class="kn-cat-issue" id="kn-issue-5">이슈 수집 중</span></a>
-    <a href="#kn-top100" data-kn-category="부동산"><span class="kn-cat-label"><b>🏠</b><strong>부동산</strong></span><span class="kn-cat-issue" id="kn-issue-6">이슈 수집 중</span></a>
-    <a href="#kn-top100" data-kn-category="뷰티·패션"><span class="kn-cat-label"><b>💄</b><strong>뷰티·패션</strong></span><span class="kn-cat-issue" id="kn-issue-7">이슈 수집 중</span></a>
-    <a href="#kn-top100" data-kn-category="게임"><span class="kn-cat-label"><b>🎮</b><strong>게임</strong></span><span class="kn-cat-issue" id="kn-issue-8">이슈 수집 중</span></a>
-    <a href="#kn-top100" data-kn-category="음악"><span class="kn-cat-label"><b>🎵</b><strong>음악</strong></span><span class="kn-cat-issue" id="kn-issue-9">이슈 수집 중</span></a>
-    <a href="#kn-top100" data-kn-category="연예·방송"><span class="kn-cat-label"><b>🎬</b><strong>연예·방송</strong></span><span class="kn-cat-issue" id="kn-issue-10">이슈 수집 중</span></a>
-    <a href="#kn-top100" data-kn-category="스포츠"><span class="kn-cat-label"><b>⚽</b><strong>스포츠</strong></span><span class="kn-cat-issue" id="kn-issue-11">이슈 수집 중</span></a>
-    <a href="#kn-top100" data-kn-category="IT·AI"><span class="kn-cat-label"><b>🤖</b><strong>AI</strong></span><span class="kn-cat-issue" id="kn-issue-12">이슈 수집 중</span></a>
-    <a href="#kn-top100" data-kn-category="과학·기술"><span class="kn-cat-label"><b>🔬</b><strong>과학·기술</strong></span><span class="kn-cat-issue" id="kn-issue-13">이슈 수집 중</span></a>
-    <a href="#kn-top100" data-kn-category="개그·유머"><span class="kn-cat-label"><b>😂</b><strong>개그·유머</strong></span><span class="kn-cat-issue" id="kn-issue-14">이슈 수집 중</span></a>
-    <a href="#kn-top100" data-kn-category="여행·문화"><span class="kn-cat-label"><b>✈️</b><strong>여행·문화</strong></span><span class="kn-cat-issue" id="kn-issue-15">이슈 수집 중</span></a>
-    <a href="#kn-top100" data-kn-category="교육·지식"><span class="kn-cat-label"><b>📚</b><strong>교육·지식</strong></span><span class="kn-cat-issue" id="kn-issue-16">이슈 수집 중</span></a>
-    <a href="#kn-top100" data-kn-category="생활·반려"><span class="kn-cat-label"><b>🐾</b><strong>생활·반려</strong></span><span class="kn-cat-issue" id="kn-issue-17">이슈 수집 중</span></a>
-    <a href="#kn-top100" data-kn-category="건강·의료"><span class="kn-cat-label"><b>🩺</b><strong>건강·의료</strong></span><span class="kn-cat-issue" id="kn-issue-18">이슈 수집 중</span></a>
-    <a href="#kn-top100" data-kn-category="자동차"><span class="kn-cat-label"><b>🚗</b><strong>자동차</strong></span><span class="kn-cat-issue" id="kn-issue-19">이슈 수집 중</span></a>
+ <div class="kn-main-grid kn-top-panels">
+  <section class="kn-panel kn-category-panel" id="kn-categories">
+   <div class="kn-panel-head"><h2>한국 이슈 TOP 100</h2><span class="kn-heading-note">정치부터 돈벌이, 유머, 강아지까지</span></div>
+   <div class="kn-category-list kn-category-issue-list"><a href="#kn-top100" data-kn-category="정치·시사"><strong>정치·국제</strong><span class="kn-cat-issue" id="kn-issue-0">영상 수집 중</span></a>
+    <a href="#kn-top100" data-kn-category="경제·금융"><strong>돈벌이·경제</strong><span class="kn-cat-issue" id="kn-issue-1">영상 수집 중</span></a>
+    <a href="#kn-top100" data-kn-category="군사·밀리터리"><strong>군사</strong><span class="kn-cat-issue" id="kn-issue-2">영상 수집 중</span></a>
+    <a href="#kn-top100" data-kn-category="부동산"><strong>부동산</strong><span class="kn-cat-issue" id="kn-issue-3">영상 수집 중</span></a>
+    <a href="#kn-top100" data-kn-category="뷰티·패션"><strong>뷰티·패션</strong><span class="kn-cat-issue" id="kn-issue-4">영상 수집 중</span></a>
+    <a href="#kn-top100" data-kn-category="게임"><strong>게임</strong><span class="kn-cat-issue" id="kn-issue-5">영상 수집 중</span></a>
+    <a href="#kn-top100" data-kn-category="음악"><strong>음악·AI</strong><span class="kn-cat-issue" id="kn-issue-6">영상 수집 중</span></a>
+    <a href="#kn-top100" data-kn-category="연예·방송"><strong>연예·방송</strong><span class="kn-cat-issue" id="kn-issue-7">영상 수집 중</span></a>
+    <a href="#kn-top100" data-kn-category="스포츠"><strong>스포츠</strong><span class="kn-cat-issue" id="kn-issue-8">영상 수집 중</span></a>
+    <a href="#kn-top100" data-kn-category="IT·AI"><strong>IT·AI</strong><span class="kn-cat-issue" id="kn-issue-9">영상 수집 중</span></a>
+    <a href="#kn-top100" data-kn-category="과학·기술"><strong>과학·기술</strong><span class="kn-cat-issue" id="kn-issue-10">영상 수집 중</span></a>
+    <a href="#kn-top100" data-kn-category="개그·유머"><strong>개그·유머</strong><span class="kn-cat-issue" id="kn-issue-11">영상 수집 중</span></a>
+    <a href="#kn-top100" data-kn-category="여행·문화"><strong>여행·문화</strong><span class="kn-cat-issue" id="kn-issue-12">영상 수집 중</span></a>
+    <a href="#kn-top100" data-kn-category="교육·지식"><strong>교육·지식</strong><span class="kn-cat-issue" id="kn-issue-13">영상 수집 중</span></a>
+    <a href="#kn-top100" data-kn-category="생활·반려"><strong>반려동물</strong><span class="kn-cat-issue" id="kn-issue-14">영상 수집 중</span></a>
+    <a href="#kn-top100" data-kn-category="건강·의료"><strong>병·건강·의료</strong><span class="kn-cat-issue" id="kn-issue-15">영상 수집 중</span></a>
+    <a href="#kn-top100" data-kn-category="자동차"><strong>자동차</strong><span class="kn-cat-issue" id="kn-issue-16">영상 수집 중</span></a>
+    <a href="#kn-top100" data-kn-category="취미"><strong>취미</strong><span class="kn-cat-issue" id="kn-issue-17">영상 수집 중</span></a>
    </div>
   </section>
-  <section class="kn-panel" id="kn-rising"><div class="kn-panel-head"><h2>✉ 급상승 영상 TOP 10</h2><a href="#kn-top100" data-kn-view="rising">더보기 →</a></div><div class="kn-rising-list" id="kn-rising-list"><div class="kn-loading">급상승 영상을 수집하고 있습니다.</div></div></section>
- <section class="kn-panel kn-people-panel" id="kn-trends"><div class="kn-panel-head"><h2>🔥 지금 뜨는 인물 <span class="kn-hot">TOP 10</span></h2><span class="kn-people-method">관련 영상의 최근 24시간 조회수 합계</span></div><div id="kn-people-list" class="kn-people-list"><div class="kn-loading">유튜브 인물 관련 영상을 수집하고 있습니다.</div></div></section>
+  <section class="kn-panel kn-news-panel" id="kn-news">
+   <div class="kn-panel-head"><h2>오늘의 언론사 주요기사</h2><span>18개 분야</span></div>
+   <div class="kn-category-list kn-news-list"><a href="https://news.google.com/search?q=%EC%A0%95%EC%B9%98%C2%B7%EA%B5%AD%EC%A0%9C&hl=ko&gl=KR&ceid=KR%3Ako" target="_blank" rel="noopener"><strong>정치·국제</strong><span>최신 기사 보기 ↗</span></a>
+    <a href="https://news.google.com/search?q=%EB%8F%88%EB%B2%8C%EC%9D%B4%C2%B7%EA%B2%BD%EC%A0%9C&hl=ko&gl=KR&ceid=KR%3Ako" target="_blank" rel="noopener"><strong>돈벌이·경제</strong><span>최신 기사 보기 ↗</span></a>
+    <a href="https://news.google.com/search?q=%EA%B5%B0%EC%82%AC&hl=ko&gl=KR&ceid=KR%3Ako" target="_blank" rel="noopener"><strong>군사</strong><span>최신 기사 보기 ↗</span></a>
+    <a href="https://news.google.com/search?q=%EB%B6%80%EB%8F%99%EC%82%B0&hl=ko&gl=KR&ceid=KR%3Ako" target="_blank" rel="noopener"><strong>부동산</strong><span>최신 기사 보기 ↗</span></a>
+    <a href="https://news.google.com/search?q=%EB%B7%B0%ED%8B%B0%C2%B7%ED%8C%A8%EC%85%98&hl=ko&gl=KR&ceid=KR%3Ako" target="_blank" rel="noopener"><strong>뷰티·패션</strong><span>최신 기사 보기 ↗</span></a>
+    <a href="https://news.google.com/search?q=%EA%B2%8C%EC%9E%84&hl=ko&gl=KR&ceid=KR%3Ako" target="_blank" rel="noopener"><strong>게임</strong><span>최신 기사 보기 ↗</span></a>
+    <a href="https://news.google.com/search?q=%EC%9D%8C%EC%95%85%C2%B7AI&hl=ko&gl=KR&ceid=KR%3Ako" target="_blank" rel="noopener"><strong>음악·AI</strong><span>최신 기사 보기 ↗</span></a>
+    <a href="https://news.google.com/search?q=%EC%97%B0%EC%98%88%C2%B7%EB%B0%A9%EC%86%A1&hl=ko&gl=KR&ceid=KR%3Ako" target="_blank" rel="noopener"><strong>연예·방송</strong><span>최신 기사 보기 ↗</span></a>
+    <a href="https://news.google.com/search?q=%EC%8A%A4%ED%8F%AC%EC%B8%A0&hl=ko&gl=KR&ceid=KR%3Ako" target="_blank" rel="noopener"><strong>스포츠</strong><span>최신 기사 보기 ↗</span></a>
+    <a href="https://news.google.com/search?q=IT%C2%B7AI&hl=ko&gl=KR&ceid=KR%3Ako" target="_blank" rel="noopener"><strong>IT·AI</strong><span>최신 기사 보기 ↗</span></a>
+    <a href="https://news.google.com/search?q=%EA%B3%BC%ED%95%99%C2%B7%EA%B8%B0%EC%88%A0&hl=ko&gl=KR&ceid=KR%3Ako" target="_blank" rel="noopener"><strong>과학·기술</strong><span>최신 기사 보기 ↗</span></a>
+    <a href="https://news.google.com/search?q=%EA%B0%9C%EA%B7%B8%C2%B7%EC%9C%A0%EB%A8%B8&hl=ko&gl=KR&ceid=KR%3Ako" target="_blank" rel="noopener"><strong>개그·유머</strong><span>최신 기사 보기 ↗</span></a>
+    <a href="https://news.google.com/search?q=%EC%97%AC%ED%96%89%C2%B7%EB%AC%B8%ED%99%94&hl=ko&gl=KR&ceid=KR%3Ako" target="_blank" rel="noopener"><strong>여행·문화</strong><span>최신 기사 보기 ↗</span></a>
+    <a href="https://news.google.com/search?q=%EA%B5%90%EC%9C%A1%C2%B7%EC%A7%80%EC%8B%9D&hl=ko&gl=KR&ceid=KR%3Ako" target="_blank" rel="noopener"><strong>교육·지식</strong><span>최신 기사 보기 ↗</span></a>
+    <a href="https://news.google.com/search?q=%EB%B0%98%EB%A0%A4%EB%8F%99%EB%AC%BC&hl=ko&gl=KR&ceid=KR%3Ako" target="_blank" rel="noopener"><strong>반려동물</strong><span>최신 기사 보기 ↗</span></a>
+    <a href="https://news.google.com/search?q=%EB%B3%91%C2%B7%EA%B1%B4%EA%B0%95%C2%B7%EC%9D%98%EB%A3%8C&hl=ko&gl=KR&ceid=KR%3Ako" target="_blank" rel="noopener"><strong>병·건강·의료</strong><span>최신 기사 보기 ↗</span></a>
+    <a href="https://news.google.com/search?q=%EC%9E%90%EB%8F%99%EC%B0%A8&hl=ko&gl=KR&ceid=KR%3Ako" target="_blank" rel="noopener"><strong>자동차</strong><span>최신 기사 보기 ↗</span></a>
+    <a href="https://news.google.com/search?q=%EC%B7%A8%EB%AF%B8&hl=ko&gl=KR&ceid=KR%3Ako" target="_blank" rel="noopener"><strong>취미</strong><span>최신 기사 보기 ↗</span></a></div>
+   <p class="kn-news-note">분야를 누르면 해당 주제의 최신 언론 보도 검색 결과를 확인할 수 있습니다.</p>
+  </section>
+ </div>
+ <div class="kn-secondary-grid">
+  <section class="kn-panel" id="kn-rising"><div class="kn-panel-head"><h2>급상승 영상 TOP 10</h2><a href="#kn-top100" data-kn-view="rising">더보기 →</a></div><div class="kn-rising-list" id="kn-rising-list"><div class="kn-loading">급상승 영상을 수집하고 있습니다.</div></div></section>
+  <section class="kn-panel kn-people-panel" id="kn-trends"><div class="kn-panel-head"><h2>지금 뜨는 인물 <span class="kn-hot">TOP 10</span></h2><span class="kn-people-method">관련 영상의 최근 24시간 조회수 합계</span></div><div id="kn-people-list" class="kn-people-list"><div class="kn-loading">유튜브 인물 관련 영상을 수집하고 있습니다.</div></div></section>
  </div>
 
  <section class="kn-category-rankings" id="kn-category-rankings">
@@ -936,7 +958,7 @@ main#home{max-width:1524px;margin:0 auto;padding:0 22px}.kn-dashboard{max-width:
 <div id="knSearchStatus" class="kn-search-status" aria-live="polite"></div>
 
 <section class="panel" id="authPanel">
- <h2>회원가입 / 로그인</h2>
+ <div class="kn-panel-head"><h2 id="authPanelTitle">회원가입 / 로그인</h2><button type="button" class="secondary" id="memberHomeBtn">홈으로</button></div>
  <label>이메일</label>
  <input id="email" type="email" placeholder="이메일 주소">
  <label>비밀번호</label>
@@ -1096,7 +1118,7 @@ let koreaNowData=null;
 function showKoreaNowList(view,category){
  const data=koreaNowData;if(!data)return;
  let rows=[],title="종합 인기 TOP 100",subtitle="전체 분야 통합 순위 · 한국어 제목 영상";
- if(view==="category"){rows=data.rankings?.[category]||[];title=(category==="IT·AI"?"AI":category)+" 인기 TOP 100";subtitle="한국어 제목 영상 · 조회수순";}
+ if(view==="category"){const aliases={"정치·국제":["정치·시사","국제정세"],"돈벌이·경제":["돈벌이·사업","경제·금융","산업·기업"],"군사":["군사·밀리터리"],"음악·AI":["음악"],"반려동물":["생활·반려"],"병·건강·의료":["건강·의료"],"취미":["취미"]};rows=(aliases[category]||[category]).flatMap(k=>data.rankings?.[k]||[]);title=category+" 인기 TOP 100";subtitle="한국어 제목 영상 · 조회수순";}
  else if(view==="rising"){rows=data.overall||[];title="급상승 영상 TOP 100";subtitle="최근 수집 조회수 기준 · 데이터 누적 중";}
  else if(view==="people"){rows=(data.people||[]).map(p=>({title:p.name,thumbnail_url:p.thumbnail_url,video_url:"#",channel_title:"관련 영상 "+p.video_count+"개",view_count:p.total_views||0,is_person:true}));title="지금 뜨는 인물 TOP 10";subtitle="인물을 선택하면 해당 인물의 관련 영상 목록이 표시됩니다.";}
  else if(view==="channels"){rows=data.channels||[];title="오늘의 인기 채널 TOP 10";subtitle="구독자 수 기준";}
@@ -1142,7 +1164,7 @@ function renderKoreaIssuePage(){
 $("kn-issue-prev")?.addEventListener("click",()=>{koreaIssuePage--;renderKoreaIssuePage();});
 $("kn-issue-next")?.addEventListener("click",()=>{koreaIssuePage++;renderKoreaIssuePage();});
 setInterval(()=>{const n=5;if(koreaIssueVideos.length>n){koreaIssuePage++;renderKoreaIssuePage();}},12000);
-setInterval(()=>{window.knCategoryRotation=((window.knCategoryRotation||0)+1)%5;if(koreaNowData){const d=koreaNowData;const ids={'정치·시사':0,'경제·금융':1,'돈벌이·사업':2,'군사·밀리터리':3,'국제정세':4,'산업·기업':5,'부동산':6,'뷰티·패션':7,'게임':8,'음악':9,'연예·방송':10,'스포츠':11,'IT·AI':12,'과학·기술':13,'개그·유머':14,'여행·문화':15,'교육·지식':16,'생활·반려':17,'건강·의료':18,'자동차':19};for(const [cat,i] of Object.entries(ids)){const el=$("kn-issue-"+i);const rows=(d.rankings?.[cat]||[]).slice().sort((a,b)=>Number(b.view_count||0)-Number(a.view_count||0));const v=rows[window.knCategoryRotation%Math.min(5,Math.max(1,rows.length))];if(el)el.textContent=v?.title||"영상 수집 중";}}},30000);
+setInterval(()=>{window.knCategoryRotation=((window.knCategoryRotation||0)+1)%5;if(koreaNowData){const d=koreaNowData;const ids=['정치·시사','경제·금융','군사·밀리터리','부동산','뷰티·패션','게임','음악','연예·방송','스포츠','IT·AI','과학·기술','개그·유머','여행·문화','교육·지식','생활·반려','건강·의료','자동차','취미'];ids.forEach((cat,i)=>{const el=$("kn-issue-"+i);const rows=(d.rankings?.[cat]||[]).slice().sort((a,b)=>Number(b.view_count||0)-Number(a.view_count||0));const v=rows[window.knCategoryRotation%Math.min(5,Math.max(1,rows.length))];if(el)el.textContent=v?.title||"영상 수집 중";});}},30000);
 async function loadKoreaNowTrends(){
  const status=$('kn-data-updated');if(status)status.textContent='저장된 순위표 불러오는 중...';
  const map={
@@ -1271,14 +1293,24 @@ function isShorts(song){
  return String(song.video_type || '').toLowerCase() === 'shorts';
 }
 
-async function updateAuth(){
+function openMemberView(mode='login'){
+ const home=$('home');if(!home)return;
+ home.classList.add('member-focus');
+ const loggedIn=!!supabase.auth.getSession && false;
+ $('authPanel').hidden=false;$('memberPanel').hidden=true;
+ $('authPanelTitle').textContent=mode==='signup'?'회원가입':'로그인';
+ $('signupBtn').hidden=mode!=='signup';$('loginBtn').hidden=mode==='signup';
+ $('resetPasswordBtn').hidden=mode==='signup';
+ window.scrollTo({top:0,behavior:'instant'});
+}
+\nasync function updateAuth(){
  const {data:{session}} = await supabase.auth.getSession();
  const loggedIn = !!session;
  const headerLogin=$('headerLogin');
- if(headerLogin){headerLogin.textContent=loggedIn?'회원 메뉴':'로그인';headerLogin.href=loggedIn?'#memberPanel':'#authPanel';}
- if(recoveryMode) return;
- $('authPanel').hidden = loggedIn;
- $('memberPanel').hidden = !loggedIn;
+ if(headerLogin){headerLogin.textContent=loggedIn?'회원 메뉴':'로그인';headerLogin.href='#authPanel';}const headerSignup=$('headerSignup'),headerLogout=$('headerLogout');if(headerSignup)headerSignup.hidden=loggedIn;if(headerLogout)headerLogout.hidden=!loggedIn;
+ if(recoveryMode) return;\n if(!$('home').classList.contains('member-focus')){$('authPanel').hidden=true;$('memberPanel').hidden=true;}
+ $('authPanel').hidden = loggedIn || !$('home').classList.contains('member-focus');
+ $('memberPanel').hidden = !loggedIn || !$('home').classList.contains('member-focus');
  $('registerPanel').hidden = !loggedIn;
  $('passwordUpdatePanel').hidden = true;
  $('userInfo').textContent = loggedIn ? session.user.email + ' 로그인 중' : '';
@@ -2026,7 +2058,7 @@ $('signupBtn').addEventListener('click',signup);
 $('loginBtn').addEventListener('click',login);
 $('resetPasswordBtn').addEventListener('click',resetPassword);
 $('saveNewPasswordBtn').addEventListener('click',saveNewPassword);
-$('logoutBtn').addEventListener('click',logout);
+$('logoutBtn').addEventListener('click',logout);\n$('headerLogin').addEventListener('click',e=>{e.preventDefault();openMemberView('login');});\n$('headerSignup').addEventListener('click',e=>{e.preventDefault();openMemberView('signup');});\n$('headerLogout').addEventListener('click',e=>{e.preventDefault();logout();});\n$('memberHomeBtn').addEventListener('click',()=>{ $('home').classList.remove('member-focus'); $('authPanel').hidden=true; $('memberPanel').hidden=true; window.scrollTo({top:0,behavior:'instant'}); });
 $('showProfileBtn').addEventListener('click',()=>{$('profileView').hidden=false;$('profileEdit').hidden=true;});
 $('editProfileBtn').addEventListener('click',()=>{$('profileView').hidden=true;$('profileEdit').hidden=false;});
 $('cancelProfileBtn').addEventListener('click',()=>{$('profileEdit').hidden=true;});
@@ -2081,7 +2113,25 @@ $('kn-detail-back')?.addEventListener('click',showKoreaNowHome);
 loadKoreaNowTrends();
 setInterval(loadKoreaNowTrends, 6*60*60*1000);
 </script>
-</body>
+
+<style>
+.kn-member-actions{display:flex;align-items:center;gap:8px;flex:none}
+.kn-member-actions .header-login{margin-left:0}
+.kn-top-panels{grid-template-columns:minmax(0,1fr) minmax(0,1fr)!important;align-items:stretch}
+.kn-heading-note{font-size:12px;color:#b9c0d0;font-weight:500;white-space:nowrap}
+.kn-category-list.kn-category-issue-list,.kn-news-list{grid-template-columns:repeat(2,minmax(0,1fr));gap:6px}
+.kn-category-list.kn-category-issue-list a,.kn-news-list a{min-height:38px;display:flex;flex-direction:row;justify-content:space-between;align-items:center;padding:7px 9px;font-size:11px;text-align:left;gap:8px}
+.kn-category-list.kn-category-issue-list a strong,.kn-news-list a strong{font-size:11px;font-weight:650}
+.kn-category-list.kn-category-issue-list a .kn-cat-issue,.kn-news-list a span{font-size:9px;color:#aab2c4;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:58%}
+.kn-news-list a:hover{border-color:#8c9bb7;background:#282e43}
+.kn-news-note{font-size:10px;color:#939bad;margin:9px 2px 0}
+.kn-secondary-grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:13px;margin-top:14px}
+#home.member-focus>.kn-dashboard,#home.member-focus>#knSearchStatus,#home.member-focus>#chartSection,#home.member-focus>#communitySection{display:none!important}
+#home.member-focus>#authPanel,#home.member-focus>#memberPanel,#home.member-focus>#passwordUpdatePanel{display:block!important;max-width:560px;margin:28px auto;min-height:260px}
+#authPanel[hidden],#memberPanel[hidden]{display:none!important}
+@media(max-width:900px){.kn-top-panels,.kn-secondary-grid{grid-template-columns:1fr!important}}
+@media(max-width:760px){.kn-heading-note{white-space:normal;text-align:right;font-size:10px}.kn-category-list.kn-category-issue-list a,.kn-news-list a{min-height:36px;padding:6px;font-size:10px}.kn-category-list.kn-category-issue-list a strong,.kn-news-list a strong{font-size:10px}.kn-member-actions{gap:5px}.kn-member-actions .header-login{font-size:11px;padding:7px 9px}}
+</style>\n</body>
 </html>
 
 <style>
