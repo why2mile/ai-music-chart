@@ -1147,8 +1147,7 @@ function renderKoreaIssuePage(){
 $("kn-issue-prev")?.addEventListener("click",()=>{koreaIssuePage--;renderKoreaIssuePage();});
 $("kn-issue-next")?.addEventListener("click",()=>{koreaIssuePage++;renderKoreaIssuePage();});
 setInterval(()=>{const n=5;if(koreaIssueVideos.length>n){koreaIssuePage++;renderKoreaIssuePage();}},12000);
-setInterval(()=>{window.knCategoryRotation=((window.knCategoryRotation||0)+1)%5;if(koreaNowData){const d=koreaNowData;const ids=['정치·시사','경제·금융','군사·밀리터리','부동산','뷰티·패션','게임','음악','연예·방송','스포츠','IT·AI','과학·기술','개그·유머','여행·문화','교육·지식','생활·반려','건강·의료','자동차','취미'];ids.forEach((cat,i)=>{const el=$("kn-issue-"+i);const rows=(d.rankings?.[cat]||[]).slice().sort((a,b)=>Number(b.view_count||0)-Number(a.view_count||0));const v=rows[window.knCategoryRotation%Math.min(5,Math.max(1,rows.length))];if(el)el.textContent=v?.title||"영상 수집 중";});}},30000);
-async function loadKoreaNowTrends(){
+setInterval(()=>{window.knCategoryRotation=((window.knCategoryRotation||0)+1)%5;if(koreaNowData){const d=koreaNowData;const groups=[["정치·시사","국제정세"],["경제·금융","돈벌이·사업","산업·기업"],["군사·밀리터리"],["부동산"],["뷰티·패션"],["게임"],["음악"],["연예·방송"],["스포츠"],["IT·AI"],["과학·기술"],["개그·유머"],["여행·문화"],["교육·지식"],["생활·반려","반려동물"],["건강·의료"],["자동차"],["취미"]];groups.forEach((keys,i)=>{const el=$("kn-issue-"+i);const rows=keys.flatMap(cat=>d.rankings?.[cat]||[]).slice().sort((a,b)=>Number(b.view_count||0)-Number(a.view_count||0));const v=rows[window.knCategoryRotation%Math.max(1,Math.min(5,rows.length))];if(el)el.textContent=v?.title||"영상 수집 중";});}},30000);async function loadKoreaNowTrends(){
  const status=$('kn-data-updated');if(status)status.textContent='저장된 순위표 불러오는 중...';
  const map={
   '정치·국제':'kn-rank-politics','돈벌이·경제':'kn-rank-business','군사':'kn-rank-military','부동산':'kn-rank-realestate',
