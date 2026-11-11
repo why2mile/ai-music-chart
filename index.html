@@ -1064,17 +1064,18 @@ function showKoreaNowList(view,category){
  else if(view==="rising"){rows=data.overall||[];title="급상승 영상 TOP 100";subtitle="최근 수집 조회수 기준 · 데이터 누적 중";}
  else if(view==="people"){rows=(data.people||[]).map(p=>({title:p.name,thumbnail_url:p.thumbnail_url,video_url:p.video_url,channel_title:"관련 영상 "+p.video_count+"개",view_count:p.total_views||0}));title="지금 뜨는 인물 TOP 10";subtitle="인물 관련 영상 조회수 합계";}
  else if(view==="channels"){rows=data.channels||[];title="오늘의 인기 채널 TOP 10";subtitle="구독자 수 기준";}
+ else if(view==="categories"){rows=Object.entries(data.rankings||{}).map(([name,list])=>({title:name,thumbnail_url:list?.[0]?.thumbnail_url,channel_title:"인기 영상 "+(list?.length||0)+"개",view_count:list?.[0]?.view_count||0,is_category:true}));title="분야별 인기 영상";subtitle="분야를 선택하면 해당 분야의 영상 순위가 표시됩니다.";}
  else if(view==="overall"){rows=data.overall||[];}
  const home=document.querySelector(".kn-dashboard"),detail=$("kn-detail-page");if(!home||!detail)return;
  home.classList.add("kn-detail-mode");
  home.querySelectorAll(":scope > *").forEach(el=>{if(el!==detail)el.hidden=true;});
  detail.hidden=false;$("kn-detail-title").textContent=title;$("kn-detail-description").textContent=subtitle;$("kn-detail-meta").textContent=rows.length+"개 항목";
- $("kn-detail-list").innerHTML=rows.slice(0,100).map((v,i)=>'<div class="kn-overall-row"><b>'+(i+1)+'</b><img src="'+escapeHTML(v.thumbnail_url||"")+'" alt="" loading="lazy"><a href="'+escapeHTML(v.video_url||"#")+'" target="_blank" rel="noopener"><strong>'+escapeHTML(v.title||v.name||"")+'</strong><small>'+escapeHTML(v.channel_title||v.name||"")+' · 누적 '+Number(v.view_count||v.total_views||0).toLocaleString("ko-KR")+'회</small></a></div>').join("")||'<div class="kn-empty">해당 순위 데이터를 수집하고 있습니다.</div>';
+ $("kn-detail-list").innerHTML=rows.slice(0,100).map((v,i)=>v.is_category?'<button type="button" class="kn-overall-row kn-person-detail-row" data-kn-category="'+escapeHTML(v.title)+'"><b>›</b><img src="'+escapeHTML(v.thumbnail_url||"")+'" alt="" loading="lazy"><span><strong>'+escapeHTML(v.title)+'</strong><small>'+escapeHTML(v.channel_title)+'</small></span><i>분야 영상 →</i></button>':'<div class="kn-overall-row"><b>'+(i+1)+'</b><img src="'+escapeHTML(v.thumbnail_url||"")+'" alt="" loading="lazy"><a href="'+escapeHTML(v.video_url||"#")+'" target="_blank" rel="noopener"><strong>'+escapeHTML(v.title||v.name||"")+'</strong><small>'+escapeHTML(v.channel_title||v.name||"")+' · 누적 '+Number(v.view_count||v.total_views||0).toLocaleString("ko-KR")+'회</small></a></div>').join("")||'<div class="kn-empty">해당 순위 데이터를 수집하고 있습니다.</div>';
  detail.scrollIntoView({block:"start",behavior:"instant"});
 }
 function showKoreaNowHome(){
  const home=document.querySelector(".kn-dashboard");if(!home)return;
- home.classList.remove("kn-detail-mode");home.querySelectorAll(":scope > section, :scope > .kn-main-grid").forEach(el=>el.hidden=false);
+ home.classList.remove("kn-detail-mode");home.querySelectorAll(":scope > *").forEach(el=>el.hidden=false);
  $("kn-detail-page").hidden=true;window.scrollTo({top:0,behavior:"instant"});
 }
 
@@ -2029,6 +2030,9 @@ document.addEventListener("click",e=>{
  detail.scrollIntoView({block:"start",behavior:"instant"});
 });
 document.querySelectorAll('.kn-nav a[data-kn-view]').forEach(a=>a.addEventListener('click',e=>{e.preventDefault();showKoreaNowList(a.dataset.knView);}));
+document.querySelectorAll('.kn-nav a[href="#kn-categories"]').forEach(a=>a.addEventListener('click',e=>{e.preventDefault();showKoreaNowList("categories");}));
+document.querySelectorAll('.kn-nav a[href="#kn-weekly"]').forEach(a=>a.addEventListener('click',e=>{e.preventDefault();showKoreaNowList("rising");}));
+document.querySelectorAll('.kn-ranking-panel[data-category]').forEach(panel=>panel.addEventListener('click',e=>{if(e.target.closest("a"))return;showKoreaNowList("category",panel.dataset.category);}));
 document.querySelectorAll('.kn-nav a[href="#home"]').forEach(a=>a.addEventListener('click',e=>{e.preventDefault();showKoreaNowHome();}));
 document.querySelectorAll('.kn-nav a[href="#kn-trends"]').forEach(a=>a.addEventListener('click',e=>{e.preventDefault();showKoreaNowList('people');}));
 document.querySelectorAll('.kn-nav a[href="#kn-channels"]').forEach(a=>a.addEventListener('click',e=>{e.preventDefault();showKoreaNowList('channels');}));
