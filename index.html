@@ -1193,12 +1193,18 @@ setInterval(()=>{window.knCategoryRotation=((window.knCategoryRotation||0)+1)%5;
   if(risingTarget)risingTarget.innerHTML=(data.overall||[]).slice(0,10).map((v,i)=>'<div><b>'+(i+1)+'</b><span class="kn-thumb"><img src="'+escapeHTML(v.thumbnail_url||'')+'" alt="" loading="lazy"></span><span><a href="'+escapeHTML(v.video_url||'#')+'" target="_blank" rel="noopener"><strong>'+escapeHTML(v.title)+'</strong></a><small>'+escapeHTML(v.channel_title)+' · '+(v.views_24h===null?'24시간 집계 중':fmt(v.views_24h)+'회 증가')+'</small></span></div>').join('')||'<div class="kn-empty">급상승 영상이 없습니다.</div>';
   const overallTarget=$('kn-overall-list');
   if(overallTarget)overallTarget.innerHTML=(data.overall||[]).slice(0,100).map((v,i)=>'<div class="kn-overall-row"><b>'+(i+1)+'</b><img src="'+escapeHTML(v.thumbnail_url||'')+'" alt="" loading="lazy"><a href="'+escapeHTML(v.video_url||'#')+'" target="_blank" rel="noopener"><strong>'+escapeHTML(v.title)+'</strong><small>'+escapeHTML(v.channel_title)+' · '+(v.views_24h===null?'24시간 집계 중':fmt(v.views_24h)+'회 증가')+'</small></a></div>').join('');
-  const categoryIssueIds={'정치·시사':0,'경제·금융':1,'돈벌이·사업':2,'군사·밀리터리':3,'국제정세':4,'산업·기업':5,'부동산':6,'뷰티·패션':7,'게임':8,'음악':9,'연예·방송':10,'스포츠':11,'IT·AI':12,'과학·기술':13,'개그·유머':14,'여행·문화':15,'교육·지식':16,'생활·반려':17,'건강·의료':18,'자동차':19};
+  const categoryIssueGroups=[
+   [["정치·시사","국제정세"],0],[["돈벌이·사업","경제·금융","산업·기업"],1],[["군사·밀리터리"],2],[["부동산"],3],
+   [["뷰티·패션"],4],[["게임"],5],[["음악"],6],[["연예·방송"],7],[["스포츠"],8],[["IT·AI"],9],
+   [["과학·기술"],10],[["개그·유머","코미디"],11],[["여행·문화"],12],[["교육·지식"],13],
+   [["생활·반려"],14],[["건강·의료"],15],[["자동차"],16],[["취미","인물·브이로그"],17]
+  ];
   const categoryRotation=window.knCategoryRotation||0;
-  for(const [category,index] of Object.entries(categoryIssueIds)){
-   const issue=$('kn-issue-'+index);const ranked=(data.rankings?.[category]||[]).slice().sort((a,b)=>Number(b.view_count||0)-Number(a.view_count||0));
+  for(const [keys,index] of categoryIssueGroups){
+   const issue=$('kn-issue-'+index);
+   const ranked=keys.flatMap(category=>data.rankings?.[category]||[]).slice().sort((a,b)=>Number(b.view_count||0)-Number(a.view_count||0));
    const top=ranked[categoryRotation%Math.min(5,Math.max(1,ranked.length))];
-   if(issue)issue.textContent=top?top.title:'영상 수집 중';
+   if(issue)issue.textContent=top?top.title:(keys[0]==="취미"?"추천 영상 준비 중":"해당 분야 영상 준비 중");
   }
   renderKoreaIssueTab(data);
 
