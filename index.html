@@ -900,7 +900,7 @@ main#home{max-width:1524px;margin:0 auto;padding:0 22px}.kn-dashboard{max-width:
   <section class="kn-panel kn-news-panel" id="kn-news">
    <div class="kn-panel-head"><h2>오늘의 언론사 주요기사</h2><span>18개 분야</span></div>
    <div class="kn-category-list kn-news-list" id="kn-news-list"><div class="kn-empty">오늘의 언론사 기사를 불러오는 중입니다.</div></div>
-   <p class="kn-news-note">분야를 누르면 해당 주제의 최신 언론 보도 검색 결과를 확인할 수 있습니다.</p>
+   <p class="kn-news-note">기사 제목을 누르면 해당 언론사의 원문 보도로 이동합니다.</p>
   </section>
  </div>
  <div class="kn-secondary-grid">
@@ -1168,8 +1168,10 @@ setInterval(()=>{window.knCategoryRotation=((window.knCategoryRotation||0)+1)%5;
    const newsCats=["정치·국제","돈벌이·경제","군사","부동산","뷰티·패션","게임","음악·AI","연예·방송","스포츠","IT·AI","과학·기술","개그·유머","여행·문화","교육·지식","반려동물","병·건강·의료","자동차","취미"];
    newsTarget.innerHTML=newsCats.map(cat=>{
     const item=(newsMap.get(cat)||[])[0];
-    const detail=item?'<span>'+escapeHTML(item.title)+'</span>':'<span>최신 기사 수집 중</span>';
-    return '<a href="'+(item?escapeHTML(item.url):'https://news.google.com/search?q='+encodeURIComponent(cat)+'&hl=ko&gl=KR&ceid=KR%3Ako')+'" target="_blank" rel="noopener"><strong>'+cat+'</strong>'+detail+'</a>';
+    const safeUrl=item&&/^https?:\\/\\//i.test(item.url)?item.url:'https://news.google.com/search?q='+encodeURIComponent(cat)+'&hl=ko&gl=KR&ceid=KR%3Ako';
+    const source=item?.source?' · '+escapeHTML(item.source):'';
+    const detail=item?'<span title="'+escapeHTML((item.source||'')+' · '+(item.published_at||''))+'">'+escapeHTML(item.title)+source+'</span>':'<span>최신 기사 수집 중</span>';
+    return '<a href="'+safeUrl+'" target="_blank" rel="noopener"><strong>'+cat+'</strong>'+detail+'</a>';
    }).join('');
   }
   for(const [category,id] of Object.entries(map)){
