@@ -841,7 +841,7 @@ main#home{max-width:1524px;margin:0 auto;padding:0 22px}.kn-dashboard{max-width:
   <section class="kn-panel kn-category-panel" id="kn-categories"><div class="kn-panel-head"><h2>🗂 분야별 인기 TOP 100</h2><a href="#kn-top100">분야 전체 보기 →</a></div>
    <div class="kn-category-content"><div class="kn-category-list">
     <a href="#kn-top100"><b>🏛</b>정치·시사</a><a href="#kn-top100"><b>💰</b>경제·금융</a><a href="#kn-top100"><b>📈</b>돈벌이·사업</a><a href="#kn-top100"><b>🛡</b>군사·밀리터리</a><a href="#kn-top100"><b>🌐</b>국제정세</a><a href="#kn-top100"><b>🏭</b>산업·기업</a><a href="#kn-top100"><b>🏠</b>부동산</a><a href="#kn-top100"><b>💄</b>뷰티·패션</a><a href="#kn-top100"><b>🎮</b>게임</a><a href="#kn-top100"><b>🎵</b>음악</a><a href="#kn-top100"><b>🎬</b>연예·방송</a><a href="#kn-top100"><b>⚽</b>스포츠</a><a href="#kn-top100"><b>🤖</b>IT·AI</a><a href="#kn-top100"><b>🔬</b>과학·기술</a><a href="#kn-top100"><b>🌱</b>농업·식품</a><a href="#kn-top100"><b>✈️</b>여행·문화</a><a href="#kn-top100"><b>📚</b>교육·지식</a><a href="#kn-top100"><b>🐾</b>생활·반려</a>
-   </div><div class="kn-feature"><div class="kn-feature-image"><span>WEEKLY FEATURE</span><b>오늘 가장 주목받는 이슈</b></div><strong>분야별 대표 콘텐츠</strong><p>가장 높은 관심을 얻은 영상과 관련 키워드를 보여주는 영역입니다.</p></div></div>
+   </div><div class="kn-feature"><a class="kn-feature-image" id="kn-feature-link" href="#" target="_blank" rel="noopener"><span>TOP 1 · YOUTUBE TREND</span><b id="kn-feature-title">오늘의 인기 영상 1위</b></a><strong id="kn-feature-channel">데이터 수집 중</strong><p id="kn-feature-meta">24시간 조회수 증가량 기준 대표 영상</p></div></div>
   </section>
   <section class="kn-panel" id="kn-channels"><div class="kn-panel-head"><h2>🏆 오늘의 인기 채널 TOP 10</h2><a href="#kn-channels">더보기 →</a></div><div class="kn-channel-list" id="kn-channel-list"><div>인기 채널 데이터를 수집하고 있습니다.</div></div></section>
   <section class="kn-panel" id="kn-rising"><div class="kn-panel-head"><h2>✉ 급상승 영상 TOP 10</h2><a href="#kn-rising">더보기 →</a></div><div class="kn-rising-list" id="kn-rising-list"><div class="kn-loading">급상승 영상을 수집하고 있습니다.</div></div></section>
@@ -1064,6 +1064,13 @@ async function loadKoreaNowTrends(){
   if(risingTarget)risingTarget.innerHTML=(data.overall||[]).slice(0,10).map((v,i)=>'<div><b>'+(i+1)+'</b><span class="kn-thumb"><img src="'+escapeHTML(v.thumbnail_url||'')+'" alt="" loading="lazy"></span><span><a href="'+escapeHTML(v.video_url||'#')+'" target="_blank" rel="noopener"><strong>'+escapeHTML(v.title)+'</strong></a><small>'+escapeHTML(v.channel_title)+' · '+(v.views_24h===null?'24시간 집계 중':fmt(v.views_24h)+'회 증가')+'</small></span></div>').join('')||'<div class="kn-empty">급상승 영상이 없습니다.</div>';
   const overallTarget=$('kn-overall-list');
   if(overallTarget)overallTarget.innerHTML=(data.overall||[]).slice(0,100).map((v,i)=>'<div class="kn-overall-row"><b>'+(i+1)+'</b><img src="'+escapeHTML(v.thumbnail_url||'')+'" alt="" loading="lazy"><a href="'+escapeHTML(v.video_url||'#')+'" target="_blank" rel="noopener"><strong>'+escapeHTML(v.title)+'</strong><small>'+escapeHTML(v.channel_title)+' · '+(v.views_24h===null?'24시간 집계 중':fmt(v.views_24h)+'회 증가')+'</small></a></div>').join('');
+  const lead=(data.overall||[])[0];
+  if(lead){
+   const featureLink=$('kn-feature-link');if(featureLink){featureLink.href=lead.video_url;featureLink.style.backgroundImage='linear-gradient(0deg,rgba(8,10,20,.88),rgba(8,10,20,.08)),url("'+String(lead.thumbnail_url||'').replace(/["\\]/g,'')+'")';featureLink.style.backgroundSize='cover';featureLink.style.backgroundPosition='center';}
+   if($('kn-feature-title'))$('kn-feature-title').textContent=lead.title;
+   if($('kn-feature-channel'))$('kn-feature-channel').textContent=lead.channel_title;
+   if($('kn-feature-meta'))$('kn-feature-meta').textContent=lead.views_24h===null?'24시간 데이터 수집 중 · 누적 '+fmt(lead.view_count)+'회':'최근 24시간 +'+fmt(lead.views_24h)+'회';
+  }
   const keywordTarget=$('kn-keyword-items');
   if(keywordTarget){
    const stop=new Set(['오늘','영상','유튜브','한국','대한민국','관련','공개','공식','채널','조회수','뉴스','shorts','official','youtube','the','and','with','from','this']);
