@@ -1101,7 +1101,7 @@ let koreaNowData=null;
 function showKoreaNowList(view,category){
  const data=koreaNowData;if(!data)return;
  let rows=[],title="종합 인기 TOP 100",subtitle="전체 분야 통합 순위 · 한국어 제목 영상";
- if(view==="category"){const aliases={"정치·국제":["정치·시사","국제정세"],"돈벌이·경제":["돈벌이·사업","경제·금융","산업·기업"],"군사":["군사·밀리터리"],"음악·AI":["음악"],"반려동물":["반려동물","생활·반려"],"병·건강·의료":["건강·의료"],"개그·유머":["개그·유머","코미디"],"취미":["취미"]};rows=(aliases[category]||[category]).flatMap(k=>data.rankings?.[k]||[]);title=category+" 인기 TOP 100";subtitle="한국어 제목 영상 · 조회수순";}
+ if(view==="category"){const aliases={"정치·국제":["정치·시사","국제정세"],"돈벌이·경제":["돈벌이·사업","경제·금융","산업·기업"],"군사":["군사·밀리터리"],"음악·AI":["음악"],"반려동물":["반려동물","생활·반려"],"병·건강·의료":["건강·의료"],"개그·유머":["개그·유머","코미디"],"취미":["취미","인물·브이로그"]};rows=(aliases[category]||[category]).flatMap(k=>data.rankings?.[k]||[]);title=category+" 인기 TOP 100";subtitle="한국어 제목 영상 · 조회수순";}
  else if(view==="rising"){rows=data.overall||[];title="급상승 영상 TOP 100";subtitle="최근 수집 조회수 기준 · 데이터 누적 중";}
  else if(view==="people"){rows=(data.people||[]).map(p=>({title:p.name,thumbnail_url:p.thumbnail_url,video_url:"#",channel_title:"관련 영상 "+p.video_count+"개",view_count:p.total_views||0,is_person:true}));title="지금 뜨는 인물 TOP 10";subtitle="인물을 선택하면 해당 인물의 관련 영상 목록이 표시됩니다.";}
  else if(view==="channels"){rows=data.channels||[];title="오늘의 인기 채널 TOP 10";subtitle="구독자 수 기준";}
@@ -1147,7 +1147,7 @@ function renderKoreaIssuePage(){
 $("kn-issue-prev")?.addEventListener("click",()=>{koreaIssuePage--;renderKoreaIssuePage();});
 $("kn-issue-next")?.addEventListener("click",()=>{koreaIssuePage++;renderKoreaIssuePage();});
 setInterval(()=>{const n=5;if(koreaIssueVideos.length>n){koreaIssuePage++;renderKoreaIssuePage();}},12000);
-setInterval(()=>{window.knCategoryRotation=((window.knCategoryRotation||0)+1)%5;if(koreaNowData){const d=koreaNowData;const groups=[["정치·시사","국제정세"],["경제·금융","돈벌이·사업","산업·기업"],["군사·밀리터리"],["부동산"],["뷰티·패션"],["게임"],["음악"],["연예·방송"],["스포츠"],["IT·AI"],["과학·기술"],["개그·유머","코미디"],["여행·문화"],["교육·지식"],["생활·반려","반려동물"],["건강·의료"],["자동차"],["취미"]];groups.forEach((keys,i)=>{const el=$("kn-issue-"+i);const rows=keys.flatMap(cat=>d.rankings?.[cat]||[]).slice().sort((a,b)=>Number(b.view_count||0)-Number(a.view_count||0));const v=rows[window.knCategoryRotation%Math.max(1,Math.min(5,rows.length))];if(el)el.textContent=v?.title||"영상 수집 중";});}},30000);async function loadKoreaNowTrends(){
+setInterval(()=>{window.knCategoryRotation=((window.knCategoryRotation||0)+1)%5;if(koreaNowData){const d=koreaNowData;const groups=[["정치·시사","국제정세"],["경제·금융","돈벌이·사업","산업·기업"],["군사·밀리터리"],["부동산"],["뷰티·패션"],["게임"],["음악"],["연예·방송"],["스포츠"],["IT·AI"],["과학·기술"],["개그·유머","코미디"],["여행·문화"],["교육·지식"],["생활·반려","반려동물"],["건강·의료"],["자동차"],["취미","인물·브이로그"]];groups.forEach((keys,i)=>{const el=$("kn-issue-"+i);const rows=keys.flatMap(cat=>d.rankings?.[cat]||[]).slice().sort((a,b)=>Number(b.view_count||0)-Number(a.view_count||0));const v=rows[window.knCategoryRotation%Math.max(1,Math.min(5,rows.length))];if(el)el.textContent=v?.title||(keys[0]==="취미"?"추천 영상 준비 중":"해당 분야 영상 준비 중");});}},30000);async function loadKoreaNowTrends(){
  const status=$('kn-data-updated');if(status)status.textContent='저장된 순위표 불러오는 중...';
  const map={
   '정치·국제':'kn-rank-politics','돈벌이·경제':'kn-rank-business','군사':'kn-rank-military','부동산':'kn-rank-realestate',
@@ -1176,7 +1176,7 @@ setInterval(()=>{window.knCategoryRotation=((window.knCategoryRotation||0)+1)%5;
   }
   for(const [category,id] of Object.entries(map)){
    const target=$(id);if(!target)continue;
-   const sources={"정치·국제":["정치·시사","국제정세"],"돈벌이·경제":["돈벌이·사업","경제·금융","산업·기업"],"군사":["군사·밀리터리"],"음악·AI":["음악"],"반려동물":["반려동물","생활·반려"],"병·건강·의료":["건강·의료"],"개그·유머":["개그·유머","코미디"]};
+   const sources={"정치·국제":["정치·시사","국제정세"],"돈벌이·경제":["돈벌이·사업","경제·금융","산업·기업"],"군사":["군사·밀리터리"],"음악·AI":["음악"],"반려동물":["반려동물","생활·반려"],"병·건강·의료":["건강·의료"],"개그·유머":["개그·유머","코미디"],"취미":["취미","인물·브이로그"]};
    const list=[...(sources[category]||[category]).flatMap(key=>data.rankings?.[key]||[])];
    const ready=list.some(v=>v.views_24h!==null);
    list.sort((a,b)=>ready?Number(b.views_24h||0)-Number(a.views_24h||0):Number(b.view_count||0)-Number(a.view_count||0));
@@ -2363,7 +2363,7 @@ let koreaNowData=null;
 function showKoreaNowList(view,category){
  const data=koreaNowData;if(!data)return;
  let rows=[],title="종합 인기 TOP 100",subtitle="전체 분야 통합 순위 · 한국어 제목 영상";
- if(view==="category"){const aliases={"정치·국제":["정치·시사","국제정세"],"돈벌이·경제":["돈벌이·사업","경제·금융","산업·기업"],"군사":["군사·밀리터리"],"음악·AI":["음악"],"반려동물":["반려동물","생활·반려"],"병·건강·의료":["건강·의료"],"개그·유머":["개그·유머","코미디"],"취미":["취미"]};rows=(aliases[category]||[category]).flatMap(k=>data.rankings?.[k]||[]);title=category+" 인기 TOP 100";subtitle="한국어 제목 영상 · 조회수순";}
+ if(view==="category"){const aliases={"정치·국제":["정치·시사","국제정세"],"돈벌이·경제":["돈벌이·사업","경제·금융","산업·기업"],"군사":["군사·밀리터리"],"음악·AI":["음악"],"반려동물":["반려동물","생활·반려"],"병·건강·의료":["건강·의료"],"개그·유머":["개그·유머","코미디"],"취미":["취미","인물·브이로그"]};rows=(aliases[category]||[category]).flatMap(k=>data.rankings?.[k]||[]);title=category+" 인기 TOP 100";subtitle="한국어 제목 영상 · 조회수순";}
  else if(view==="rising"){rows=data.overall||[];title="급상승 영상 TOP 100";subtitle="최근 수집 조회수 기준 · 데이터 누적 중";}
  else if(view==="people"){rows=(data.people||[]).map(p=>({title:p.name,thumbnail_url:p.thumbnail_url,video_url:"#",channel_title:"관련 영상 "+p.video_count+"개",view_count:p.total_views||0,is_person:true}));title="지금 뜨는 인물 TOP 10";subtitle="인물을 선택하면 해당 인물의 관련 영상 목록이 표시됩니다.";}
  else if(view==="channels"){rows=data.channels||[];title="오늘의 인기 채널 TOP 10";subtitle="구독자 수 기준";}
