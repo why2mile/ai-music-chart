@@ -877,30 +877,20 @@ main#home{max-width:1524px;margin:0 auto;padding:0 22px}.kn-dashboard{max-width:
  <div class="kn-main-grid kn-top-panels">
   <section class="kn-panel kn-category-panel" id="kn-categories">
    <div class="kn-panel-head"><h2>한국 이슈 TOP 100</h2><span class="kn-heading-note">정치부터 돈벌이, 유머, 강아지까지</span></div>
-   <div class="kn-category-list kn-category-issue-list"><a href="#kn-top100" data-kn-category="정치·시사"><strong>정치·국제</strong><span class="kn-cat-issue" id="kn-issue-0">영상 수집 중</span></a>
-    <a href="#kn-top100" data-kn-category="경제·금융"><strong>돈벌이·경제</strong><span class="kn-cat-issue" id="kn-issue-1">영상 수집 중</span></a>
-    <a href="#kn-top100" data-kn-category="군사·밀리터리"><strong>군사</strong><span class="kn-cat-issue" id="kn-issue-2">영상 수집 중</span></a>
-    <a href="#kn-top100" data-kn-category="부동산"><strong>부동산</strong><span class="kn-cat-issue" id="kn-issue-3">영상 수집 중</span></a>
-    <a href="#kn-top100" data-kn-category="뷰티·패션"><strong>뷰티·패션</strong><span class="kn-cat-issue" id="kn-issue-4">영상 수집 중</span></a>
-    <a href="#kn-top100" data-kn-category="게임"><strong>게임</strong><span class="kn-cat-issue" id="kn-issue-5">영상 수집 중</span></a>
-    <a href="#kn-top100" data-kn-category="음악"><strong>음악·AI</strong><span class="kn-cat-issue" id="kn-issue-6">영상 수집 중</span></a>
-    <a href="#kn-top100" data-kn-category="연예·방송"><strong>연예·방송</strong><span class="kn-cat-issue" id="kn-issue-7">영상 수집 중</span></a>
-    <a href="#kn-top100" data-kn-category="스포츠"><strong>스포츠</strong><span class="kn-cat-issue" id="kn-issue-8">영상 수집 중</span></a>
-    <a href="#kn-top100" data-kn-category="IT·AI"><strong>IT·AI</strong><span class="kn-cat-issue" id="kn-issue-9">영상 수집 중</span></a>
-    <a href="#kn-top100" data-kn-category="과학·기술"><strong>과학·기술</strong><span class="kn-cat-issue" id="kn-issue-10">영상 수집 중</span></a>
-    <a href="#kn-top100" data-kn-category="개그·유머"><strong>개그·유머</strong><span class="kn-cat-issue" id="kn-issue-11">영상 수집 중</span></a>
-    <a href="#kn-top100" data-kn-category="여행·문화"><strong>여행·문화</strong><span class="kn-cat-issue" id="kn-issue-12">영상 수집 중</span></a>
-    <a href="#kn-top100" data-kn-category="교육·지식"><strong>교육·지식</strong><span class="kn-cat-issue" id="kn-issue-13">영상 수집 중</span></a>
-    <a href="#kn-top100" data-kn-category="생활·반려"><strong>반려동물</strong><span class="kn-cat-issue" id="kn-issue-14">영상 수집 중</span></a>
-    <a href="#kn-top100" data-kn-category="건강·의료"><strong>병·건강·의료</strong><span class="kn-cat-issue" id="kn-issue-15">영상 수집 중</span></a>
-    <a href="#kn-top100" data-kn-category="자동차"><strong>자동차</strong><span class="kn-cat-issue" id="kn-issue-16">영상 수집 중</span></a>
-    <a href="#kn-top100" data-kn-category="취미"><strong>취미</strong><span class="kn-cat-issue" id="kn-issue-17">영상 수집 중</span></a>
+   <div class="kn-article-carousel" id="kn-issue-carousel" data-carousel="issue">
+    <div class="kn-article-list" id="kn-issue-page"></div>
+    <div class="kn-article-media" id="kn-issue-media"></div>
+    <div class="kn-article-controls"><button type="button" data-page="issue" data-dir="-1" aria-label="이전 기사">‹</button><span id="kn-issue-page-label2">1 / 1</span><button type="button" data-page="issue" data-dir="1" aria-label="다음 기사">›</button></div>
    </div>
   </section>
   <section class="kn-panel kn-news-panel" id="kn-news">
    <div class="kn-panel-head"><h2>오늘의 언론사 주요기사</h2><span>18개 분야</span></div>
-   <div class="kn-category-list kn-news-list" id="kn-news-list"><div class="kn-empty">오늘의 언론사 기사를 불러오는 중입니다.</div></div>
-   <p class="kn-news-note">기사 제목을 누르면 해당 언론사의 원문 보도로 이동합니다.</p>
+   <div class="kn-article-carousel" id="kn-news-carousel" data-carousel="news">
+    <div class="kn-article-list" id="kn-news-page"></div>
+    <div class="kn-article-media" id="kn-news-media"></div>
+    <div class="kn-article-controls"><button type="button" data-page="news" data-dir="-1" aria-label="이전 기사">‹</button><span id="kn-news-page-label">1 / 1</span><button type="button" data-page="news" data-dir="1" aria-label="다음 기사">›</button></div>
+   </div>
+   <p class="kn-news-note">기사를 누르면 해당 언론사의 원문으로 이동합니다.</p>
   </section>
  </div>
  <div class="kn-secondary-grid">
@@ -1137,7 +1127,7 @@ function renderKoreaIssuePage(){
  const host=$("kn-issue-videos");if(!host)return;
  const shortMode=koreaIssueVideos.length>0&&koreaIssueVideos.every(issueIsShort);
  const hasShorts=koreaIssueVideos.some(issueIsShort);
- const pageSize=5,totalPages=Math.max(1,Math.ceil(koreaIssueVideos.length/pageSize));
+ const pageSize=3,totalPages=Math.max(1,Math.ceil(koreaIssueVideos.length/pageSize));
  koreaIssuePage=((koreaIssuePage%totalPages)+totalPages)%totalPages;
  const videos=koreaIssueVideos.slice(koreaIssuePage*pageSize,(koreaIssuePage+1)*pageSize);
  const labels={"정치·시사":"정치","스포츠":"스포츠","개그·유머":"개그","게임":"게임","건강·의료":"건강","여행·문화":"문화","군사·밀리터리":"군사","돈벌이·사업":"돈벌이"};
@@ -1149,8 +1139,60 @@ function renderKoreaIssuePage(){
 }
 $("kn-issue-prev")?.addEventListener("click",()=>{koreaIssuePage--;renderKoreaIssuePage();});
 $("kn-issue-next")?.addEventListener("click",()=>{koreaIssuePage++;renderKoreaIssuePage();});
-setInterval(()=>{const n=5;if(koreaIssueVideos.length>n){koreaIssuePage++;renderKoreaIssuePage();}},12000);
-setInterval(()=>{window.knCategoryRotation=((window.knCategoryRotation||0)+1)%5;if(koreaNowData){const d=koreaNowData;const groups=[["정치·시사","국제정세"],["경제·금융","돈벌이·사업","산업·기업"],["군사·밀리터리"],["부동산"],["뷰티·패션"],["게임"],["음악"],["연예·방송"],["스포츠"],["IT·AI"],["과학·기술"],["개그·유머","코미디"],["여행·문화"],["교육·지식"],["생활·반려","반려동물"],["건강·의료"],["자동차"],["취미","인물·브이로그"]];groups.forEach((keys,i)=>{const el=$("kn-issue-"+i);const rows=keys.flatMap(cat=>d.rankings?.[cat]||[]).slice().sort((a,b)=>Number(b.view_count||0)-Number(a.view_count||0));const v=rows[window.knCategoryRotation%Math.max(1,Math.min(5,rows.length))];if(el)el.textContent=v?.title||(keys[0]==="취미"?"추천 영상 준비 중":"해당 분야 영상 준비 중");});}},30000);async function loadKoreaNowTrends(){
+setInterval(()=>{const n=3;if(koreaIssueVideos.length>n){koreaIssuePage++;renderKoreaIssuePage();}},60000);
+setInterval(()=>{window.knCategoryRotation=((window.knCategoryRotation||0)+1)%5;if(koreaNowData){const d=koreaNowData;const groups=[["정치·시사","국제정세"],["경제·금융","돈벌이·사업","산업·기업"],["군사·밀리터리"],["부동산"],["뷰티·패션"],["게임"],["음악"],["연예·방송"],["스포츠"],["IT·AI"],["과학·기술"],["개그·유머","코미디"],["여행·문화"],["교육·지식"],["생활·반려","반려동물"],["건강·의료"],["자동차"],["취미","인물·브이로그"]];groups.forEach((keys,i)=>{const el=$("kn-issue-"+i);const rows=keys.flatMap(cat=>d.rankings?.[cat]||[]).slice().sort((a,b)=>Number(b.view_count||0)-Number(a.view_count||0));const v=rows[window.knCategoryRotation%Math.max(1,Math.min(5,rows.length))];if(el)el.textContent=v?.title||(keys[0]==="취미"?"추천 영상 준비 중":"해당 분야 영상 준비 중");});}},30000);
+// 뉴스 메인 두 패널: 사회적 파급력 우선, 5개씩 표시, 60초 자동 페이지 전환
+const koreaNewsPriority=["정치·국제","스포츠","음악·AI","개그·유머","돈벌이·경제","군사","연예·방송","병·건강·의료","부동산","국제정세","IT·AI","과학·기술","여행·문화","교육·지식","게임","반려동물","자동차","취미","뷰티·패션"];
+const koreaNewsPage={issue:0,news:0};
+const koreaNewsItems={issue:[],news:[]};
+function renderKoreaNewsPanels(data){
+ const aliases={"정치·국제":["정치·시사","국제정세"],"돈벌이·경제":["돈벌이·사업","경제·금융","산업·기업"],"군사":["군사·밀리터리"],"음악·AI":["음악"],"병·건강·의료":["건강·의료"],"개그·유머":["개그·유머","코미디"],"반려동물":["생활·반려","반려동물"],"취미":["취미","인물·브이로그"]};
+ const videoFor=cat=>(aliases[cat]||[cat]).flatMap(k=>data.rankings?.[k]||[]).slice().sort((a,b)=>Number(b.views_24h??b.view_count??0)-Number(a.views_24h??a.view_count??0));
+ const issue=[];
+ for(const cat of koreaNewsPriority){
+  const v=videoFor(cat)[0];
+  if(v)issue.push({title:v.title,url:v.video_url,image:v.thumbnail_url,meta:v.channel_title,category:cat});
+ }
+ const newsGroups=new Map((data.news||[]).map(g=>[g.category,g.items||[]]));
+ const news=[];
+ for(const cat of koreaNewsPriority){
+  const items=(newsGroups.get(cat)||[]).slice().sort((a,b)=>String(b.published_at||"").localeCompare(String(a.published_at||"")));
+  for(const item of items){
+   if(!item?.title)continue;
+   const related=videoFor(cat)[0];
+   news.push({title:item.title,url:item.url,meta:item.source||cat,category:cat,image:item.image_url||item.thumbnail_url||related?.thumbnail_url||"",videoUrl:related?.video_url||""});
+  }
+ }
+ koreaNewsItems.issue=issue;koreaNewsItems.news=news;
+ koreaNewsPage.issue=0;koreaNewsPage.news=0;
+ renderKoreaNewsPage("issue");renderKoreaNewsPage("news");
+}
+function renderKoreaNewsPage(type){
+ const rows=koreaNewsItems[type]||[],pageSize=5,total=Math.max(1,Math.ceil(rows.length/pageSize));
+ koreaNewsPage[type]=(koreaNewsPage[type]%total+total)%total;
+ const page=rows.slice(koreaNewsPage[type]*pageSize,(koreaNewsPage[type]+1)*pageSize);
+ const list=$(type==="issue"?"kn-issue-page":"kn-news-page");
+ const media=$(type==="issue"?"kn-issue-media":"kn-news-media");
+ const label=$(type==="issue"?"kn-issue-page-label2":"kn-news-page-label");
+ if(list)list.innerHTML=page.map((v,i)=>'<a class="kn-article-row" href="'+escapeHTML(v.url||v.videoUrl||"#")+'" target="_blank" rel="noopener"><b>'+(koreaNewsPage[type]*pageSize+i+1)+'.</b><span><strong>'+escapeHTML(v.title)+'</strong><small>'+escapeHTML(v.meta||v.category||"")+'</small></span></a>').join("")||'<div class="kn-empty">표시할 기사가 없습니다.</div>';
+ const imageRows=page.filter(v=>v.image).slice(0,3);
+ if(media)media.innerHTML=imageRows.map(v=>'<a class="kn-article-image" href="'+escapeHTML(v.videoUrl||v.url||"#")+'" target="_blank" rel="noopener"><img src="'+escapeHTML(v.image)+'" alt="" loading="lazy"><span>'+escapeHTML(v.title)+'</span></a>').join("")||'<div class="kn-article-image-empty">관련 영상 이미지를 수집하고 있습니다.</div>';
+ if(label)label.textContent=(rows.length?koreaNewsPage[type]+1:0)+" / "+total;
+ const panel=$(type==="issue"?"kn-issue-carousel":"kn-news-carousel");
+ if(panel)panel.dataset.pageCount=String(total);
+}
+function moveKoreaNewsPage(type,delta){const rows=koreaNewsItems[type]||[];if(!rows.length)return;const total=Math.max(1,Math.ceil(rows.length/5));koreaNewsPage[type]=(koreaNewsPage[type]+delta+total)%total;renderKoreaNewsPage(type);}
+document.querySelectorAll("[data-page]").forEach(btn=>btn.addEventListener("click",()=>moveKoreaNewsPage(btn.dataset.page,Number(btn.dataset.dir)||1)));
+for(const type of ["issue","news"]){
+ const panel=$(type==="issue"?"kn-issue-carousel":"kn-news-carousel");
+ if(!panel)continue;
+ let touchX=0;
+ panel.addEventListener("touchstart",e=>{touchX=e.changedTouches[0].clientX;},{passive:true});
+ panel.addEventListener("touchend",e=>{const dx=e.changedTouches[0].clientX-touchX;if(Math.abs(dx)>45)moveKoreaNewsPage(type,dx<0?1:-1);},{passive:true});
+}
+setInterval(()=>{moveKoreaNewsPage("issue",1);moveKoreaNewsPage("news",1);},60000);
+
+async function loadKoreaNowTrends(){
  const status=$('kn-data-updated');if(status)status.textContent='저장된 순위표 불러오는 중...';
  const map={
   '정치·국제':'kn-rank-politics','돈벌이·경제':'kn-rank-business','군사':'kn-rank-military','부동산':'kn-rank-realestate',
@@ -1165,18 +1207,7 @@ setInterval(()=>{window.knCategoryRotation=((window.knCategoryRotation||0)+1)%5;
   if(error)throw error;
   if(!data||data.error)throw new Error(data?.error||'순위 데이터를 가져오지 못했습니다.');
   koreaNowData=data;
-  const newsTarget=$('kn-news-list');
-  if(newsTarget){
-   const newsMap=new Map((data.news||[]).map(group=>[group.category,group.items||[]]));
-   const newsCats=["정치·국제","돈벌이·경제","군사","부동산","뷰티·패션","게임","음악·AI","연예·방송","스포츠","IT·AI","과학·기술","개그·유머","여행·문화","교육·지식","반려동물","병·건강·의료","자동차","취미"];
-   newsTarget.innerHTML=newsCats.map(cat=>{
-    const item=(newsMap.get(cat)||[])[0];
-    const safeUrl=item&&(item.url.startsWith('https://')||item.url.startsWith('http://'))?item.url:'https://news.google.com/search?q='+encodeURIComponent(cat)+'&hl=ko&gl=KR&ceid=KR%3Ako';
-    const source=item?.source?' · '+escapeHTML(item.source):'';
-    const detail=item?'<span title="'+escapeHTML((item.source||'')+' · '+(item.published_at||''))+'">'+escapeHTML(item.title)+source+'</span>':'<span>최신 기사 수집 중</span>';
-    return '<a href="'+safeUrl+'" target="_blank" rel="noopener"><strong>'+cat+'</strong>'+detail+'</a>';
-   }).join('');
-  }
+  renderKoreaNewsPanels(data);
   for(const [category,id] of Object.entries(map)){
    const target=$(id);if(!target)continue;
    const sources={"정치·국제":["정치·시사","국제정세"],"돈벌이·경제":["돈벌이·사업","경제·금융","산업·기업"],"군사":["군사·밀리터리"],"음악·AI":["음악"],"반려동물":["반려동물","생활·반려"],"병·건강·의료":["건강·의료"],"개그·유머":["개그·유머","코미디"],"취미":["취미","인물·브이로그"]};
@@ -2184,5 +2215,50 @@ setInterval(loadKoreaNowTrends, 6*60*60*1000);
 @media(max-width:900px){.kn-top-panels,.kn-secondary-grid{grid-template-columns:1fr!important}}
 @media(max-width:760px){.kn-heading-note{white-space:normal;text-align:right;font-size:10px}.kn-category-list.kn-category-issue-list a,.kn-news-list a{min-height:36px;padding:6px;font-size:10px}.kn-category-list.kn-category-issue-list a strong,.kn-news-list a strong{font-size:10px}.kn-member-actions{gap:5px}.kn-member-actions .header-login{font-size:11px;padding:7px 9px}}
 </style>
+
+<style>
+/* 뉴스 포털형 공통 레이아웃 */
+.kn-top-panels{display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:18px!important;align-items:stretch!important}
+.kn-top-panels>.kn-panel{min-width:0;min-height:0!important;height:auto!important;padding:20px!important}
+.kn-top-panels .kn-panel-head{margin-bottom:15px!important}
+.kn-top-panels .kn-panel-head h2{font-size:21px!important;font-weight:700!important;letter-spacing:-.6px!important}
+.kn-top-panels .kn-panel-head>span{display:none!important}
+.kn-article-carousel{display:flex;flex-direction:column;min-width:0}
+.kn-article-list{display:flex;flex-direction:column;gap:0;min-height:290px}
+.kn-article-row{display:flex;align-items:flex-start;gap:10px;padding:12px 2px;border-bottom:1px solid #343b4b;color:#f1f3f7;text-decoration:none;min-width:0}
+.kn-article-row>b{flex:0 0 23px;color:#a6c98c;font-size:16px;font-weight:700;line-height:1.55}
+.kn-article-row>span{display:block;min-width:0;flex:1}
+.kn-article-row strong{display:block;font-size:17px!important;line-height:1.55!important;font-weight:500!important;letter-spacing:-.35px;white-space:normal;overflow-wrap:anywhere}
+.kn-article-row small{display:block;color:#9fa8b7;font-size:12px;margin-top:3px}
+.kn-article-media{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:9px;margin-top:15px;min-height:100px}
+.kn-article-image{display:block;min-width:0;color:#e9edf4;text-decoration:none}
+.kn-article-image img{display:block;width:100%;aspect-ratio:16/9;object-fit:cover;border-radius:7px;background:#252b36}
+.kn-article-image span{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;font-size:12px;line-height:1.4;margin-top:5px}
+.kn-article-image-empty{grid-column:1/-1;color:#9fa8b7;font-size:12px;padding:20px 0}
+.kn-article-controls{display:flex;align-items:center;justify-content:center;gap:18px;margin-top:14px}
+.kn-article-controls button{background:#28313e;color:#eef2f7;border:1px solid #3b4656;border-radius:5px;padding:5px 13px;font-size:20px;line-height:1}
+.kn-article-controls span{font-size:12px;color:#aeb8c7;min-width:38px;text-align:center}
+.kn-issue-videos{grid-template-columns:repeat(3,minmax(0,1fr))!important;gap:14px!important}
+.kn-issue-videos.has-shorts,.kn-issue-videos.has-mixed-videos{grid-template-columns:repeat(3,minmax(0,1fr))!important}
+.kn-issue-videos .kn-issue-video img,.kn-issue-videos.has-shorts .kn-issue-video img,.kn-issue-videos.has-mixed-videos .kn-issue-video img{aspect-ratio:16/9!important;max-height:none!important;object-fit:cover!important}
+.kn-issue-video b{font-size:14px!important;line-height:1.5!important}
+.kn-issue-video small{font-size:11px!important}
+@media(max-width:900px){.kn-top-panels{grid-template-columns:1fr!important}}
+@media(max-width:760px){
+ .kn-top-panels{display:flex!important;overflow-x:auto!important;scroll-snap-type:x mandatory;gap:12px!important;padding-bottom:6px}
+ .kn-top-panels>.kn-panel{flex:0 0 100%;width:100%;scroll-snap-align:start}
+ .kn-article-list{min-height:300px}
+ .kn-article-row{padding:13px 1px;gap:8px}
+ .kn-article-row>b{font-size:16px}
+ .kn-article-row strong{font-size:16px!important;line-height:1.55!important}
+ .kn-article-row small{font-size:11px}
+ .kn-article-media{gap:7px}
+ .kn-article-image span{font-size:11px}
+ .kn-issue-videos,.kn-issue-videos.has-shorts,.kn-issue-videos.has-mixed-videos{grid-template-columns:repeat(3,minmax(0,1fr))!important;gap:8px!important}
+ .kn-issue-video b{font-size:12px!important}
+ .kn-issue-video small{font-size:10px!important}
+}
+</style>
+
 </body>
 </html>
