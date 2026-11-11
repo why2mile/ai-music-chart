@@ -2091,6 +2091,9 @@ supabase.auth.onAuthStateChange((event)=>{
  }
 });
 
+// 공개 TOP100은 로그인/회원 데이터 초기화와 독립적으로 먼저 불러옵니다.
+loadKoreaNowTrends();
+
 await updateAuth();
 await loadProposalInbox();
 await loadSongs();
@@ -2119,7 +2122,6 @@ document.querySelectorAll('.kn-nav a[href="#kn-channels"]').forEach(a=>a.addEven
 document.querySelectorAll('.kn-nav a[href="#kn-analysis"]').forEach(a=>a.addEventListener('click',e=>{e.preventDefault();showKoreaNowList('overall');}));
 $('kn-detail-back')?.addEventListener('click',showKoreaNowHome);
 
-loadKoreaNowTrends();
 setInterval(loadKoreaNowTrends, 6*60*60*1000);
 </script>
 
