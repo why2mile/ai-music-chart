@@ -2023,7 +2023,7 @@ document.addEventListener("click",e=>{
  const cat=e.target.closest("[data-kn-category]");if(cat&&cat.closest("#kn-detail-list")){showKoreaNowList("category",cat.dataset.knCategory);return;}
  const p=e.target.closest("[data-kn-person]");if(!p)return;
  const name=p.dataset.knPerson,person=koreaNowData?.people?.find(x=>x.name===name);if(!person)return;
- const rows=person.videos||[],home=document.querySelector(".kn-dashboard"),detail=$("kn-detail-page");if(!home||!detail)return;
+ const rows=person.videos?.length?person.videos:(koreaNowData?.overall||[]).filter(v=>(v.people||[]).includes(name)).sort((a,b)=>Number(b.views_24h||b.view_count||0)-Number(a.views_24h||a.view_count||0)),home=document.querySelector(".kn-dashboard"),detail=$("kn-detail-page");if(!home||!detail)return;
  home.classList.add("kn-detail-mode");home.querySelectorAll(":scope > *").forEach(el=>{if(el!==detail)el.hidden=true;});
  detail.hidden=false;$("kn-detail-title").textContent=name+" 관련 영상";$("kn-detail-description").textContent="유튜브에서 수집한 "+name+" 관련 영상";$("kn-detail-meta").textContent=rows.length+"개 영상";
  $("kn-detail-list").innerHTML=rows.map((v,i)=>'<div class="kn-overall-row"><b>'+(i+1)+'</b><img src="'+escapeHTML(v.thumbnail_url||"")+'" alt="" loading="lazy"><a href="'+escapeHTML(v.video_url||"#")+'" target="_blank" rel="noopener"><strong>'+escapeHTML(v.title||"")+'</strong><small>'+escapeHTML(v.channel_title||"")+' · 누적 '+Number(v.view_count||0).toLocaleString("ko-KR")+'회</small></a></div>').join("")||'<div class="kn-empty">해당 인물의 관련 영상을 수집하지 못했습니다.</div>';
