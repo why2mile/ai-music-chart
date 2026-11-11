@@ -844,7 +844,7 @@ main#home{max-width:1524px;margin:0 auto;padding:0 22px}.kn-dashboard{max-width:
  .kn-issue-videos,.kn-issue-videos.has-shorts{grid-template-columns:repeat(5,minmax(0,1fr))!important;gap:4px!important}
  .kn-issue-videos .kn-issue-video img{width:100%;aspect-ratio:16/9!important;max-height:none!important;object-fit:cover}
  .kn-issue-videos.has-shorts .kn-issue-video img,.kn-issue-videos .kn-issue-video.is-short img{aspect-ratio:9/16!important;max-height:130px!important}
- .kn-issue-videos .kn-issue-video b{font-size:8px!important;line-height:1.25!important;margin-top:3px!important;-webkit-line-clamp:3!important}
+ .kn-issue-videos .kn-issue-video b{font-size:9px!important;line-height:1.25!important;margin-top:3px!important;-webkit-line-clamp:3!important}
  .kn-issue-videos .kn-issue-video small{font-size:7px!important;line-height:1.2!important}
  .kn-main-grid,.kn-bottom-grid{width:100%;grid-template-columns:minmax(0,1fr)!important}
  .kn-main-grid>.kn-panel{width:100%;min-width:0}
@@ -868,8 +868,8 @@ main#home{max-width:1524px;margin:0 auto;padding:0 22px}.kn-dashboard{max-width:
 
 <main id="home">
 
-<section class="kn-dashboard" aria-label="KOREA NOW 메인 대시보드">
- <div class="kn-demo-note"><span>DESIGN PREVIEW</span> 화면 구성 시안입니다. 실제 순위와 통계는 데이터 연동 후 표시됩니다.</div>
+<section class="kn-dashboard" aria-label="TOP100 유튜브 KOREA 메인 대시보드">
+ 
  <section class="kn-hero kn-issue-hero" aria-label="주요 분야별 이슈 영상">
   <div class="kn-issue-head"><div><div class="kn-kicker">KOREA TREND INDEX · LIVE ISSUES</div><h1>지금 주목받는 분야별 영상 이슈</h1></div><div class="kn-issue-controls"><span class="kn-issue-rotation" id="kn-issue-page-label">분야별 주요 영상</span><button type="button" id="kn-issue-prev" class="kn-issue-next" aria-label="이전 영상 보기">‹</button><button type="button" id="kn-issue-next" class="kn-issue-next" aria-label="다음 영상 보기">›</button></div></div>
   <div class="kn-issue-videos" id="kn-issue-videos"><div class="kn-issue-empty">주요 이슈 영상을 불러오는 중입니다.</div></div>
@@ -1096,7 +1096,7 @@ let koreaNowData=null;
 function showKoreaNowList(view,category){
  const data=koreaNowData;if(!data)return;
  let rows=[],title="종합 인기 TOP 100",subtitle="전체 분야 통합 순위 · 한국어 제목 영상";
- if(view==="category"){rows=data.rankings?.[category]||[];title=category+" 인기 TOP 100";subtitle="한국어 제목 영상 · 조회수순";}
+ if(view==="category"){rows=data.rankings?.[category]||[];title=(category==="IT·AI"?"AI":category)+" 인기 TOP 100";subtitle="한국어 제목 영상 · 조회수순";}
  else if(view==="rising"){rows=data.overall||[];title="급상승 영상 TOP 100";subtitle="최근 수집 조회수 기준 · 데이터 누적 중";}
  else if(view==="people"){rows=(data.people||[]).map(p=>({title:p.name,thumbnail_url:p.thumbnail_url,video_url:"#",channel_title:"관련 영상 "+p.video_count+"개",view_count:p.total_views||0,is_person:true}));title="지금 뜨는 인물 TOP 10";subtitle="인물을 선택하면 해당 인물의 관련 영상 목록이 표시됩니다.";}
  else if(view==="channels"){rows=data.channels||[];title="오늘의 인기 채널 TOP 10";subtitle="구독자 수 기준";}
