@@ -1208,7 +1208,7 @@ function presenterImageData(index){
 function renderKoreaRisingList(){
  const target=$("kn-rising-list");if(!target)return;
  const rows=window.knRisingVideos||[];
- target.innerHTML=rows.map((v,i)=>'<div class="kn-rising-item"><b>'+(i+1)+'</b><span class="kn-thumb"><img src="'+escapeHTML(v.thumbnail_url||"")+'" alt="" loading="lazy"></span><span><a href="'+escapeHTML(v.video_url||"#")+'" target="_blank" rel="noopener"><strong>'+escapeHTML(v.title)+'</strong></a><small>'+escapeHTML(v.channel_title||"")+' · '+(v.views_24h===null?'24시간 집계 중':fmt(v.views_24h)+'회 증가')+'</small></span></div>').join("")||'<div class="kn-empty">급상승 영상이 없습니다.</div>';
+ target.innerHTML=rows.map((v,i)=>'<div class="kn-rising-item"><b>'+(i+1)+'</b><span class="kn-thumb"><img src="'+escapeHTML(v.thumbnail_url||"")+'" alt="" loading="lazy"></span><span><a href="'+escapeHTML(v.video_url||"#")+'" target="_blank" rel="noopener"><strong>'+escapeHTML(v.title)+'</strong></a><small>'+escapeHTML(v.channel_title||"")+' · '+(v.views_30m!==null&&v.views_30m!==undefined?'최근 30분 +'+fmt(v.views_30m)+'회':v.views_24h===null?'최근 조회수 집계 중':'24시간 +'+fmt(v.views_24h)+'회')+'</small></span></div>').join("")||'<div class="kn-empty">급상승 영상이 없습니다.</div>';
 }
 function moveKoreaRising(direction){
  const rows=window.knRisingVideos||[];if(rows.length<2)return;
