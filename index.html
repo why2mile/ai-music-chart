@@ -877,16 +877,7 @@ label{
    <label>확인 메모</label><input id="externalEvidenceNote" maxlength="500" placeholder="예: 2026-11-11 멜론 AI 가창 플레이리스트">
    <div class="actions"><button class="primary" id="saveExternalScoreBtn" type="button">플랫폼 순위 저장</button></div><div id="externalScoresAdminList"></div>
   </div>
-  <div class="profile-edit">
-   <h3>비AI 한국음악 등록</h3>
-   <p>BTS·BLACKPINK 차트와 그 아래 일반 한국음악 목록으로 나뉘어 조회수 순으로 표시됩니다.</p>
-   <label>곡 제목</label><input id="nonAiTitle" maxlength="160" placeholder="공식 곡 제목">
-   <label>아티스트</label><input id="nonAiArtist" maxlength="100" placeholder="예: BTS, BLACKPINK, 아이유">
-   <label>유튜브 공식 영상 주소</label><input id="nonAiYoutubeUrl" placeholder="https://www.youtube.com/watch?v=XXXXXXXXXXX">
-   <label>현재 유튜브 조회수</label><input id="nonAiViews" type="number" min="0" step="1" placeholder="예: 123456789">
-   <div class="actions"><button class="primary" id="createNonAiSongBtn" type="button">비AI 곡 등록</button></div>
-   <div id="nonAiAdminList"></div>
-  </div>
+
  </section>
 </section>
 
@@ -1496,8 +1487,8 @@ function renderSongs(){
  const scoredMain=assignRanks(calculateScores(filtered.filter(song=>!isShorts(song)),activeChart)).slice(0,100);
  const scoredShorts=assignRanks(calculateScores(filtered.filter(song=>isShorts(song)),activeChart));
  message('한국 AI음악 통합 차트 · '+activeChart+' · 외부 플랫폼 90% + 사이트 10%');
- const periodLabel=activeChart==='연간'?'최근 365일':activeChart==='월간'?'최근 30일':'최근 7일';
- const heading=document.querySelector('.ai-main-column .layout-column-title');if(heading)heading.textContent='🎵 일반 AI 음악 · '+periodLabel+' 순위';
+ const periodLabel=activeChart==='실시간'?'최근 24시간':activeChart==='연간'?'최근 365일':activeChart==='월간'?'최근 30일':'최근 7일';
+ const heading=document.querySelector('.ai-main-column .layout-column-title');if(heading)heading.textContent='🎵 한국 AI 음악 · '+periodLabel+' 순위';
  const hasPeriodData=filtered.some(song=>getPeriodViewDelta(song,activeChart==='연간'?365:activeChart==='월간'?30:7)!==null);
  const note=$('weeklyChartNote');if(note)note.textContent='외부 플랫폼 순위 90% + 우리 사이트 참여도 10%를 합산합니다. '+(hasPeriodData?'유튜브 기간별 조회수 증가량':'유튜브 누적 조회수 임시값')+'과 입력된 플랫폼 순위 자료를 반영합니다.';
  const allTime=validSongs.filter(song=>!isShorts(song)).sort((a,b)=>Number(b.youtube_views||0)-Number(a.youtube_views||0)).slice(0,12);
