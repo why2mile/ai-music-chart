@@ -1213,14 +1213,17 @@ function showKoreaNowHome(){
  $("kn-detail-page").hidden=true;window.scrollTo({top:0,behavior:"instant"});
 }
 
-const KOREA_ISSUE_CATEGORY_LIMITS={"정치·시사":15,"스포츠":15,"돈벌이·사업":15,"개그·유머":15,"게임":8,"건강·의료":8,"여행·문화":8,"군사·밀리터리":8};
+const KOREA_ISSUE_CATEGORY_LIMITS={"정치·시사":30,"스포츠":30,"돈벌이·사업":30,"개그·유머":30,"게임":6,"건강·의료":6,"여행·문화":6,"군사·밀리터리":6};
+const KOREA_ISSUE_WEIGHTED_ORDER=["정치·시사","스포츠","개그·유머","돈벌이·사업","정치·시사","스포츠","개그·유머","돈벌이·사업","게임","건강·의료","여행·문화","군사·밀리터리"];
 let koreaIssueVideos=[];
 let koreaIssuePage=0;
 function issueIsShort(v){return v.is_short===true||(Number(v.duration_seconds||0)>0&&Number(v.duration_seconds)<=180);}
 function renderKoreaIssueTab(data){
  const host=$("kn-issue-videos");if(!host)return;
- const merged=Object.entries(KOREA_ISSUE_CATEGORY_LIMITS).flatMap(([cat,limit])=>(data.rankings?.[cat]||[]).slice().sort((a,b)=>Number(b.views_24h??b.view_count??0)-Number(a.views_24h??a.view_count??0)).slice(0,limit).map(v=>({...v,issueCategory:cat})));
- const unique=[...new Map(merged.map(v=>[v.youtube_id||v.video_url,v])).values()];
+ const buckets=Object.fromEntries(Object.entries(KOREA_ISSUE_CATEGORY_LIMITS).map(([cat,limit])=>[cat,(data.rankings?.[cat]||[]).slice().sort((a,b)=>Number(b.views_24h??b.view_count??0)-Number(a.views_24h??a.view_count??0)).slice(0,limit)]));
+ const cursors=Object.fromEntries(Object.keys(KOREA_ISSUE_CATEGORY_LIMITS).map(cat=>[cat,0]));
+ const unique=[],seen=new Set();
+ for(let round=0;round<40;round++)for(const cat of KOREA_ISSUE_WEIGHTED_ORDER){const v=buckets[cat]?.[cursors[cat]++];if(!v)continue;const key=v.youtube_id||v.video_url;if(seen.has(key))continue;seen.add(key);unique.push({...v,issueCategory:cat});}
  const trending=(a,b)=>Number(b.views_24h??b.view_count??0)-Number(a.views_24h??a.view_count??0);
  const others=unique.filter(v=>!issueIsShort(v)).sort(trending);
  const shorts=unique.filter(issueIsShort).sort(trending);
@@ -1402,9 +1405,9 @@ async function loadKoreaNowTrends(){
  };
  const fmt=n=>Number(n||0).toLocaleString('ko-KR');
  try{
-  const {data,error}=await supabase.functions.invoke('korea-now-trends');
-  if(error)throw error;
-  if(!data||data.error)throw new Error(data?.error||'순위 데이터를 가져오지 못했습니다.');
+  const response=await fetch(SUPABASE_URL+'/functions/v1/korea-now-trends',{method:'GET',headers:{apikey:SUPABASE_KEY,Authorization:'Bearer '+SUPABASE_KEY},cache:'default'});
+  const data=await response.json();
+  if(!response.ok||!data||data.error)throw new Error(data?.error||'순위 데이터를 가져오지 못했습니다.');
   koreaNowData=data;
   await mergeManualKoreaVideos(data);
   renderKoreaNewsPanels(data);
@@ -2325,14 +2328,7 @@ supabase.auth.onAuthStateChange((event)=>{
  }
 });
 
-// 공개 TOP100은 로그인/회원 데이터 초기화와 독립적으로 먼저 불러옵니다.
-loadKoreaNowTrends();
-
-await updateAuth();
-await loadProposalInbox();
-await loadSongs();
-await refreshYoutubeViews();
-startRealtimeTicker();
+// 공개 순위, 회원 상태, 음악 차트는 서로 기다리지 않고 병렬로 시작합니다.
 
 document.querySelectorAll('.kn-category-list a[data-kn-category]').forEach(a=>a.addEventListener('click',e=>{e.preventDefault();showKoreaNowList('category',a.dataset.knCategory);}));
 document.addEventListener("click",e=>{
@@ -2365,6 +2361,11 @@ $('manualKoreaVideoList')?.addEventListener('click',async e=>{
  if(error){$('manualVideoStatus').textContent='삭제 실패: '+error.message;return;}
  $('manualVideoStatus').textContent='삭제했습니다.';await loadAdminKoreaVideos();await loadKoreaNowTrends();
 });
+// 모든 클릭 이벤트를 먼저 연결해 데이터 로딩 중에도 화면을 즉시 조작할 수 있게 합니다.
+startRealtimeTicker();
+void loadKoreaNowTrends();
+void Promise.allSettled([updateAuth(),loadProposalInbox(),loadSongs()]);
+window.setTimeout(()=>{void refreshYoutubeViews();},4000);
 setInterval(loadKoreaNowTrends, 30*60*1000);
 </script>
 
