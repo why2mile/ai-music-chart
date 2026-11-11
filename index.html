@@ -975,6 +975,21 @@ main#home{max-width:1524px;margin:0 auto;padding:0 22px}.kn-dashboard{max-width:
   <div class="actions"><button class="primary" id="discoverYoutubeAiBtn" type="button">유튜브 전체 검색 실행</button></div>
   <p id="youtubeDiscoveryStatus" aria-live="polite"></p>
   <div id="youtubeDiscoveryResults"></div>
+    <div class="profile-edit" id="koreaVideoAdmin">
+   <h3>🎬 분야별 영상 직접 추가 · 관리자 전용</h3>
+   <p>자동 수집 영상이 적은 분야에 관리자가 유튜브 영상을 직접 보충합니다. 저장하면 해당 분야의 방문자 화면에도 바로 반영됩니다.</p>
+   <label>분야 선택</label>
+   <select id="manualVideoCategory">
+    <option>정치·국제</option><option>돈벌이·경제</option><option>군사</option><option>부동산</option><option>뷰티·패션</option><option>게임</option><option>음악·AI</option><option>연예·방송</option><option>스포츠</option><option>IT·AI</option><option>과학·기술</option><option>개그·유머</option><option>여행·문화</option><option>교육·지식</option><option>반려동물</option><option>병·건강·의료</option><option>자동차</option><option>취미</option>
+   </select>
+   <label>유튜브 영상 주소</label><input id="manualVideoUrl" type="url" placeholder="https://www.youtube.com/watch?v=영상ID">
+   <label>영상 제목</label><input id="manualVideoTitle" maxlength="200" placeholder="영상 제목">
+   <label>채널명 (선택)</label><input id="manualVideoChannel" maxlength="120" placeholder="유튜브 채널명">
+   <label>영상 종류</label><select id="manualVideoType"><option value="false">일반 영상</option><option value="true">쇼츠</option></select>
+   <div class="actions"><button class="primary" id="addKoreaManualVideoBtn" type="button">이 분야에 영상 추가</button><button class="secondary" id="refreshKoreaManualVideosBtn" type="button">목록 새로고침</button></div>
+   <p id="manualVideoStatus" aria-live="polite"></p>
+   <h4>관리자가 직접 추가한 영상</h4><div id="manualKoreaVideoList"></div>
+  </div>
   <h3>📢 관리자 광고 등록 및 확인</h3>
   <p>관리자만 등록·노출 승인·중지·삭제할 수 있습니다. 등록 직후에는 비노출 상태이며, 아래 목록에서 노출을 켜면 차트에 표시됩니다.</p>
   <label>광고에 표시할 곡 제목</label><input id="adTitle" maxlength="160" placeholder="곡 제목">
@@ -1176,17 +1191,27 @@ function renderKoreaNewsPanels(data){
 }
 function presenterImageData(index){
  const palettes=[
-  ["#e6b59a","#263f68","#1d2535","#d8b08e"],["#f0c6a8","#8b3150","#24202b","#241b1d"],
-  ["#dba889","#287b79","#202d3a","#30211d"],["#f1c9ad","#6c5794","#28334a","#1c191b"],
-  ["#c98e72","#345b8a","#202a38","#30211d"],["#edbd9e","#a34c3c","#273346","#251b1c"],
-  ["#e9b99b","#52724b","#253044","#241c1a"],["#d9a184","#343b48","#202b3c","#1b1717"]
+  {skin:"#f2c7aa",hair:"#30232b",suit:"#244d70",shirt:"#fff8ef",bg:"#d6e6ee",accent:"#d9b36d"},
+  {skin:"#dfaa89",hair:"#171c27",suit:"#803d54",shirt:"#fff6f0",bg:"#f0dce0",accent:"#e7b77b"},
+  {skin:"#e9b99c",hair:"#4a3028",suit:"#376a67",shirt:"#fff9f0",bg:"#d9ebe5",accent:"#d8bd7b"},
+  {skin:"#f0c8ad",hair:"#29212d",suit:"#66548d",shirt:"#fff8f1",bg:"#e7e0f1",accent:"#d8b36d"},
+  {skin:"#c99172",hair:"#26232a",suit:"#365c84",shirt:"#f8f4ee",bg:"#dce6f2",accent:"#d4aa70"},
+  {skin:"#edbea0",hair:"#50332c",suit:"#a34f48",shirt:"#fff7f0",bg:"#f1e0d6",accent:"#e2c17b"},
+  {skin:"#e8b99c",hair:"#332d28",suit:"#526e4c",shirt:"#fff9ef",bg:"#e1eadb",accent:"#d5b36e"},
+  {skin:"#dba487",hair:"#24232a",suit:"#3d4d63",shirt:"#fff8ef",bg:"#dbe4ec",accent:"#d8b16e"}
  ];
- const p=palettes[((index%palettes.length)+palettes.length)%palettes.length],female=index%4!==1;
+ const p=palettes[((index%palettes.length)+palettes.length)%palettes.length];
+ const female=index%4!==1,style=Math.floor(index/2)%3;
  const hair=female
-  ? ['<path d="M45 91 Q28 20 83 16 Q142 18 125 96 L113 133 L54 133Z" fill="'+p[3]+'"/>','<path d="M43 78 Q35 18 85 17 Q135 17 127 80 Q110 54 88 52 Q62 53 43 78Z" fill="'+p[3]+'"/>','<path d="M42 90 Q30 24 83 18 Q135 22 128 92 L117 127 L50 127Z" fill="'+p[3]+'"/>'][Math.floor(index/2)%3]
-  : '<path d="M44 66 Q39 17 86 18 Q129 17 128 66 Q108 47 83 48 Q62 47 44 66Z" fill="'+p[3]+'"/>';
- const outfit='<path d="M28 184 Q35 126 65 119 L85 135 L105 119 Q135 128 143 184Z" fill="'+p[1]+'"/><path d="M65 120 L85 148 L105 120 L97 184 L73 184Z" fill="#f6f3ef"/>';
- const svg='<svg xmlns="http://www.w3.org/2000/svg" width="320" height="180" viewBox="0 0 170 180"><defs><linearGradient id="bg" x2="1" y2="1"><stop stop-color="'+p[2]+'"/><stop offset="1" stop-color="'+p[1]+'"/></linearGradient><linearGradient id="light" x2="0" y2="1"><stop stop-color="#ffffff" stop-opacity=".22"/><stop offset="1" stop-color="#ffffff" stop-opacity="0"/></linearGradient></defs><rect width="170" height="180" rx="10" fill="url(#bg)"/><rect width="170" height="180" rx="10" fill="url(#light)"/><circle cx="86" cy="67" r="37" fill="'+p[3]+'" opacity=".14"/>'+hair+'<path d="M53 56 Q53 28 85 28 Q118 28 118 59 L113 92 Q105 112 85 113 Q65 112 57 92Z" fill="'+p[0]+'"/><path d="M55 61 Q57 34 85 34 Q111 34 117 61 L111 50 Q88 39 61 55Z" fill="'+p[3]+'"/><ellipse cx="72" cy="72" rx="3" ry="2" fill="#30252a"/><ellipse cx="99" cy="72" rx="3" ry="2" fill="#30252a"/><path d="M77 91 Q86 100 96 90" fill="none" stroke="#a64f59" stroke-width="3" stroke-linecap="round"/>'+outfit+'<path d="M112 139 Q133 126 139 105 Q142 94 149 98 Q154 101 149 114 Q144 137 128 153 L111 161Z" fill="'+p[0]+'"/><path d="M139 105 Q141 86 148 80 Q153 77 155 82 Q158 88 151 99" fill="'+p[0]+'"/><path d="M136 106 L149 99" stroke="'+p[0]+'" stroke-width="7" stroke-linecap="round"/><path d="M22 176 H148" stroke="#ffffff" stroke-opacity=".18" stroke-width="2"/></svg>';
+  ? [
+   '<path d="M45 100 C27 46 40 12 86 12 C135 12 145 48 128 105 L119 146 L52 146Z" fill="'+p.hair+'"/><path d="M47 61 C48 22 117 16 127 61 C107 43 75 43 47 61Z" fill="'+p.hair+'"/>',
+   '<path d="M42 104 C27 38 44 13 86 13 C132 13 144 45 130 105 L116 132 L54 132Z" fill="'+p.hair+'"/><path d="M47 60 C59 24 111 25 125 58 Q91 44 47 60Z" fill="'+p.hair+'"/>',
+   '<path d="M43 100 C31 44 43 13 86 13 C131 13 142 47 129 100 L119 142 L53 142Z" fill="'+p.hair+'"/><path d="M46 57 Q62 16 100 27 Q119 31 127 60 Q94 43 46 57Z" fill="'+p.hair+'"/>'
+  ][style]
+  : '<path d="M45 69 C40 22 58 12 87 13 C119 13 137 34 127 73 Q109 48 84 48 Q62 48 45 69Z" fill="'+p.hair+'"/>';
+ const outfit='<path d="M20 190 Q27 128 63 119 L85 139 L108 119 Q143 130 151 190Z" fill="'+p.suit+'"/><path d="M63 120 L85 151 L108 120 L99 190 L72 190Z" fill="'+p.shirt+'"/><path d="M85 151 L78 164 L85 177 L92 164Z" fill="'+p.accent+'"/>';
+ const hand='<path d="M115 145 Q133 133 140 112 Q143 101 149 104 Q154 107 150 119 Q145 140 130 156 L112 166Z" fill="'+p.skin+'"/><path d="M140 113 Q141 94 147 87 Q152 83 155 89 Q158 95 151 108" fill="'+p.skin+'" stroke="'+p.skin+'" stroke-width="3" stroke-linecap="round"/><path d="M145 111 Q151 97 158 98 Q163 101 156 113" fill="'+p.skin+'" stroke="'+p.skin+'" stroke-width="3" stroke-linecap="round"/>';
+ const svg='<svg xmlns="http://www.w3.org/2000/svg" width="640" height="360" viewBox="0 0 170 180"><defs><linearGradient id="bg'+index+'" x1="0" y1="0" x2="1" y2="1"><stop stop-color="'+p.bg+'"/><stop offset="1" stop-color="'+p.suit+'" stop-opacity=".9"/></linearGradient><radialGradient id="face'+index+'"><stop stop-color="#fff" stop-opacity=".18"/><stop offset="1" stop-color="#8c4c3c" stop-opacity=".08"/></radialGradient></defs><rect width="170" height="180" rx="10" fill="url(#bg'+index+')"/><circle cx="85" cy="74" r="64" fill="#fff" opacity=".11"/><path d="M9 180 Q20 145 48 137 M161 180 Q151 144 125 137" stroke="#fff" stroke-opacity=".22" stroke-width="2" fill="none"/>'+hair+'<path d="M54 56 Q54 29 85 29 Q117 29 117 58 L112 94 Q105 115 85 116 Q65 115 58 94Z" fill="'+p.skin+'"/><path d="M55 62 Q56 34 84 34 Q108 34 116 60 Q106 48 89 48 Q71 47 55 62Z" fill="'+p.hair+'"/><path d="M65 70 Q72 65 79 70 M92 70 Q100 65 107 70" stroke="#69463e" stroke-width="2" fill="none" stroke-linecap="round"/><ellipse cx="73" cy="77" rx="3" ry="2.4" fill="#29252a"/><ellipse cx="99" cy="77" rx="3" ry="2.4" fill="#29252a"/><path d="M85 78 L81 89 Q85 92 89 89" stroke="#c58b76" stroke-width="1.8" fill="none" stroke-linecap="round"/><path d="M75 99 Q85 109 97 98" stroke="#a84f59" stroke-width="3" fill="none" stroke-linecap="round"/><path d="M63 93 Q85 122 107 93" stroke="#fff" stroke-opacity=".18" stroke-width="2" fill="none"/>'+outfit+hand+'<circle cx="22" cy="30" r="3" fill="'+p.accent+'"/><circle cx="147" cy="34" r="2" fill="#fff" opacity=".6"/><path d="M12 164 H158" stroke="#fff" stroke-opacity=".16" stroke-width="1"/></svg>';
  return "data:image/svg+xml;charset=UTF-8,"+encodeURIComponent(svg);
 }
 function renderKoreaRisingList(){
@@ -1239,6 +1264,51 @@ $("kn-global-search")?.addEventListener("submit",e=>{e.preventDefault();runKorea
 $("kn-search-query")?.addEventListener("input",e=>{if(e.target.value.trim().length>=2)runKoreaGlobalSearch(e.target.value);else if($("kn-search-results"))$("kn-search-results").hidden=true;});
 $("kn-search-close")?.addEventListener("click",()=>{$("kn-search-results").hidden=true;});
 const hotHost=$("kn-issue-videos");if(hotHost){let startX=0;hotHost.addEventListener("touchstart",e=>{startX=e.changedTouches[0].clientX;},{passive:true});hotHost.addEventListener("touchend",e=>{const dx=e.changedTouches[0].clientX-startX;if(Math.abs(dx)>40){koreaIssuePage+=dx<0?1:-1;renderKoreaIssuePage();}},{passive:true});}
+
+const KOREA_MANUAL_CATEGORY_KEYS={
+ '정치·국제':'정치·시사','돈벌이·경제':'돈벌이·사업','군사':'군사·밀리터리',
+ '부동산':'부동산','뷰티·패션':'뷰티·패션','게임':'게임','음악·AI':'음악',
+ '연예·방송':'연예·방송','스포츠':'스포츠','IT·AI':'IT·AI','과학·기술':'과학·기술',
+ '개그·유머':'개그·유머','여행·문화':'여행·문화','교육·지식':'교육·지식',
+ '반려동물':'반려동물','병·건강·의료':'건강·의료','자동차':'자동차','취미':'취미'
+};
+async function mergeManualKoreaVideos(data){
+ const {data:rows,error}=await supabase.from('korea_now_manual_videos').select('*');
+ if(error)throw error;
+ data.rankings=data.rankings||{};
+ for(const row of rows||[]){
+  const key=KOREA_MANUAL_CATEGORY_KEYS[row.category]||row.category;
+  const list=data.rankings[key]||(data.rankings[key]=[]);
+  if(list.some(v=>v.youtube_id===row.youtube_id))continue;
+  list.push({youtube_id:row.youtube_id,title:row.title,channel_title:row.channel_title||'관리자 추천',
+   category:key,video_url:row.video_url,thumbnail_url:row.thumbnail_url||'https://i.ytimg.com/vi/'+row.youtube_id+'/hqdefault.jpg',
+   view_count:Number(row.view_count||0),views_24h:null,is_short:!!row.is_short,duration_seconds:row.is_short?55:null,people:[],manual:true});
+ }
+}
+async function loadAdminKoreaVideos(){
+ const host=$('manualKoreaVideoList');if(!host)return;
+ const {data,error}=await supabase.from('korea_now_manual_videos').select('*').order('created_at',{ascending:false});
+ if(error){host.textContent='목록을 불러오지 못했습니다: '+error.message;return;}
+ host.innerHTML=(data||[]).map(v=>'<div class="ad-admin-item"><span><b>['+escapeHTML(v.category)+']</b> '+escapeHTML(v.title)+'<small style="display:block;color:#9ca5b2">'+escapeHTML(v.channel_title||'관리자 추천')+'</small></span><button class="secondary" type="button" data-delete-manual-video="'+escapeHTML(v.youtube_id)+'">삭제</button></div>').join('')||'<p>직접 추가한 영상이 아직 없습니다.</p>';
+}
+function getKoreaYoutubeId(value){
+ const s=String(value||'').trim();const m=s.match(/(?:youtu\.be\/|youtube\.com\/(?:watch\?.*v=|embed\/|shorts\/|live\/))([A-Za-z0-9_-]{11})/);
+ return m?m[1]:(/^[A-Za-z0-9_-]{11}$/.test(s)?s:'');
+}
+async function addManualKoreaVideo(){
+ const status=$('manualVideoStatus'),url=$('manualVideoUrl').value.trim(),id=getKoreaYoutubeId(url);
+ const title=$('manualVideoTitle').value.trim(),category=$('manualVideoCategory').value;
+ if(!id||title.length<2){if(status)status.textContent='올바른 유튜브 주소와 영상 제목을 입력하세요.';return;}
+ const payload={youtube_id:id,title,channel_title:$('manualVideoChannel').value.trim()||'관리자 추천',
+ category,video_url:'https://www.youtube.com/watch?v='+id,thumbnail_url:'https://i.ytimg.com/vi/'+id+'/hqdefault.jpg',
+ is_short:$('manualVideoType').value==='true'};
+ const {error}=await supabase.from('korea_now_manual_videos').upsert(payload,{onConflict:'youtube_id'});
+ if(error){if(status)status.textContent='저장 실패: '+error.message;return;}
+ if(status)status.textContent='저장했습니다. 해당 분야에 영상이 반영됩니다.';
+ $('manualVideoUrl').value='';$('manualVideoTitle').value='';$('manualVideoChannel').value='';
+ await loadAdminKoreaVideos();await loadKoreaNowTrends();
+}
+
 async function loadKoreaNowTrends(){
  const status=$('kn-data-updated');if(status)status.textContent='저장된 순위표 불러오는 중...';
  const map={
@@ -1254,6 +1324,7 @@ async function loadKoreaNowTrends(){
   if(error)throw error;
   if(!data||data.error)throw new Error(data?.error||'순위 데이터를 가져오지 못했습니다.');
   koreaNowData=data;
+  await mergeManualKoreaVideos(data);
   renderKoreaNewsPanels(data);
   for(const [category,id] of Object.entries(map)){
    const target=$(id);if(!target)continue;
@@ -1401,7 +1472,7 @@ async function updateAuth(){
  if(loggedIn){
   const {data:isAdmin}=await supabase.rpc('is_chart_admin');
   $('adAdminPanel').hidden=!isAdmin;
-  if(isAdmin){ await loadAdminAds(); await loadAdminExternalScores(); }
+  if(isAdmin){ await loadAdminAds(); await loadAdminExternalScores(); await loadAdminKoreaVideos(); }
   const meta=session.user.user_metadata || {};
   $('profileView').innerHTML='<b>이메일</b>: '+escapeHTML(session.user.email)+'<br><b>닉네임</b>: '+escapeHTML(meta.nickname || '미설정');
   $('profileNickname').value=meta.nickname || '';
@@ -2203,6 +2274,15 @@ document.querySelectorAll('.kn-nav a[href="#kn-channels"]').forEach(a=>a.addEven
 document.querySelectorAll('.kn-nav a[href="#kn-analysis"]').forEach(a=>a.addEventListener('click',e=>{e.preventDefault();showKoreaNowList('overall');}));
 $('kn-detail-back')?.addEventListener('click',showKoreaNowHome);
 
+$('addKoreaManualVideoBtn')?.addEventListener('click',addManualKoreaVideo);
+$('refreshKoreaManualVideosBtn')?.addEventListener('click',loadAdminKoreaVideos);
+$('manualKoreaVideoList')?.addEventListener('click',async e=>{
+ const btn=e.target.closest('[data-delete-manual-video]');if(!btn)return;
+ if(!confirm('이 분야별 직접 추가 영상을 삭제할까요?'))return;
+ const {error}=await supabase.from('korea_now_manual_videos').delete().eq('youtube_id',btn.dataset.deleteManualVideo);
+ if(error){$('manualVideoStatus').textContent='삭제 실패: '+error.message;return;}
+ $('manualVideoStatus').textContent='삭제했습니다.';await loadAdminKoreaVideos();await loadKoreaNowTrends();
+});
 setInterval(loadKoreaNowTrends, 6*60*60*1000);
 </script>
 
@@ -2376,6 +2456,32 @@ body{font-size:16px}
  .kn-category-list a,.kn-category-issue-list a,.kn-news-list a{font-size:14px!important}
  .kn-rising-list>div{grid-template-columns:25px 82px minmax(0,1fr)!important}
  .kn-rising-list a strong{font-size:14px!important}
+}
+</style>
+<style>
+/* 기사 제목을 기준으로 사이트 전체의 읽기 크기 통일 */
+.kn-dashboard{font-size:17px!important}
+.kn-dashboard .kn-panel-head h2{font-size:22px!important}
+.kn-dashboard .kn-article-row strong{font-size:18px!important;line-height:1.55!important}
+.kn-dashboard .kn-article-row small{font-size:13px!important}
+.kn-dashboard .kn-category-list a,.kn-dashboard .kn-category-issue-list a,.kn-dashboard .kn-news-list a{font-size:16px!important;line-height:1.55!important}
+.kn-dashboard .kn-category-list a strong,.kn-dashboard .kn-category-issue-list a strong,.kn-dashboard .kn-news-list a span{font-size:16px!important}
+.kn-dashboard .kn-ranking-row strong,.kn-dashboard .kn-overall-row strong,.kn-dashboard .kn-rising-list a strong{font-size:16px!important;line-height:1.5!important}
+.kn-dashboard .kn-ranking-row small,.kn-dashboard .kn-overall-row small,.kn-dashboard .kn-rising-list small{font-size:13px!important}
+.kn-dashboard .kn-issue-video b{font-size:17px!important;line-height:1.5!important}
+.kn-dashboard .kn-issue-video small{font-size:13px!important}
+#koreaVideoAdmin label{display:block;font-size:15px;margin-top:10px}
+#koreaVideoAdmin input,#koreaVideoAdmin select{font-size:16px;min-height:46px}
+#koreaVideoAdmin .ad-admin-item{font-size:14px}
+.kn-article-row>img.kn-presenter-fallback,.kn-article-image img.kn-presenter-fallback{object-fit:cover;background:#dce6ee}
+@media(max-width:760px){
+ .kn-dashboard{font-size:16px!important}
+ .kn-dashboard .kn-panel-head h2{font-size:21px!important}
+ .kn-dashboard .kn-article-row strong{font-size:17px!important}
+ .kn-dashboard .kn-category-list a,.kn-dashboard .kn-category-issue-list a,.kn-dashboard .kn-news-list a{font-size:15px!important}
+ .kn-dashboard .kn-category-list a strong,.kn-dashboard .kn-category-issue-list a strong,.kn-dashboard .kn-news-list a span{font-size:15px!important}
+ .kn-dashboard .kn-ranking-row strong,.kn-dashboard .kn-overall-row strong,.kn-dashboard .kn-rising-list a strong{font-size:15px!important}
+ .kn-dashboard .kn-issue-video b{font-size:16px!important}
 }
 </style>
 </body>
