@@ -915,7 +915,7 @@ label{
 <section id="chartSection">
  <div class="section-heading" id="newMusic">
   <div class="chart-heading-row">
-   <div><div class="eyebrow">KOREAN AI MUSIC GLOBAL RANKING</div><h2>한국 AI음악 통합 인기 TOP 100</h2><p>외부 플랫폼 인기도 90% + 우리 사이트 인기도 10% · AI 배지 검증곡만 집계</p></div>
+   <div><div class="eyebrow">KOREAN AI MUSIC GLOBAL RANKING</div><h2>한국 AI음악 통합 인기 TOP 100</h2><p>외부 플랫폼 순위 자료 + 우리 사이트 참여도를 합산한 한국어 AI 음악 차트</p></div>
    <div class="chart-search"><input id="chartSearch" type="search" placeholder="곡 제목 · 아티스트 검색" aria-label="곡 제목과 아티스트 검색"></div>
   </div>
  </div>
@@ -946,7 +946,7 @@ label{
  <div class="chart-layout">
   <section class="ai-main-column"><div class="layout-column-title">🎵 한국 AI 음악 · 통합 인기 TOP 100</div><p class="chart-period-note" id="weeklyChartNote">외부 플랫폼 인기 90%와 우리 사이트 참여도 10%를 합산합니다.</p><section class="grid-main" id="mainSongsGrid"></section></section>
   <section class="non-ai-chart non-ai-column" id="nonAiChartSection">
-   <section class="period-chart alltime-ai-chart"><h3>🏆 역대 AI 음악 순위</h3><p>유튜브 AI 배지 확인곡 · 누적 조회수 기준</p><div class="period-empty" id="aiAllTimeList">AI 배지 검증곡을 불러오는 중입니다.</div></section>
+   <section class="period-chart alltime-ai-chart"><h3>🏆 역대 AI 음악 순위</h3><p>등록된 한국어 음악 영상 · 유튜브 누적 조회수 기준</p><div class="period-empty" id="aiAllTimeList">한국어 음악 영상을 불러오는 중입니다.</div></section>
    
   </section>
   <section class="shorts-column"><div class="layout-column-title" style="color:#c686df;">⚡ AI 한국음악 쇼츠</div><section class="grid-shorts" id="shortsGrid"></section></section>
@@ -1398,14 +1398,7 @@ async function loadSiteCommentCounts(){
  if(error){console.warn('사이트 댓글 집계 오류',error.message);siteCommentCounts=new Map();return;}
  siteCommentCounts=new Map();(data||[]).forEach(row=>siteCommentCounts.set(row.song_id,(siteCommentCounts.get(row.song_id)||0)+1));
 }
-function renderPlatformSources(){
- const target=$('platformSourceList');if(!target)return;
- const cutoff=new Date();cutoff.setDate(cutoff.getDate()-periodDays(activeChart));
- const rows=externalScores.filter(r=>new Date(r.snapshot_date+'T23:59:59')>=cutoff),counts=new Map();rows.forEach(r=>counts.set(r.platform,(counts.get(r.platform)||0)+1));
- const entries=[['youtube','유튜브',30],['melon','멜론',12],['genie','지니',7],['bugs','벅스',6],['spotify','Spotify',10],['youtube_music','YouTube Music',5],['suno','Suno',8],['udio','Udio',7],['community','커뮤니티',5]];
- target.className='period-rank-list';
- target.innerHTML='<div class="period-rank-row"><span>유튜브 조회수 순위</span><strong>30%</strong></div>'+entries.slice(1).map(([key,label,weight])=>'<div class="period-rank-row"><span>'+label+' · '+(counts.get(key)||0)+'건</span><strong>'+weight+'%</strong></div>').join('')+'<div class="period-rank-row"><span>우리 사이트 참여도</span><strong>10%</strong></div><p class="modal-note">확인된 플랫폼 자료만 반영합니다. 자료가 없는 플랫폼은 외부 90% 안에서 가중치를 재조정합니다.</p>';
-}
+
 async function loadAdminExternalScores(){
  const songSelect=$('externalSongSelect');if(songSelect)songSelect.innerHTML='<option value="">곡을 선택하세요</option>'+allSongs.filter(isEligibleKoreanSong).map(s=>'<option value="'+s.id+'">'+escapeHTML(s.title)+' — '+escapeHTML(s.artist)+'</option>').join('');
  const target=$('externalScoresAdminList');if(!target)return;
@@ -1688,12 +1681,12 @@ async function discoverYoutubeAiMusic(){
    data.persisted?.error,
    data.channels_persisted?.error
   ].filter(Boolean);
-  status.textContent='검색 경로 '+Number(data.route_count||0)+'개 · 검색 영상 '+Number(data.unique_search_results||0)+'개 · 조건 후보 '+Number(data.candidate_count||songs.length)+'개 · 추적 채널 '+Number(data.followed_channels||0)+'개 · 채널 업로드 확인 '+Number(data.followed_channel_uploads_scanned||0)+'개 · 후보 저장 '+Number(data.persisted?.saved||0)+'개 · 채널 저장 '+Number(data.channels_persisted?.saved||0)+'개'+dbStatus+(saveErrors.length?' · 저장 오류: '+saveErrors.join(' / '):'')+'. AI 배지는 별도 검증 전입니다.';
+  status.textContent='검색 경로 '+Number(data.route_count||0)+'개 · 검색 영상 '+Number(data.unique_search_results||0)+'개 · 조건 후보 '+Number(data.candidate_count||songs.length)+'개 · 추적 채널 '+Number(data.followed_channels||0)+'개 · 채널 업로드 확인 '+Number(data.followed_channel_uploads_scanned||0)+'개 · 후보 저장 '+Number(data.persisted?.saved||0)+'개 · 채널 저장 '+Number(data.channels_persisted?.saved||0)+'개'+dbStatus+(saveErrors.length?' · 저장 오류: '+saveErrors.join(' / '):'')+'. AI 음악 여부는 등록 정보와 운영 기준에 따라 분류합니다.';
   target.innerHTML=songs.map(song=>{
    const duration=Number(song.duration_seconds)||0;
    const time=Math.floor(duration/60)+':'+String(duration%60).padStart(2,'0');
    return '<div class="ad-admin-item"><span><b>'+escapeHTML(song.title)+'</b> · '+escapeHTML(song.channel_title||'')+
-    '<br><small>'+time+' · '+Number(song.view_count||0).toLocaleString('ko-KR')+'회 · AI 배지 검증 전</small></span>'+
+    '<br><small>'+time+' · '+Number(song.view_count||0).toLocaleString('ko-KR')+'회 · 등록 후보</small></span>'+
     '<a href="'+escapeHTML(song.video_url)+'" target="_blank" rel="noopener">유튜브 확인</a></div>';
   }).join('')||'<p>이번 회차에서 조건에 맞는 후보가 없습니다. 다음 회차에는 다른 주제로 검색합니다.</p>';
  }catch(error){
