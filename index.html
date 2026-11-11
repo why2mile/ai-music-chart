@@ -821,7 +821,7 @@ main#home{max-width:1524px;margin:0 auto;padding:0 22px}.kn-dashboard{max-width:
 <header class="site-header kn-header">
  <a class="kn-brand" href="#home"><span class="kn-play">▶</span><span><b>KOREA NOW</b><small>지금 대한민국은? · 유튜브로 보는 한국의 관심사</small></span></a>
  <form class="kn-search" onsubmit="event.preventDefault();document.getElementById('knSearchStatus').textContent='검색 기능은 데이터 연동 단계에서 활성화됩니다.'"><input aria-label="검색어" placeholder="검색어를 입력하세요..."><button aria-label="검색" type="submit">⌕</button></form>
- <div class="kn-update"><span>▦</span><div><b>오늘 업데이트</b><small>데이터 연결 준비 중</small></div></div>
+ <div class="kn-update"><span>▦</span><div><b>오늘 업데이트</b><small id="kn-header-updated">유튜브 데이터 수집 중</small></div></div>
  <a class="header-login" href="#authPanel">로그인</a>
 </header>
 <nav class="kn-nav" aria-label="주요 메뉴">
@@ -1080,6 +1080,7 @@ async function loadKoreaNowTrends(){
    keywordTarget.innerHTML=top.map(([word,count],i)=>'<li><i>'+(i+1)+'</i> '+escapeHTML(word)+' <small style="margin-left:auto;color:#9da7bc">'+count+'건</small></li>').join('')||'<li>키워드 수집 중</li>';
   }
   if(status)status.textContent='최근 갱신 '+new Date(data.updated_at).toLocaleString('ko-KR')+' · 24시간 비교 가능 영상 '+fmt(data.coverage?.ready_24h||0)+'개';
+  if($('kn-header-updated'))$('kn-header-updated').textContent=new Date(data.updated_at).toLocaleString('ko-KR',{month:'2-digit',day:'2-digit',hour:'2-digit',minute:'2-digit'})+' 갱신';
  }catch(e){
   console.error('KOREA NOW trend load failed',e);
   if(status)status.textContent='순위 데이터 연결 오류 · '+String(e.message||e);
@@ -1932,7 +1933,7 @@ await loadSongs();
 await refreshYoutubeViews();
 startRealtimeTicker();
 loadKoreaNowTrends();
-setInterval(loadKoreaNowTrends, 60*60*1000);
+setInterval(loadKoreaNowTrends, 6*60*60*1000);
 </script>
 </body>
 </html>
