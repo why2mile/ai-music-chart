@@ -1168,7 +1168,7 @@ setInterval(()=>{window.knCategoryRotation=((window.knCategoryRotation||0)+1)%5;
    const newsCats=["정치·국제","돈벌이·경제","군사","부동산","뷰티·패션","게임","음악·AI","연예·방송","스포츠","IT·AI","과학·기술","개그·유머","여행·문화","교육·지식","반려동물","병·건강·의료","자동차","취미"];
    newsTarget.innerHTML=newsCats.map(cat=>{
     const item=(newsMap.get(cat)||[])[0];
-    const safeUrl=item&&/^https?:\\/\\//i.test(item.url)?item.url:'https://news.google.com/search?q='+encodeURIComponent(cat)+'&hl=ko&gl=KR&ceid=KR%3Ako';
+    const safeUrl=item&&(item.url.startsWith('https://')||item.url.startsWith('http://'))?item.url:'https://news.google.com/search?q='+encodeURIComponent(cat)+'&hl=ko&gl=KR&ceid=KR%3Ako';
     const source=item?.source?' · '+escapeHTML(item.source):'';
     const detail=item?'<span title="'+escapeHTML((item.source||'')+' · '+(item.published_at||''))+'">'+escapeHTML(item.title)+source+'</span>':'<span>최신 기사 수집 중</span>';
     return '<a href="'+safeUrl+'" target="_blank" rel="noopener"><strong>'+cat+'</strong>'+detail+'</a>';
