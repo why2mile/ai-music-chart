@@ -2278,7 +2278,7 @@ $('manualKoreaVideoList')?.addEventListener('click',async e=>{
  if(error){$('manualVideoStatus').textContent='삭제 실패: '+error.message;return;}
  $('manualVideoStatus').textContent='삭제했습니다.';await loadAdminKoreaVideos();await loadKoreaNowTrends();
 });
-setInterval(loadKoreaNowTrends, 6*60*60*1000);
+setInterval(loadKoreaNowTrends, 30*60*1000);
 </script>
 
 <style>
