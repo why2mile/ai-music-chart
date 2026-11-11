@@ -2058,7 +2058,7 @@ $('signupBtn').addEventListener('click',signup);
 $('loginBtn').addEventListener('click',login);
 $('resetPasswordBtn').addEventListener('click',resetPassword);
 $('saveNewPasswordBtn').addEventListener('click',saveNewPassword);
-$('logoutBtn').addEventListener('click',logout);\n$('headerLogin').addEventListener('click',e=>{e.preventDefault();openMemberView('login');});\n$('headerSignup').addEventListener('click',e=>{e.preventDefault();openMemberView('signup');});\n$('headerLogout').addEventListener('click',e=>{e.preventDefault();logout();});\n$('memberHomeBtn').addEventListener('click',()=>{ $('home').classList.remove('member-focus'); $('authPanel').hidden=true; $('memberPanel').hidden=true; window.scrollTo({top:0,behavior:'instant'}); });
+$('logoutBtn').addEventListener('click',logout);\n$('headerLogin').addEventListener('click',e=>{e.preventDefault();openMemberView('login');});\n$('headerSignup').addEventListener('click',e=>{e.preventDefault();openMemberView('signup');});\n$('headerLogout').addEventListener('click',e=>{e.preventDefault();logout();});\nconst returnHome=()=>{ $('home').classList.remove('member-focus'); $('authPanel').hidden=true; $('memberPanel').hidden=true; window.scrollTo({top:0,behavior:'instant'});};\n$('memberHomeBtn').addEventListener('click',returnHome);\n$('memberHomeBtn2').addEventListener('click',returnHome);
 $('showProfileBtn').addEventListener('click',()=>{$('profileView').hidden=false;$('profileEdit').hidden=true;});
 $('editProfileBtn').addEventListener('click',()=>{$('profileView').hidden=true;$('profileEdit').hidden=false;});
 $('cancelProfileBtn').addEventListener('click',()=>{$('profileEdit').hidden=true;});
