@@ -1224,9 +1224,8 @@ function renderKoreaIssueTab(data){
  const cursors=Object.fromEntries(Object.keys(KOREA_ISSUE_CATEGORY_LIMITS).map(cat=>[cat,0]));
  const unique=[],seen=new Set();
  for(let round=0;round<40;round++)for(const cat of KOREA_ISSUE_WEIGHTED_ORDER){const v=buckets[cat]?.[cursors[cat]++];if(!v)continue;const key=v.youtube_id||v.video_url;if(seen.has(key))continue;seen.add(key);unique.push({...v,issueCategory:cat});}
- const trending=(a,b)=>Number(b.views_24h??b.view_count??0)-Number(a.views_24h??a.view_count??0);
- const others=unique.filter(v=>!issueIsShort(v)).sort(trending);
- const shorts=unique.filter(issueIsShort).sort(trending);
+ const others=unique.filter(v=>!issueIsShort(v));
+ const shorts=unique.filter(issueIsShort);
  // 일반영상을 먼저 보여주고, 이어서 쇼츠도 함께 노출합니다.
  koreaIssueVideos=[...others,...shorts];koreaIssuePage=0;renderKoreaIssuePage();
 }
