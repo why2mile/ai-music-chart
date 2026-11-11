@@ -878,7 +878,7 @@ main#home{max-width:1524px;margin:0 auto;padding:0 22px}.kn-dashboard{max-width:
  </section>
  <div class="kn-main-grid kn-top-panels">
   <section class="kn-panel kn-category-panel" id="kn-categories">
-   <div class="kn-panel-head"><h2>한국 이슈 TOP 100</h2><span class="kn-heading-note">정치부터 돈벌이, 유머, 강아지까지</span></div>
+   <div class="kn-panel-head"><h2>한국 이슈 유튜브 100</h2><span class="kn-heading-note">정치부터 돈벌이, 유머, 강아지까지</span></div>
    <div class="kn-article-carousel" id="kn-issue-carousel" data-carousel="issue">
     <div class="kn-article-list" id="kn-issue-page"></div>
     <div class="kn-article-media" id="kn-issue-media"></div>
@@ -896,7 +896,7 @@ main#home{max-width:1524px;margin:0 auto;padding:0 22px}.kn-dashboard{max-width:
   </section>
  </div>
  <div class="kn-secondary-grid">
-  <section class="kn-panel" id="kn-rising"><div class="kn-panel-head"><h2>급상승 영상 TOP 10</h2><a href="#kn-top100" data-kn-view="rising">더보기 →</a></div><div class="kn-rising-list" id="kn-rising-list"><div class="kn-loading">급상승 영상을 수집하고 있습니다.</div></div></section>
+  <section class="kn-panel" id="kn-rising"><div class="kn-panel-head"><h2>급상승 영상 TOP 10</h2><div class="kn-rising-controls"><button type="button" id="kn-rising-up">위로 ↑</button><button type="button" id="kn-rising-down">아래로 ↓</button></div></div><div class="kn-rising-list" id="kn-rising-list"><div class="kn-loading">급상승 영상을 수집하고 있습니다.</div></div></section>
   <section class="kn-panel kn-people-panel" id="kn-trends"><div class="kn-panel-head"><h2>지금 뜨는 인물 <span class="kn-hot">TOP 10</span></h2><span class="kn-people-method">관련 영상의 최근 24시간 조회수 합계</span></div><div id="kn-people-list" class="kn-people-list"><div class="kn-loading">유튜브 인물 관련 영상을 수집하고 있습니다.</div></div></section>
  </div>
 
@@ -1127,16 +1127,17 @@ function showKoreaNowHome(){
  $("kn-detail-page").hidden=true;window.scrollTo({top:0,behavior:"instant"});
 }
 
-const KOREA_ISSUE_CATEGORIES=["정치·시사","스포츠","개그·유머","게임","건강·의료","여행·문화","군사·밀리터리","돈벌이·사업"];
+const KOREA_ISSUE_CATEGORY_LIMITS={"정치·시사":15,"스포츠":15,"돈벌이·사업":15,"개그·유머":15,"게임":8,"건강·의료":8,"여행·문화":8,"군사·밀리터리":8};
 let koreaIssueVideos=[];
 let koreaIssuePage=0;
 function issueIsShort(v){return v.is_short===true||(Number(v.duration_seconds||0)>0&&Number(v.duration_seconds)<=180);}
 function renderKoreaIssueTab(data){
  const host=$("kn-issue-videos");if(!host)return;
- const merged=KOREA_ISSUE_CATEGORIES.flatMap(cat=>(data.rankings?.[cat]||[]).map(v=>({...v,issueCategory:cat})));
+ const merged=Object.entries(KOREA_ISSUE_CATEGORY_LIMITS).flatMap(([cat,limit])=>(data.rankings?.[cat]||[]).slice().sort((a,b)=>Number(b.views_24h??b.view_count??0)-Number(a.views_24h??a.view_count??0)).slice(0,limit).map(v=>({...v,issueCategory:cat})));
  const unique=[...new Map(merged.map(v=>[v.youtube_id||v.video_url,v])).values()];
- const others=unique.filter(v=>!issueIsShort(v)).sort((a,b)=>Number(b.view_count||0)-Number(a.view_count||0));
- const shorts=unique.filter(issueIsShort).sort((a,b)=>Number(b.view_count||0)-Number(a.view_count||0));
+ const trending=(a,b)=>Number(b.views_24h??b.view_count??0)-Number(a.views_24h??a.view_count??0);
+ const others=unique.filter(v=>!issueIsShort(v)).sort(trending);
+ const shorts=unique.filter(issueIsShort).sort(trending);
  // 일반영상을 먼저 보여주고, 이어서 쇼츠도 함께 노출합니다.
  koreaIssueVideos=[...others,...shorts];koreaIssuePage=0;renderKoreaIssuePage();
 }
@@ -1190,28 +1191,18 @@ function renderKoreaNewsPanels(data){
  renderKoreaNewsPage("issue");renderKoreaNewsPage("news");
 }
 function presenterImageData(index){
- const palettes=[
-  {skin:"#f2c7aa",hair:"#30232b",suit:"#244d70",shirt:"#fff8ef",bg:"#d6e6ee",accent:"#d9b36d"},
-  {skin:"#dfaa89",hair:"#171c27",suit:"#803d54",shirt:"#fff6f0",bg:"#f0dce0",accent:"#e7b77b"},
-  {skin:"#e9b99c",hair:"#4a3028",suit:"#376a67",shirt:"#fff9f0",bg:"#d9ebe5",accent:"#d8bd7b"},
-  {skin:"#f0c8ad",hair:"#29212d",suit:"#66548d",shirt:"#fff8f1",bg:"#e7e0f1",accent:"#d8b36d"},
-  {skin:"#c99172",hair:"#26232a",suit:"#365c84",shirt:"#f8f4ee",bg:"#dce6f2",accent:"#d4aa70"},
-  {skin:"#edbea0",hair:"#50332c",suit:"#a34f48",shirt:"#fff7f0",bg:"#f1e0d6",accent:"#e2c17b"},
-  {skin:"#e8b99c",hair:"#332d28",suit:"#526e4c",shirt:"#fff9ef",bg:"#e1eadb",accent:"#d5b36e"},
-  {skin:"#dba487",hair:"#24232a",suit:"#3d4d63",shirt:"#fff8ef",bg:"#dbe4ec",accent:"#d8b16e"}
- ];
- const p=palettes[((index%palettes.length)+palettes.length)%palettes.length];
- const female=index%4!==1,style=Math.floor(index/2)%3;
- const hair=female
-  ? [
-   '<path d="M45 100 C27 46 40 12 86 12 C135 12 145 48 128 105 L119 146 L52 146Z" fill="'+p.hair+'"/><path d="M47 61 C48 22 117 16 127 61 C107 43 75 43 47 61Z" fill="'+p.hair+'"/>',
-   '<path d="M42 104 C27 38 44 13 86 13 C132 13 144 45 130 105 L116 132 L54 132Z" fill="'+p.hair+'"/><path d="M47 60 C59 24 111 25 125 58 Q91 44 47 60Z" fill="'+p.hair+'"/>',
-   '<path d="M43 100 C31 44 43 13 86 13 C131 13 142 47 129 100 L119 142 L53 142Z" fill="'+p.hair+'"/><path d="M46 57 Q62 16 100 27 Q119 31 127 60 Q94 43 46 57Z" fill="'+p.hair+'"/>'
-  ][style]
-  : '<path d="M45 69 C40 22 58 12 87 13 C119 13 137 34 127 73 Q109 48 84 48 Q62 48 45 69Z" fill="'+p.hair+'"/>';
- const outfit='<path d="M20 190 Q27 128 63 119 L85 139 L108 119 Q143 130 151 190Z" fill="'+p.suit+'"/><path d="M63 120 L85 151 L108 120 L99 190 L72 190Z" fill="'+p.shirt+'"/><path d="M85 151 L78 164 L85 177 L92 164Z" fill="'+p.accent+'"/>';
- const hand='<path d="M115 145 Q133 133 140 112 Q143 101 149 104 Q154 107 150 119 Q145 140 130 156 L112 166Z" fill="'+p.skin+'"/><path d="M140 113 Q141 94 147 87 Q152 83 155 89 Q158 95 151 108" fill="'+p.skin+'" stroke="'+p.skin+'" stroke-width="3" stroke-linecap="round"/><path d="M145 111 Q151 97 158 98 Q163 101 156 113" fill="'+p.skin+'" stroke="'+p.skin+'" stroke-width="3" stroke-linecap="round"/>';
- const svg='<svg xmlns="http://www.w3.org/2000/svg" width="640" height="360" viewBox="0 0 170 180"><defs><linearGradient id="bg'+index+'" x1="0" y1="0" x2="1" y2="1"><stop stop-color="'+p.bg+'"/><stop offset="1" stop-color="'+p.suit+'" stop-opacity=".9"/></linearGradient><radialGradient id="face'+index+'"><stop stop-color="#fff" stop-opacity=".18"/><stop offset="1" stop-color="#8c4c3c" stop-opacity=".08"/></radialGradient></defs><rect width="170" height="180" rx="10" fill="url(#bg'+index+')"/><circle cx="85" cy="74" r="64" fill="#fff" opacity=".11"/><path d="M9 180 Q20 145 48 137 M161 180 Q151 144 125 137" stroke="#fff" stroke-opacity=".22" stroke-width="2" fill="none"/>'+hair+'<path d="M54 56 Q54 29 85 29 Q117 29 117 58 L112 94 Q105 115 85 116 Q65 115 58 94Z" fill="'+p.skin+'"/><path d="M55 62 Q56 34 84 34 Q108 34 116 60 Q106 48 89 48 Q71 47 55 62Z" fill="'+p.hair+'"/><path d="M65 70 Q72 65 79 70 M92 70 Q100 65 107 70" stroke="#69463e" stroke-width="2" fill="none" stroke-linecap="round"/><ellipse cx="73" cy="77" rx="3" ry="2.4" fill="#29252a"/><ellipse cx="99" cy="77" rx="3" ry="2.4" fill="#29252a"/><path d="M85 78 L81 89 Q85 92 89 89" stroke="#c58b76" stroke-width="1.8" fill="none" stroke-linecap="round"/><path d="M75 99 Q85 109 97 98" stroke="#a84f59" stroke-width="3" fill="none" stroke-linecap="round"/><path d="M63 93 Q85 122 107 93" stroke="#fff" stroke-opacity=".18" stroke-width="2" fill="none"/>'+outfit+hand+'<circle cx="22" cy="30" r="3" fill="'+p.accent+'"/><circle cx="147" cy="34" r="2" fill="#fff" opacity=".6"/><path d="M12 164 H158" stroke="#fff" stroke-opacity=".16" stroke-width="1"/></svg>';
+ const palettes=[["#f4c8a9","#27384e","#456d77","#e8d8b5"],["#e8b28f","#51334a","#9a6272","#f0d7c5"],["#edc39f","#315b56","#8ba58c","#eee2c7"],["#f0c8ad","#55466f","#9b87aa","#eee0d0"],["#c98e70","#354d68","#8199ae","#ead7bc"],["#efc19f","#8b4d42","#c58b76","#f2ddc9"],["#e7b99a","#405c45","#9aaa83","#f0e0c6"],["#dba184","#38445a","#8495a9","#e9d8c4"]];
+ const p=palettes[((index%palettes.length)+palettes.length)%palettes.length],female=index%4!==1,style=Math.floor(index/2)%3;
+ const hair=female?[
+ '<path d="M43 104 Q24 30 72 13 Q122 -2 137 51 L126 143 L49 146Z" fill="'+p[1]+'"/><path d="M48 62 Q57 18 91 22 Q119 23 128 63 Q91 43 48 62Z" fill="'+p[1]+'"/>',
+ '<path d="M42 105 Q31 26 82 15 Q132 12 133 91 L118 141 L51 141Z" fill="'+p[1]+'"/><path d="M45 59 Q53 16 94 24 Q119 29 128 58 Q90 43 45 59Z" fill="'+p[1]+'"/>',
+ '<path d="M43 105 Q28 35 77 15 Q126 5 134 65 L122 142 L50 142Z" fill="'+p[1]+'"/><path d="M47 59 Q67 15 99 28 Q119 35 128 65 Q90 43 47 59Z" fill="'+p[1]+'"/>'
+ ][style]:'<path d="M44 70 Q39 18 85 15 Q132 15 128 73 Q106 48 83 49 Q61 49 44 70Z" fill="'+p[1]+'"/>';
+ const bg='<rect width="170" height="180" fill="'+p[3]+'"/><circle cx="23" cy="34" r="31" fill="#fff" opacity=".25"/><path d="M0 145 Q38 112 75 145 T170 137 V180 H0Z" fill="'+p[2]+'" opacity=".45"/><path d="M0 162 Q48 135 94 160 T170 154 V180 H0Z" fill="'+p[3]+'" opacity=".7"/><g fill="#fff" opacity=".25"><circle cx="19" cy="91" r="2"/><circle cx="148" cy="40" r="3"/><circle cx="133" cy="119" r="2"/></g>';
+ const face='<path d="M54 57 Q54 29 85 29 Q117 29 117 59 L111 95 Q104 115 85 116 Q66 115 58 95Z" fill="'+p[0]+'"/><path d="M56 60 Q60 34 85 34 Q110 33 116 60 Q102 46 87 47 Q70 47 56 60Z" fill="'+p[1]+'"/><path d="M66 72 Q72 67 79 72 M92 72 Q99 67 106 72" stroke="#684b43" stroke-width="2" fill="none" stroke-linecap="round"/><ellipse cx="73" cy="78" rx="3" ry="2.5" fill="#30272a"/><ellipse cx="99" cy="78" rx="3" ry="2.5" fill="#30272a"/><path d="M84 80 L81 90 Q85 93 89 90" fill="none" stroke="#bd8974" stroke-width="1.6"/><path d="M74 99 Q85 109 97 98" fill="none" stroke="#a34f59" stroke-width="3" stroke-linecap="round"/>';
+ const outfit='<path d="M19 188 Q28 130 63 120 L85 141 L108 120 Q143 130 152 188Z" fill="'+p[2]+'"/><path d="M63 121 L85 151 L108 121 L98 188 L72 188Z" fill="#fff7e9"/><path d="M85 151 L78 165 L85 179 L92 165Z" fill="'+p[3]+'"/>';
+ const gesture='<path d="M116 148 Q134 136 141 113 Q144 102 150 105 Q155 108 151 120 Q145 143 129 159 L112 166Z" fill="'+p[0]+'"/><path d="M141 113 Q141 94 148 87 Q153 84 156 90 Q158 96 152 109" fill="'+p[0]+'" stroke="'+p[0]+'" stroke-width="3" stroke-linecap="round"/><path d="M146 111 Q153 98 159 100 Q164 103 157 115" fill="'+p[0]+'" stroke="'+p[0]+'" stroke-width="3" stroke-linecap="round"/>';
+ const svg='<svg xmlns="http://www.w3.org/2000/svg" width="640" height="360" viewBox="0 0 170 180">'+bg+hair+face+outfit+gesture+'<path d="M8 171 Q48 158 83 169 T162 166" stroke="#fff" stroke-opacity=".38" stroke-width="2" fill="none"/><g fill="#fff" opacity=".5"><path d="M20 59 l3 6 6 1 -6 2 -3 6 -2 -6 -6 -2 6 -1Z"/><path d="M146 62 l2 4 4 1 -4 2 -2 4 -2 -4 -4 -2 4 -1Z"/></g></svg>';
  return "data:image/svg+xml;charset=UTF-8,"+encodeURIComponent(svg);
 }
 function renderKoreaRisingList(){
@@ -1219,11 +1210,13 @@ function renderKoreaRisingList(){
  const rows=window.knRisingVideos||[];
  target.innerHTML=rows.map((v,i)=>'<div class="kn-rising-item"><b>'+(i+1)+'</b><span class="kn-thumb"><img src="'+escapeHTML(v.thumbnail_url||"")+'" alt="" loading="lazy"></span><span><a href="'+escapeHTML(v.video_url||"#")+'" target="_blank" rel="noopener"><strong>'+escapeHTML(v.title)+'</strong></a><small>'+escapeHTML(v.channel_title||"")+' · '+(v.views_24h===null?'24시간 집계 중':fmt(v.views_24h)+'회 증가')+'</small></span></div>').join("")||'<div class="kn-empty">급상승 영상이 없습니다.</div>';
 }
-function rotateKoreaRising(){
+function moveKoreaRising(direction){
  const rows=window.knRisingVideos||[];if(rows.length<2)return;
- rows.push(rows.shift());window.knRisingVideos=rows;renderKoreaRisingList();
+ if(direction==="up")rows.unshift(rows.pop());else rows.push(rows.shift());
+ window.knRisingVideos=rows;renderKoreaRisingList();
  const target=$("kn-rising-list");if(target){target.classList.remove("kn-rising-moving");void target.offsetWidth;target.classList.add("kn-rising-moving");}
 }
+function rotateKoreaRising(){moveKoreaRising("down");}
 function renderKoreaNewsPage(type){
  const rows=koreaNewsItems[type]||[],pageSize=5,total=Math.max(1,Math.ceil(rows.length/pageSize));
  koreaNewsPage[type]=(koreaNewsPage[type]%total+total)%total;
@@ -1258,9 +1251,11 @@ function runKoreaGlobalSearch(query){
  const articles=[];(d.news||[]).forEach(g=>(g.items||[]).forEach(v=>{if(String(v.title||"").toLowerCase().includes(q))articles.push({title:v.title,url:v.url||"#",image:v.image_url||v.thumbnail_url||"",meta:(v.source||g.category||"언론사")+" · 기사"});}));
  const songs=allSongs.filter(v=>[v.title,v.artist].some(x=>String(x||"").toLowerCase().includes(q))).slice(0,20).map(v=>({title:v.title,url:"#chartSection",image:"",meta:(v.artist||"")+" · 음악"}));
  const results=[...videos.values(),...articles,...songs].slice(0,60);if(title)title.textContent=""+query+" 검색 결과 "+results.length+"건";
- list.innerHTML=results.map(v=>'<a class="kn-search-result" href="'+escapeHTML(v.url)+'" '+(v.url.startsWith("http")?'target="_blank" rel="noopener"':"")+' >'+(v.image?'<img src="'+escapeHTML(v.image)+'" alt="" loading="lazy">':'<span class="kn-search-result-placeholder">▶</span>')+'<span><strong>'+escapeHTML(v.title)+'</strong><small>'+escapeHTML(v.meta)+'</small></span></a>').join("")||'<p class="kn-search-empty">검색 결과가 없습니다. 다른 검색어를 입력해 주세요.</p>';box.hidden=false;box.scrollIntoView({behavior:"smooth",block:"start"});
+ list.innerHTML=results.map(v=>'<a class="kn-search-result" href="'+escapeHTML(v.url)+'" '+(v.url.startsWith("http")?'target="_blank" rel="noopener"':"")+' >'+(v.image?'<img src="'+escapeHTML(v.image)+'" alt="" loading="lazy">':'<span class="kn-search-result-placeholder">▶</span>')+'<span><strong>'+escapeHTML(v.title)+'</strong><small>'+escapeHTML(v.meta)+'</small></span></a>').join("")||'<p class="kn-search-empty">검색 결과가 없습니다. 다른 검색어를 입력해 주세요.</p>';box.hidden=false;
 }
 $("kn-global-search")?.addEventListener("submit",e=>{e.preventDefault();runKoreaGlobalSearch($("kn-search-query")?.value||"");});
+$("kn-rising-up")?.addEventListener("click",()=>moveKoreaRising("up"));
+$("kn-rising-down")?.addEventListener("click",()=>moveKoreaRising("down"));
 $("kn-search-query")?.addEventListener("input",e=>{if(e.target.value.trim().length>=2)runKoreaGlobalSearch(e.target.value);else if($("kn-search-results"))$("kn-search-results").hidden=true;});
 $("kn-search-close")?.addEventListener("click",()=>{$("kn-search-results").hidden=true;});
 const hotHost=$("kn-issue-videos");if(hotHost){let startX=0;hotHost.addEventListener("touchstart",e=>{startX=e.changedTouches[0].clientX;},{passive:true});hotHost.addEventListener("touchend",e=>{const dx=e.changedTouches[0].clientX-startX;if(Math.abs(dx)>40){koreaIssuePage+=dx<0?1:-1;renderKoreaIssuePage();}},{passive:true});}
@@ -2484,5 +2479,20 @@ body{font-size:16px}
  .kn-dashboard .kn-issue-video b{font-size:16px!important}
 }
 </style>
-</body>
+<style>
+.kn-dashboard,.kn-dashboard *{font-family:"Noto Sans KR","Apple SD Gothic Neo","Malgun Gothic",sans-serif!important;font-weight:350}
+.kn-dashboard{font-size:15px!important}
+.kn-dashboard .kn-panel-head h2{font-size:17px!important;font-weight:500!important}
+.kn-dashboard .kn-article-row strong{font-size:15px!important;line-height:1.5!important;font-weight:400!important}
+.kn-dashboard .kn-category-list a,.kn-dashboard .kn-category-issue-list a,.kn-dashboard .kn-news-list a{font-size:14px!important;font-weight:350!important;line-height:1.5!important}
+.kn-dashboard .kn-category-list a strong,.kn-dashboard .kn-category-issue-list a strong,.kn-dashboard .kn-news-list a span{font-size:14px!important;font-weight:400!important}
+.kn-dashboard .kn-ranking-row strong,.kn-dashboard .kn-overall-row strong,.kn-dashboard .kn-rising-list a strong{font-size:14px!important;font-weight:400!important;line-height:1.45!important}
+.kn-dashboard .kn-issue-video b{font-size:14px!important;font-weight:400!important}
+.kn-dashboard .kn-article-row small,.kn-dashboard .kn-ranking-row small,.kn-dashboard .kn-overall-row small,.kn-dashboard .kn-rising-list small{font-size:12px!important;font-weight:350!important}
+.kn-rising-controls{display:flex;gap:5px}
+.kn-rising-controls button{border:1px solid #596176;background:#252a3a;color:#e5e8f0;border-radius:6px;padding:5px 9px;font-size:12px;font-weight:400;cursor:pointer}
+.kn-rising-controls button:hover{background:#394158}
+.kn-search-results{scroll-margin-top:100px}
+@media(max-width:760px){.kn-dashboard{font-size:14px!important}.kn-dashboard .kn-panel-head h2{font-size:16px!important}.kn-dashboard .kn-article-row strong{font-size:14px!important}.kn-dashboard .kn-category-list a,.kn-dashboard .kn-category-issue-list a,.kn-dashboard .kn-news-list a,.kn-dashboard .kn-category-list a strong,.kn-dashboard .kn-category-issue-list a strong,.kn-dashboard .kn-news-list a span{font-size:13px!important}.kn-dashboard .kn-ranking-row strong,.kn-dashboard .kn-overall-row strong,.kn-dashboard .kn-rising-list a strong{font-size:13px!important}}
+</style></body>
 </html>
