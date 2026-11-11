@@ -1296,12 +1296,14 @@ function openMemberView(mode='login'){
  $('resetPasswordBtn').hidden=mode==='signup';
  window.scrollTo({top:0,behavior:'instant'});
 }
-\nasync function updateAuth(){
+
+async function updateAuth(){
  const {data:{session}} = await supabase.auth.getSession();
  const loggedIn = !!session;
  const headerLogin=$('headerLogin');
  if(headerLogin){headerLogin.textContent=loggedIn?'회원 메뉴':'로그인';headerLogin.href='#authPanel';}const headerSignup=$('headerSignup'),headerLogout=$('headerLogout');if(headerSignup)headerSignup.hidden=loggedIn;if(headerLogout)headerLogout.hidden=!loggedIn;
- if(recoveryMode) return;\n if(!$('home').classList.contains('member-focus')){$('authPanel').hidden=true;$('memberPanel').hidden=true;}
+ if(recoveryMode) return;
+ if(!$('home').classList.contains('member-focus')){$('authPanel').hidden=true;$('memberPanel').hidden=true;}
  $('authPanel').hidden = loggedIn || !$('home').classList.contains('member-focus');
  $('memberPanel').hidden = !loggedIn || !$('home').classList.contains('member-focus');
  $('registerPanel').hidden = !loggedIn;
@@ -2051,7 +2053,13 @@ $('signupBtn').addEventListener('click',signup);
 $('loginBtn').addEventListener('click',login);
 $('resetPasswordBtn').addEventListener('click',resetPassword);
 $('saveNewPasswordBtn').addEventListener('click',saveNewPassword);
-$('logoutBtn').addEventListener('click',logout);\n$('headerLogin').addEventListener('click',e=>{e.preventDefault();openMemberView('login');});\n$('headerSignup').addEventListener('click',e=>{e.preventDefault();openMemberView('signup');});\n$('headerLogout').addEventListener('click',e=>{e.preventDefault();logout();});\nconst returnHome=()=>{ $('home').classList.remove('member-focus'); $('authPanel').hidden=true; $('memberPanel').hidden=true; window.scrollTo({top:0,behavior:'instant'});};\n$('memberHomeBtn').addEventListener('click',returnHome);\n$('memberHomeBtn2').addEventListener('click',returnHome);
+$('logoutBtn').addEventListener('click',logout);
+$('headerLogin').addEventListener('click',e=>{e.preventDefault();openMemberView('login');});
+$('headerSignup').addEventListener('click',e=>{e.preventDefault();openMemberView('signup');});
+$('headerLogout').addEventListener('click',e=>{e.preventDefault();logout();});
+const returnHome=()=>{ $('home').classList.remove('member-focus'); $('authPanel').hidden=true; $('memberPanel').hidden=true; window.scrollTo({top:0,behavior:'instant'});};
+$('memberHomeBtn').addEventListener('click',returnHome);
+$('memberHomeBtn2').addEventListener('click',returnHome);
 $('showProfileBtn').addEventListener('click',()=>{$('profileView').hidden=false;$('profileEdit').hidden=true;});
 $('editProfileBtn').addEventListener('click',()=>{$('profileView').hidden=true;$('profileEdit').hidden=false;});
 $('cancelProfileBtn').addEventListener('click',()=>{$('profileEdit').hidden=true;});
@@ -2124,7 +2132,8 @@ setInterval(loadKoreaNowTrends, 6*60*60*1000);
 #authPanel[hidden],#memberPanel[hidden]{display:none!important}
 @media(max-width:900px){.kn-top-panels,.kn-secondary-grid{grid-template-columns:1fr!important}}
 @media(max-width:760px){.kn-heading-note{white-space:normal;text-align:right;font-size:10px}.kn-category-list.kn-category-issue-list a,.kn-news-list a{min-height:36px;padding:6px;font-size:10px}.kn-category-list.kn-category-issue-list a strong,.kn-news-list a strong{font-size:10px}.kn-member-actions{gap:5px}.kn-member-actions .header-login{font-size:11px;padding:7px 9px}}
-</style>\n</body>
+</style>
+</body>
 </html>
 
 <style>
@@ -2531,12 +2540,14 @@ function openMemberView(mode='login'){
  $('resetPasswordBtn').hidden=mode==='signup';
  window.scrollTo({top:0,behavior:'instant'});
 }
-\nasync function updateAuth(){
+
+async function updateAuth(){
  const {data:{session}} = await supabase.auth.getSession();
  const loggedIn = !!session;
  const headerLogin=$('headerLogin');
  if(headerLogin){headerLogin.textContent=loggedIn?'회원 메뉴':'로그인';headerLogin.href='#authPanel';}const headerSignup=$('headerSignup'),headerLogout=$('headerLogout');if(headerSignup)headerSignup.hidden=loggedIn;if(headerLogout)headerLogout.hidden=!loggedIn;
- if(recoveryMode) return;\n if(!$('home').classList.contains('member-focus')){$('authPanel').hidden=true;$('memberPanel').hidden=true;}
+ if(recoveryMode) return;
+ if(!$('home').classList.contains('member-focus')){$('authPanel').hidden=true;$('memberPanel').hidden=true;}
  $('authPanel').hidden = loggedIn || !$('home').classList.contains('member-focus');
  $('memberPanel').hidden = !loggedIn || !$('home').classList.contains('member-focus');
  $('registerPanel').hidden = !loggedIn;
@@ -3286,7 +3297,13 @@ $('signupBtn').addEventListener('click',signup);
 $('loginBtn').addEventListener('click',login);
 $('resetPasswordBtn').addEventListener('click',resetPassword);
 $('saveNewPasswordBtn').addEventListener('click',saveNewPassword);
-$('logoutBtn').addEventListener('click',logout);\n$('headerLogin').addEventListener('click',e=>{e.preventDefault();openMemberView('login');});\n$('headerSignup').addEventListener('click',e=>{e.preventDefault();openMemberView('signup');});\n$('headerLogout').addEventListener('click',e=>{e.preventDefault();logout();});\nconst returnHome=()=>{ $('home').classList.remove('member-focus'); $('authPanel').hidden=true; $('memberPanel').hidden=true; window.scrollTo({top:0,behavior:'instant'});};\n$('memberHomeBtn').addEventListener('click',returnHome);\n$('memberHomeBtn2').addEventListener('click',returnHome);
+$('logoutBtn').addEventListener('click',logout);
+$('headerLogin').addEventListener('click',e=>{e.preventDefault();openMemberView('login');});
+$('headerSignup').addEventListener('click',e=>{e.preventDefault();openMemberView('signup');});
+$('headerLogout').addEventListener('click',e=>{e.preventDefault();logout();});
+const returnHome=()=>{ $('home').classList.remove('member-focus'); $('authPanel').hidden=true; $('memberPanel').hidden=true; window.scrollTo({top:0,behavior:'instant'});};
+$('memberHomeBtn').addEventListener('click',returnHome);
+$('memberHomeBtn2').addEventListener('click',returnHome);
 $('showProfileBtn').addEventListener('click',()=>{$('profileView').hidden=false;$('profileEdit').hidden=true;});
 $('editProfileBtn').addEventListener('click',()=>{$('profileView').hidden=true;$('profileEdit').hidden=false;});
 $('cancelProfileBtn').addEventListener('click',()=>{$('profileEdit').hidden=true;});
@@ -3359,7 +3376,8 @@ setInterval(loadKoreaNowTrends, 6*60*60*1000);
 #authPanel[hidden],#memberPanel[hidden]{display:none!important}
 @media(max-width:900px){.kn-top-panels,.kn-secondary-grid{grid-template-columns:1fr!important}}
 @media(max-width:760px){.kn-heading-note{white-space:normal;text-align:right;font-size:10px}.kn-category-list.kn-category-issue-list a,.kn-news-list a{min-height:36px;padding:6px;font-size:10px}.kn-category-list.kn-category-issue-list a strong,.kn-news-list a strong{font-size:10px}.kn-member-actions{gap:5px}.kn-member-actions .header-login{font-size:11px;padding:7px 9px}}
-</style>\n</body>
+</style>
+</body>
 </html>
 
 <style>
