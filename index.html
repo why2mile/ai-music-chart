@@ -2031,6 +2031,7 @@ document.addEventListener("click",e=>{
 });
 document.querySelectorAll('.kn-nav a[data-kn-view]').forEach(a=>a.addEventListener('click',e=>{e.preventDefault();showKoreaNowList(a.dataset.knView);}));
 document.querySelectorAll('.kn-nav a[href="#kn-categories"]').forEach(a=>a.addEventListener('click',e=>{e.preventDefault();showKoreaNowList("categories");}));
+document.querySelectorAll('.kn-category-panel a[href="#kn-category-rankings"]').forEach(a=>a.addEventListener('click',e=>{e.preventDefault();showKoreaNowList("categories");}));
 document.querySelectorAll('.kn-nav a[href="#kn-weekly"]').forEach(a=>a.addEventListener('click',e=>{e.preventDefault();showKoreaNowList("rising");}));
 document.querySelectorAll('.kn-ranking-panel[data-category]').forEach(panel=>panel.addEventListener('click',e=>{if(e.target.closest("a"))return;showKoreaNowList("category",panel.dataset.category);}));
 document.querySelectorAll('.kn-nav a[href="#home"]').forEach(a=>a.addEventListener('click',e=>{e.preventDefault();showKoreaNowHome();}));
