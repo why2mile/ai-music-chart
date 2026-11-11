@@ -1079,7 +1079,7 @@ function showKoreaNowHome(){
 }
 
 async function loadKoreaNowTrends(){
- const status=$('kn-data-updated');if(status)status.textContent='유튜브 데이터 조회 중...';
+ const status=$('kn-data-updated');if(status)status.textContent='저장된 순위표 불러오는 중...';
  const map={
   '정치·시사':'kn-rank-politics','경제·금융':'kn-rank-economy','산업·기업':'kn-rank-industry','건강·의료':'kn-rank-health','돈벌이·사업':'kn-rank-business',
   '군사·밀리터리':'kn-rank-military','부동산':'kn-rank-realestate','뷰티·패션':'kn-rank-beauty',
@@ -1131,7 +1131,7 @@ async function loadKoreaNowTrends(){
    const top=[...counts].sort((a,b)=>b[1]-a[1]).slice(0,5);
    keywordTarget.innerHTML=top.map(([word,count],i)=>'<li><i>'+(i+1)+'</i> '+escapeHTML(word)+' <small style="margin-left:auto;color:#9da7bc">'+count+'건</small></li>').join('')||'<li>키워드 수집 중</li>';
   }
-  if(status)status.textContent='최근 갱신 '+new Date(data.updated_at).toLocaleString('ko-KR')+' · 24시간 비교 가능 영상 '+fmt(data.coverage?.ready_24h||0)+'개';
+  if(status)status.textContent='저장된 순위표 · '+new Date(data.cache_updated_at||data.updated_at).toLocaleString('ko-KR')+' 갱신 · 24시간 비교 가능 영상 '+fmt(data.coverage?.ready_24h||0)+'개';
   if($('kn-header-updated'))$('kn-header-updated').textContent=new Date(data.updated_at).toLocaleString('ko-KR',{month:'2-digit',day:'2-digit',hour:'2-digit',minute:'2-digit'})+' 갱신';
  }catch(e){
   console.error('KOREA NOW trend load failed',e);
