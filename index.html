@@ -858,20 +858,22 @@ main#home{max-width:1524px;margin:0 auto;padding:0 22px}.kn-dashboard{max-width:
 
 <header class="site-header kn-header">
  <a class="kn-brand" href="#home"><span class="kn-play">▶</span><span><b>TOP100 유튜브 KOREA</b><small>오늘 한국인이 관심이 많은 영상만 모았다</small></span></a>
- <form class="kn-search" onsubmit="event.preventDefault();document.getElementById('knSearchStatus').textContent='검색 기능은 데이터 연동 단계에서 활성화됩니다.'"><input aria-label="검색어" placeholder="검색어를 입력하세요..."><button aria-label="검색" type="submit">⌕</button></form>
+ <form class="kn-search" id="kn-global-search"><input id="kn-search-query" type="search" aria-label="사이트 통합 검색" placeholder="영상·기사·곡 검색..."><button aria-label="검색" type="submit">⌕</button></form>
  <div class="kn-update"><span>▦</span><div><b>오늘 업데이트</b><small id="kn-header-updated">유튜브 데이터 수집 중</small></div></div>
  <div class="kn-member-actions"><a class="header-login" id="headerLogin" href="#authPanel">로그인</a><a class="header-login" id="headerSignup" href="#authPanel">회원가입</a><a class="header-login" id="headerLogout" href="#memberPanel" hidden>로그아웃</a></div>
 </header>
 <nav class="kn-nav" aria-label="주요 메뉴">
  <a class="active" href="#home">⌂ 홈</a><a href="#kn-top100" data-kn-view="overall">종합 TOP 100</a><a href="#kn-trends">오늘의 트렌드</a><a href="#kn-top100" data-kn-view="rising">급상승 영상</a><a href="#kn-weekly">주간 핫이슈</a><a href="#kn-channels">인기 유튜버</a><a href="#kn-analysis">통계·분석</a><a href="#chartSection">AI 음악 차트</a>
 </nav>
+<section id="kn-search-results" class="kn-search-results" hidden aria-live="polite"><div class="kn-search-results-head"><strong id="kn-search-results-title">검색 결과</strong><button type="button" id="kn-search-close">닫기 ✕</button></div><div id="kn-search-results-list"></div></section>
+
 
 <main id="home">
 
 <section class="kn-dashboard" aria-label="TOP100 유튜브 KOREA 메인 대시보드">
  
  <section class="kn-hero kn-issue-hero" aria-label="주요 분야별 이슈 영상">
-  <div class="kn-issue-head"><div><h1>최근 핫이슈 영상</h1></div><div class="kn-issue-controls"><span class="kn-issue-rotation" id="kn-issue-page-label">분야별 주요 영상</span><button type="button" id="kn-issue-prev" class="kn-issue-next" aria-label="이전 영상 보기">‹</button><button type="button" id="kn-issue-next" class="kn-issue-next" aria-label="다음 영상 보기">›</button></div></div>
+  <div class="kn-issue-head"><div><h1>최근 핫이슈 영상</h1></div><span class="kn-issue-rotation" id="kn-issue-page-label">분야별 주요 영상</span></div><button type="button" id="kn-issue-prev" class="kn-issue-swipe-arrow left" aria-label="이전 영상">‹</button><button type="button" id="kn-issue-next" class="kn-issue-swipe-arrow right" aria-label="다음 영상">›</button>
   <div class="kn-issue-videos" id="kn-issue-videos"><div class="kn-issue-empty">주요 이슈 영상을 불러오는 중입니다.</div></div>
  </section>
  <div class="kn-main-grid kn-top-panels">
@@ -1174,7 +1176,7 @@ function renderKoreaNewsPage(type){
  const list=$(type==="issue"?"kn-issue-page":"kn-news-page");
  const media=$(type==="issue"?"kn-issue-media":"kn-news-media");
  const label=$(type==="issue"?"kn-issue-page-label2":"kn-news-page-label");
- if(list)list.innerHTML=page.map((v,i)=>'<a class="kn-article-row" href="'+escapeHTML(v.url||v.videoUrl||"#")+'" target="_blank" rel="noopener"><b>'+(koreaNewsPage[type]*pageSize+i+1)+'.</b><span><strong>'+escapeHTML(v.title)+'</strong><small>'+escapeHTML(v.meta||v.category||"")+'</small></span></a>').join("")||'<div class="kn-empty">표시할 기사가 없습니다.</div>';
+ if(list)list.innerHTML=page.map(v=>'<a class="kn-article-row" href="'+escapeHTML(v.url||v.videoUrl||"#")+'" target="_blank" rel="noopener">'+(v.image?'<img src="'+escapeHTML(v.image)+'" alt="" loading="lazy">':'<span class="kn-article-placeholder">▶</span>')+'<span><strong>'+escapeHTML(v.title)+'</strong><small>'+escapeHTML(v.meta||v.category||"")+'</small></span></a>').join("")||'<div class="kn-empty">표시할 기사가 없습니다.</div>';
  const imageRows=page.filter(v=>v.image).slice(0,3);
  if(media)media.innerHTML=imageRows.map(v=>'<a class="kn-article-image" href="'+escapeHTML(v.videoUrl||v.url||"#")+'" target="_blank" rel="noopener"><img src="'+escapeHTML(v.image)+'" alt="" loading="lazy"><span>'+escapeHTML(v.title)+'</span></a>').join("")||'<div class="kn-article-image-empty">관련 영상 이미지를 수집하고 있습니다.</div>';
  if(label)label.textContent=(rows.length?koreaNewsPage[type]+1:0)+" / "+total;
@@ -1192,6 +1194,20 @@ for(const type of ["issue","news"]){
 }
 setInterval(()=>{moveKoreaNewsPage("issue",1);moveKoreaNewsPage("news",1);},60000);
 
+function runKoreaGlobalSearch(query){
+ const q=String(query||"").trim().toLowerCase(),box=$("kn-search-results"),list=$("kn-search-results-list"),title=$("kn-search-results-title");if(!box||!list)return;if(!q){box.hidden=true;return;}
+ const d=koreaNowData||{},videos=new Map();
+ const addVideo=v=>{if(v?.title&&String(v.title).toLowerCase().includes(q)){const key=v.youtube_id||v.video_url||v.title;videos.set(key,{title:v.title,url:v.video_url||"#",image:v.thumbnail_url||"",meta:(v.channel_title||"유튜브 영상")+" · 영상"});}};
+ (d.overall||[]).forEach(addVideo);Object.values(d.rankings||{}).flat().forEach(addVideo);
+ const articles=[];(d.news||[]).forEach(g=>(g.items||[]).forEach(v=>{if(String(v.title||"").toLowerCase().includes(q))articles.push({title:v.title,url:v.url||"#",image:v.image_url||v.thumbnail_url||"",meta:(v.source||g.category||"언론사")+" · 기사"});}));
+ const songs=allSongs.filter(v=>[v.title,v.artist].some(x=>String(x||"").toLowerCase().includes(q))).slice(0,20).map(v=>({title:v.title,url:"#chartSection",image:"",meta:(v.artist||"")+" · 음악"}));
+ const results=[...videos.values(),...articles,...songs].slice(0,60);if(title)title.textContent=""+query+" 검색 결과 "+results.length+"건";
+ list.innerHTML=results.map(v=>'<a class="kn-search-result" href="'+escapeHTML(v.url)+'" '+(v.url.startsWith("http")?'target="_blank" rel="noopener"':"")+' >'+(v.image?'<img src="'+escapeHTML(v.image)+'" alt="" loading="lazy">':'<span class="kn-search-result-placeholder">▶</span>')+'<span><strong>'+escapeHTML(v.title)+'</strong><small>'+escapeHTML(v.meta)+'</small></span></a>').join("")||'<p class="kn-search-empty">검색 결과가 없습니다. 다른 검색어를 입력해 주세요.</p>';box.hidden=false;box.scrollIntoView({behavior:"smooth",block:"start"});
+}
+$("kn-global-search")?.addEventListener("submit",e=>{e.preventDefault();runKoreaGlobalSearch($("kn-search-query")?.value||"");});
+$("kn-search-query")?.addEventListener("input",e=>{if(e.target.value.trim().length>=2)runKoreaGlobalSearch(e.target.value);else if($("kn-search-results"))$("kn-search-results").hidden=true;});
+$("kn-search-close")?.addEventListener("click",()=>{$("kn-search-results").hidden=true;});
+const hotHost=$("kn-issue-videos");if(hotHost){let startX=0;hotHost.addEventListener("touchstart",e=>{startX=e.changedTouches[0].clientX;},{passive:true});hotHost.addEventListener("touchend",e=>{const dx=e.changedTouches[0].clientX-startX;if(Math.abs(dx)>40){koreaIssuePage+=dx<0?1:-1;renderKoreaIssuePage();}},{passive:true});}
 async function loadKoreaNowTrends(){
  const status=$('kn-data-updated');if(status)status.textContent='저장된 순위표 불러오는 중...';
  const map={
@@ -2260,5 +2276,14 @@ setInterval(loadKoreaNowTrends, 6*60*60*1000);
 }
 </style>
 
+<style>
+.kn-issue-hero{position:relative!important}.kn-issue-videos,.kn-issue-videos.has-shorts,.kn-issue-videos.has-mixed-videos{grid-template-columns:repeat(3,minmax(0,1fr))!important;gap:16px!important;padding:0 34px!important}
+.kn-issue-videos .kn-issue-video img,.kn-issue-videos.has-shorts .kn-issue-video img,.kn-issue-videos.has-mixed-videos .kn-issue-video img{width:100%!important;aspect-ratio:4/5!important;height:auto!important;max-height:none!important;object-fit:cover!important;border-radius:10px!important}
+.kn-issue-video b{font-size:17px!important;line-height:1.5!important;font-weight:600!important;margin-top:10px!important;-webkit-line-clamp:3!important}.kn-issue-video small{font-size:12px!important;margin-top:6px!important}
+.kn-issue-swipe-arrow{position:absolute;z-index:4;top:48%;transform:translateY(-50%);width:54px;height:90px;border:0!important;background:transparent!important;color:rgba(255,255,255,.45)!important;font-size:76px!important;font-weight:200!important;line-height:1;cursor:pointer;text-shadow:0 2px 12px #0008}.kn-issue-swipe-arrow.left{left:2px}.kn-issue-swipe-arrow.right{right:2px}
+.kn-article-row{gap:11px!important;align-items:flex-start!important}.kn-article-row>img{flex:0 0 108px;width:108px;height:72px;object-fit:cover;border-radius:6px;background:#252b36}.kn-article-placeholder{flex:0 0 108px;width:108px;height:72px;display:grid;place-items:center;background:#252b36;color:#aeb8c7;border-radius:6px;font-size:22px}.kn-article-row strong{display:-webkit-box!important;-webkit-line-clamp:2!important;-webkit-box-orient:vertical!important;overflow:hidden!important;font-size:17px!important;line-height:1.5!important}
+.kn-search-results{max-width:1480px;margin:12px auto 20px;padding:18px 22px;background:#171b29;border:1px solid #394154;border-radius:12px}.kn-search-results[hidden]{display:none!important}.kn-search-results-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;font-size:18px}.kn-search-results-head button{background:transparent;border:1px solid #596276;color:#e8edf5;border-radius:6px;padding:7px 12px}#kn-search-results-list{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}.kn-search-result{display:flex;align-items:center;gap:10px;padding:8px;color:#f2f4f8;text-decoration:none;border-bottom:1px solid #333b4d;min-width:0}.kn-search-result img,.kn-search-result-placeholder{flex:0 0 92px;width:92px;height:60px;object-fit:cover;border-radius:5px;background:#252b36}.kn-search-result-placeholder{display:grid;place-items:center}.kn-search-result>span:last-child{min-width:0}.kn-search-result strong{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;font-size:15px;line-height:1.45}.kn-search-result small{display:block;color:#aeb8c7;font-size:11px;margin-top:4px}.kn-search-empty{color:#c2c8d3;padding:18px}
+@media(max-width:760px){.kn-issue-videos,.kn-issue-videos.has-shorts,.kn-issue-videos.has-mixed-videos{grid-template-columns:repeat(3,minmax(0,1fr))!important;gap:8px!important;padding:0 22px!important}.kn-issue-videos .kn-issue-video img,.kn-issue-videos.has-shorts .kn-issue-video img,.kn-issue-videos.has-mixed-videos .kn-issue-video img{aspect-ratio:3/4!important}.kn-issue-video b{font-size:16px!important;line-height:1.45!important;-webkit-line-clamp:3!important}.kn-issue-video small{font-size:10px!important}.kn-issue-swipe-arrow{font-size:56px!important;width:32px;height:70px;color:rgba(255,255,255,.32)!important}.kn-issue-swipe-arrow.left{left:-2px}.kn-issue-swipe-arrow.right{right:-2px}.kn-article-row>img,.kn-article-placeholder{flex-basis:94px;width:94px;height:64px}.kn-article-row strong{font-size:16px!important;line-height:1.45!important}#kn-search-results-list{grid-template-columns:1fr}.kn-search-results{margin:10px 10px 16px;padding:13px}}
+</style>
 </body>
 </html>
