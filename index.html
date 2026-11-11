@@ -835,13 +835,7 @@ main#home{max-width:1524px;margin:0 auto;padding:0 22px}.kn-dashboard{max-width:
 <section class="kn-dashboard" aria-label="KOREA NOW 메인 대시보드">
  <div class="kn-demo-note"><span>DESIGN PREVIEW</span> 화면 구성 시안입니다. 실제 순위와 통계는 데이터 연동 후 표시됩니다.</div>
  <section class="kn-hero kn-issue-hero" aria-label="주요 분야별 이슈 영상">
-  <div class="kn-issue-head"><div><div class="kn-kicker">KOREA TREND INDEX · LIVE ISSUES</div><h1>지금 주목받는 분야별 영상 이슈</h1></div><span class="kn-issue-rotation">1분마다 자동 전환</span></div>
-  <div class="kn-issue-tabs" role="tablist" aria-label="이슈 분야">
-   <button class="active" type="button" data-issue-tab="politics">🏛 정치 · 스포츠</button>
-   <button type="button" data-issue-tab="fun">😂 개그 · 게임</button>
-   <button type="button" data-issue-tab="life">🩺 건강 · 여행문화</button>
-   <button type="button" data-issue-tab="world">🛡 군사 · 돈벌이</button>
-  </div>
+  <div class="kn-issue-head"><div><div class="kn-kicker">KOREA TREND INDEX · LIVE ISSUES</div><h1>지금 주목받는 분야별 영상 이슈</h1></div><span class="kn-issue-rotation">분야별 주요 영상</span></div>
   <div class="kn-issue-videos" id="kn-issue-videos"><div class="kn-issue-empty">주요 이슈 영상을 불러오는 중입니다.</div></div>
  </section>
  <div class="kn-main-grid">
@@ -1093,17 +1087,14 @@ const KOREA_ISSUE_TABS=[
 let koreaIssueTabIndex=0;
 function renderKoreaIssueTab(data){
  const host=$("kn-issue-videos");if(!host)return;
- const tab=KOREA_ISSUE_TABS[koreaIssueTabIndex]||KOREA_ISSUE_TABS[0];
- document.querySelectorAll("[data-issue-tab]").forEach(b=>b.classList.toggle("active",b.dataset.issueTab===tab.id));
- const merged=tab.cats.flatMap(cat=>(data.rankings?.[cat]||[]).map(v=>({...v,issueCategory:cat})));
+ const merged=KOREA_ISSUE_TABS.flatMap(tab=>tab.cats.flatMap(cat=>(data.rankings?.[cat]||[]).map(v=>({...v,issueCategory:cat}))));
  const unique=[...new Map(merged.map(v=>[v.youtube_id||v.video_url,v])).values()].sort((a,b)=>Number(b.view_count||0)-Number(a.view_count||0));
  const shorts=unique.filter(v=>v.is_short===true||Number(v.duration_seconds||0)>0&&Number(v.duration_seconds)<=180);
  const videos=(shorts.length?shorts.slice(0,8):unique.slice(0,4));
+ const labels={"정치·시사":"정치","스포츠":"스포츠","개그·유머":"개그","게임":"게임","건강·의료":"건강","여행·문화":"문화","군사·밀리터리":"군사","돈벌이·사업":"돈벌이"};
  host.classList.toggle("has-shorts",shorts.length>0);
- host.innerHTML=videos.map(v=>'<a class="kn-issue-video'+(v.is_short?' is-short':'')+'" href="'+escapeHTML(v.video_url||"#")+'" target="_blank" rel="noopener"><img src="'+escapeHTML(v.thumbnail_url||"")+'" alt="" loading="lazy"><b>'+escapeHTML(v.title||"")+'</b><small>'+escapeHTML(v.issueCategory)+' · '+escapeHTML(v.channel_title||"")+'</small></a>').join("")||'<div class="kn-issue-empty">이 분야의 영상을 수집하고 있습니다.</div>';
+ host.innerHTML=videos.map(v=>'<a class="kn-issue-video'+(v.is_short?' is-short':'')+'" href="'+escapeHTML(v.video_url||"#")+'" target="_blank" rel="noopener"><img src="'+escapeHTML(v.thumbnail_url||"")+'" alt="" loading="lazy"><b>['+escapeHTML(labels[v.issueCategory]||v.issueCategory)+'] '+escapeHTML(v.title||"")+'</b><small>'+escapeHTML(v.channel_title||"")+'</small></a>').join("")||'<div class="kn-issue-empty">분야별 영상을 수집하고 있습니다.</div>';
 }
-document.querySelectorAll("[data-issue-tab]").forEach((b,i)=>b.addEventListener("click",()=>{koreaIssueTabIndex=i;if(koreaNowData)renderKoreaIssueTab(koreaNowData);}));
-setInterval(()=>{koreaIssueTabIndex=(koreaIssueTabIndex+1)%KOREA_ISSUE_TABS.length;if(koreaNowData)renderKoreaIssueTab(koreaNowData);},60000);
 setInterval(()=>{window.knCategoryRotation=((window.knCategoryRotation||0)+1)%5;if(koreaNowData){const d=koreaNowData;const ids={'정치·시사':0,'경제·금융':1,'돈벌이·사업':2,'군사·밀리터리':3,'국제정세':4,'산업·기업':5,'부동산':6,'뷰티·패션':7,'게임':8,'음악':9,'연예·방송':10,'스포츠':11,'IT·AI':12,'과학·기술':13,'개그·유머':14,'여행·문화':15,'교육·지식':16,'생활·반려':17,'건강·의료':18,'자동차':19};for(const [cat,i] of Object.entries(ids)){const el=$("kn-issue-"+i);const rows=(d.rankings?.[cat]||[]).slice().sort((a,b)=>Number(b.view_count||0)-Number(a.view_count||0));const v=rows[window.knCategoryRotation%Math.min(5,Math.max(1,rows.length))];if(el)el.textContent=v?.title||"영상 수집 중";}}},30000);
 async function loadKoreaNowTrends(){
  const status=$('kn-data-updated');if(status)status.textContent='저장된 순위표 불러오는 중...';
