@@ -1056,7 +1056,7 @@ async function loadKoreaNowTrends(){
   }
   const peopleTarget=$('kn-people-list');
   if(peopleTarget){
-   peopleTarget.innerHTML=(data.people||[]).slice(0,10).map((p,i)=>'<div class="kn-person-card"><span class="kn-person-rank">'+(i+1)+'</span><img src="'+escapeHTML(p.thumbnail_url||'')+'" alt="" loading="lazy"><span><b>'+escapeHTML(p.name)+'</b><small>'+(p.views_24h===null?'24시간 집계 중':fmt(p.views_24h)+'회 · 관련영상 '+p.video_count+'개')+'</small></span></div>').join('');
+   peopleTarget.innerHTML=(data.people||[]).slice(0,10).map((p,i)=>'<div class="kn-person-card"><span class="kn-person-rank">'+(i+1)+'</span><img src="'+escapeHTML(p.thumbnail_url||'')+'" alt="" loading="lazy"><span><b>'+escapeHTML(p.name)+'</b><small>'+(p.views_24h===null?'24시간 집계 중 · 누적 '+fmt(p.total_views)+'회':'+'+fmt(p.views_24h)+'회 / 24시간 · 영상 '+p.video_count+'개')+'</small></span></div>').join('');
   }
   const channelTarget=$('kn-channel-list');
   if(channelTarget)channelTarget.innerHTML=(data.channels||[]).slice(0,10).map((c,i)=>'<div><i>'+(i+1)+'</i><b class="kn-avatar">'+(c.avatar?'<img src="'+escapeHTML(c.avatar)+'" alt="">':escapeHTML((c.title||'?').slice(0,1)))+'</b><span>'+escapeHTML(c.title)+'</span><strong>'+fmt(c.subscribers)+'명</strong></div>').join('')||'<div>채널 데이터가 없습니다.</div>';
