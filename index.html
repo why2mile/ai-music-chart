@@ -7,7 +7,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Noto+Sans+JP:wght@300;400;500;600;700&family=Noto+Sans+KR:wght@300;400;500;600;700&family=Noto+Sans+SC:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-<title>한국 AI 음악 통합 차트 | AI MUSIC CHART</title>
+<title>KOREA NOW | 대한민국 트렌드 인텔리전스</title>
 
 <style>
 *{box-sizing:border-box}
@@ -773,50 +773,73 @@ label{
  .period-empty{min-height:95px;font-size:10px}
 }
 
+
+/* KOREA NOW dashboard */
+.kn-header{position:relative;top:auto;max-width:none;padding:14px max(22px,calc((100% - 1480px)/2));gap:24px;background:#0d1019;border-bottom:1px solid #252b3b}
+.kn-brand{display:flex;align-items:center;gap:12px;color:#fff;text-decoration:none;flex:0 0 360px}
+.kn-brand b{display:block;font-size:27px;font-weight:850;letter-spacing:-1.2px;line-height:1.1}
+.kn-brand small{display:block;color:#c2c6d1;font-size:11px;margin-top:5px}
+.kn-play{display:grid;place-items:center;width:58px;height:42px;border-radius:10px;background:#ed303c;color:white;font-size:22px;box-shadow:0 5px 18px #ed303c35}
+.kn-search{display:flex;align-items:center;max-width:600px;flex:1;border:1px solid #41475e;border-radius:28px;background:#202438;padding:0 18px;height:48px}
+.kn-search input{margin:0;padding:0;border:0;background:transparent;outline:0;font-size:14px}
+.kn-search button{padding:0;background:transparent;color:#fff;font-size:26px}
+.kn-update{display:flex;align-items:center;gap:10px;color:#e7e9f0;white-space:nowrap}.kn-update>span{font-size:24px}.kn-update b,.kn-update small{display:block}.kn-update b{font-size:12px}.kn-update small{font-size:10px;color:#aab0c0;margin-top:3px}
+.kn-nav{display:flex;align-items:center;justify-content:center;gap:0;background:#171a2b;border-bottom:1px solid #30354b;padding:0 max(22px,calc((100% - 1480px)/2));overflow-x:auto;white-space:nowrap}
+.kn-nav a{padding:15px 19px;color:#e0e3ec;text-decoration:none;font-size:13px;font-weight:650;border-bottom:3px solid transparent}.kn-nav a:hover,.kn-nav a.active{color:#fff;border-color:#f04d64;background:#20243a}
+.kn-dashboard{max-width:1480px;margin:0 auto;padding:0 22px 20px}.kn-demo-note{font-size:10px;color:#aeb6c8;padding:9px 2px}.kn-demo-note span{color:#ffb85c;font-weight:800;letter-spacing:1px;margin-right:8px}
+.kn-hero{display:grid;grid-template-columns:minmax(0,1fr) 1.1fr 350px;gap:16px;min-height:230px;border:1px solid #30354b;border-radius:16px;overflow:hidden;background:linear-gradient(110deg,#171b2e,#241b3d 60%,#131827);padding:22px;position:relative}
+.kn-hero-copy{align-self:center;z-index:1}.kn-kicker{font-size:10px;letter-spacing:2px;color:#aeb9df;font-weight:800}.kn-hero h1{font-size:34px;color:white;font-weight:850;letter-spacing:-1.8px;margin:13px 0 5px}.kn-hero h1 em{font-style:normal;color:#ffd45b}.kn-hero p{font-size:13px;color:#e1e3ed}.kn-hero-copy>a{display:inline-block;border:1px solid #d2d5e1;border-radius:22px;padding:8px 17px;color:white;text-decoration:none;font-size:12px;margin-top:12px}
+.kn-hero-visual{position:relative;display:grid;place-items:center;overflow:hidden;background:radial-gradient(ellipse at 50% 70%,#a43b8c 0,transparent 43%),radial-gradient(ellipse at 70% 30%,#5036a5 0,transparent 45%),linear-gradient(145deg,#171a3b,#301c48 55%,#151b32);border-radius:12px;min-height:180px}.kn-hero-visual:before{content:"";position:absolute;inset:35% 0 0;background:repeating-linear-gradient(90deg,transparent 0 12px,#080b19aa 13px 17px);clip-path:polygon(0 60%,5% 20%,10% 70%,15% 5%,20% 65%,25% 10%,30% 80%,35% 0,40% 70%,45% 5%,50% 80%,55% 0,60% 70%,65% 15%,70% 75%,75% 5%,80% 70%,85% 15%,90% 80%,95% 10%,100% 65%,100% 100%,0 100%)}.kn-glow{position:absolute;width:230px;height:140px;background:#e13e9d66;filter:blur(45px)}.kn-hero-play{position:relative;z-index:2;width:86px;height:62px;border-radius:17px;background:#ed303c;color:#fff;display:grid;place-items:center;font-size:30px;box-shadow:0 12px 50px #ed303c66}.kn-hero-label{position:absolute;bottom:13px;left:16px;font-size:9px;letter-spacing:2px;color:#e6d9ff}
+.kn-keywords{position:relative;background:#171b2c;border:1px solid #353a51;border-radius:12px;padding:14px 16px}.kn-keywords h3{font-size:14px;margin:0 0 9px}.kn-keywords ol,.kn-search-rank ol{list-style:none;padding:0;margin:0}.kn-keywords li{display:flex;align-items:center;gap:10px;font-size:12px;margin:7px 0}.kn-keywords li i,.kn-search-rank li i{font-style:normal;width:22px;height:22px;display:grid;place-items:center;border-radius:50%;background:#3e4a78;color:#fff;font-weight:800}.kn-keywords li:first-child i{background:#e8a66b}.kn-keywords li:nth-child(2) i{background:#426ee9}.kn-keywords li:nth-child(3) i{background:#d95e54}.kn-keyword-chart{position:absolute;right:18px;bottom:22px;display:flex;align-items:end;gap:6px;height:70px;opacity:.65}.kn-keyword-chart span{width:13px;background:linear-gradient(#ec5b9b,#6747a8);height:22px}.kn-keyword-chart span:nth-child(2){height:35px}.kn-keyword-chart span:nth-child(3){height:29px}.kn-keyword-chart span:nth-child(4){height:48px}.kn-keyword-chart span:nth-child(5){height:65px}
+.kn-main-grid{display:grid;grid-template-columns:minmax(0,1.65fr) minmax(250px,.85fr) minmax(280px,.85fr);gap:13px;margin-top:14px}.kn-panel{background:#171a29;border:1px solid #30364b;border-radius:15px;padding:15px;min-width:0}.kn-panel-head{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:13px}.kn-panel-head h2{margin:0;color:#f2f3f8;font-size:17px;font-weight:800;letter-spacing:-.5px}.kn-panel-head a{color:#c5cada;text-decoration:none;font-size:10px;white-space:nowrap}.kn-category-content{display:grid;grid-template-columns:1.15fr .85fr;gap:12px}.kn-category-list{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:7px}.kn-category-list a{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;min-height:55px;border:1px solid #30364b;border-radius:8px;background:#20243a;color:#e6e8f1;text-decoration:none;font-size:10px}.kn-category-list a b{font-size:17px}.kn-category-list a:hover{border-color:#7b72c8;background:#292d4b}
+.kn-feature-image{height:112px;border-radius:8px;background:radial-gradient(ellipse at 50% 0,#a64e91,#34305e 48%,#12182b);display:flex;flex-direction:column;justify-content:end;padding:10px;color:white}.kn-feature-image span{font-size:8px;letter-spacing:1.5px;color:#ffd46b}.kn-feature-image b{font-size:14px}.kn-feature>strong{display:block;font-size:12px;margin-top:8px}.kn-feature p{font-size:10px;color:#aeb5c7;margin:3px 0}
+.kn-channel-list>div{display:flex;align-items:center;gap:9px;padding:9px 2px;border-bottom:1px solid #2d3246;font-size:11px}.kn-channel-list>div>i{font-style:normal;font-weight:800;font-size:14px;width:17px}.kn-avatar{display:grid;place-items:center;width:34px;height:34px;border-radius:50%;background:linear-gradient(145deg,#d7a46c,#6d557d);color:white}.kn-channel-list span{flex:1;color:#e4e6ee}.kn-channel-list strong{color:#9edb9d;font-size:10px}
+.kn-rising-list>div{display:grid;grid-template-columns:22px 82px 1fr;gap:8px;align-items:center;padding:8px 0;border-bottom:1px solid #2d3246}.kn-rising-list>div>b{font-size:12px;color:#ff7488}.kn-thumb{height:53px;border-radius:6px;display:grid;place-items:center;color:#fff;font-size:9px;font-weight:900;letter-spacing:1px}.kn-thumb-a{background:linear-gradient(135deg,#365d9e,#b44c71)}.kn-thumb-b{background:linear-gradient(135deg,#1e777c,#283b68)}.kn-thumb-c{background:linear-gradient(135deg,#6e4c9e,#bd8052)}.kn-rising-list strong,.kn-rising-list small{display:block}.kn-rising-list strong{font-size:11px;color:#f0f1f6}.kn-rising-list small{font-size:9px;color:#a9b0c2;margin-top:4px}
+.kn-bottom-grid{display:grid;grid-template-columns:minmax(0,1fr) 280px;gap:13px;margin-top:14px}.kn-trend-area{min-width:0}.kn-hot{font-size:9px;background:#e9425c;color:#fff;border-radius:12px;padding:3px 7px;vertical-align:middle;margin-left:5px}.kn-trend-cards{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:10px}.kn-trend-cards article{background:#171a29;border:1px solid #30364b;border-radius:10px;overflow:hidden;padding-bottom:10px}.kn-trend-img{height:100px;display:grid;place-items:center;color:#fff;font-size:10px;font-weight:900;letter-spacing:1.5px}.kn-trend-1{background:linear-gradient(135deg,#1c376b,#a54e68)}.kn-trend-2{background:linear-gradient(135deg,#194a65,#a28b42)}.kn-trend-3{background:linear-gradient(135deg,#263f5e,#637b9a)}.kn-trend-4{background:linear-gradient(135deg,#583f84,#bb6595)}.kn-trend-5{background:linear-gradient(135deg,#275a47,#6e8fbc)}.kn-trend-cards article>b,.kn-trend-cards article>small{display:block;padding:0 9px}.kn-trend-cards article>b{font-size:11px;color:#f0f1f5;margin-top:8px}.kn-trend-cards article>small{font-size:9px;color:#aeb4c4;margin-top:4px}
+.kn-search-rank li{display:flex;align-items:center;gap:9px;padding:9px 0;border-bottom:1px solid #2d3246;font-size:11px}.kn-search-rank li b{margin-left:auto;color:#e96b83}.kn-search-rank li i{width:20px;height:20px}.kn-data-footer{display:flex;justify-content:space-between;align-items:center;margin-top:14px;background:linear-gradient(110deg,#1d2037,#181b2b)}.kn-data-footer h2{font-size:18px;margin:5px 0}.kn-data-footer p,.kn-top100 p{font-size:11px;color:#aeb5c7;margin:0}.kn-data-stats{display:flex;gap:22px}.kn-data-stats span{font-size:10px;color:#aeb5c7}.kn-data-stats b{display:block;color:#f5d06b;font-size:18px}.kn-top100{margin-top:14px}.kn-top100 .kn-panel-head span{font-size:10px;color:#9fa7ba}.kn-search-status{color:#e9c56d;font-size:11px;padding:0 22px;max-width:1480px;margin:0 auto}
+@media(max-width:1100px){.kn-brand{flex-basis:260px}.kn-hero{grid-template-columns:1fr 1fr}.kn-keywords{grid-column:1/-1}.kn-keywords ol{display:flex;gap:15px;flex-wrap:wrap}.kn-keyword-chart{display:none}.kn-main-grid{grid-template-columns:1fr 1fr}.kn-category-panel{grid-column:1/-1}}
+@media(max-width:760px){.kn-header{padding:12px 14px;flex-wrap:wrap;gap:10px}.kn-brand{flex:1 1 100%}.kn-brand b{font-size:23px}.kn-search{order:3;flex:1 1 100%;max-width:none}.kn-update{display:none}.kn-nav{justify-content:flex-start;padding:0 8px}.kn-nav a{padding:13px 12px;font-size:11px}.kn-dashboard{padding:0 12px 16px}.kn-hero{grid-template-columns:1fr;padding:16px;gap:12px}.kn-hero h1{font-size:27px}.kn-hero-visual{min-height:135px}.kn-keywords{grid-column:auto}.kn-keywords ol{display:block}.kn-main-grid,.kn-bottom-grid{grid-template-columns:1fr}.kn-category-panel{grid-column:auto}.kn-category-content{grid-template-columns:1fr}.kn-category-list{grid-template-columns:repeat(3,minmax(0,1fr))}.kn-feature-image{height:130px}.kn-trend-cards{grid-template-columns:repeat(2,minmax(0,1fr))}.kn-data-footer{display:block}.kn-data-stats{margin-top:15px;justify-content:space-between}.kn-panel-head h2{font-size:15px}}
+
 </style>
 </head>
 
 <body>
 
-<header class="site-header">
- <a class="logo" href="#home">AI MUSIC <span>CHART</span></a>
- <nav class="main-nav" aria-label="주요 메뉴">
-  <a class="nav-active" href="#home">홈</a>
-  <a href="#chartSection">실시간 차트</a>
-  <a href="#genreSection">장르별</a>
-  <a href="#newMusic">신곡</a>
-  <a href="#communitySection">커뮤니티</a>
- </nav>
+<header class="site-header kn-header">
+ <a class="kn-brand" href="#home"><span class="kn-play">▶</span><span><b>KOREA NOW</b><small>지금 대한민국은? · 유튜브로 보는 한국의 관심사</small></span></a>
+ <form class="kn-search" onsubmit="event.preventDefault();document.getElementById('knSearchStatus').textContent='검색 기능은 데이터 연동 단계에서 활성화됩니다.'"><input aria-label="검색어" placeholder="검색어를 입력하세요..."><button aria-label="검색" type="submit">⌕</button></form>
+ <div class="kn-update"><span>▦</span><div><b>오늘 업데이트</b><small>데이터 연결 준비 중</small></div></div>
  <a class="header-login" href="#authPanel">로그인</a>
 </header>
+<nav class="kn-nav" aria-label="주요 메뉴">
+ <a class="active" href="#home">⌂ 홈</a><a href="#kn-top100">종합 TOP 100</a><a href="#kn-trends">오늘의 트렌드</a><a href="#kn-categories">분야별 차트⌄</a><a href="#kn-rising">급상승 영상</a><a href="#kn-weekly">주간 핫이슈</a><a href="#kn-channels">인기 유튜버</a><a href="#kn-analysis">통계·분석</a>
+</nav>
 
 <main id="home">
 
-<section class="hero">
- <div class="hero-copy">
-  <div class="eyebrow">KOREA AI MUSIC PLATFORM</div>
-  <h1>새로운 음악의 발견,<br><span>AI MUSIC CHART</span></h1>
-  <p>검증된 한국 AI 음악 차트를 확인하고 좋아하는 창작자를 응원하세요.</p>
-  <div class="hero-actions">
-   <a class="hero-button" href="#chartSection">인기 차트 보기 <b>→</b></a>
-   <a class="hero-text-link" href="#registerPanel">내 음악 등록하기</a>
-  </div>
+<section class="kn-dashboard" aria-label="KOREA NOW 메인 대시보드">
+ <div class="kn-demo-note"><span>DESIGN PREVIEW</span> 화면 구성 시안입니다. 실제 순위와 통계는 데이터 연동 후 표시됩니다.</div>
+ <section class="kn-hero">
+  <div class="kn-hero-copy"><div class="kn-kicker">KOREA TREND INDEX · DAILY BRIEFING</div><h1>오늘의 인기 영상 <em>TOP 100</em></h1><p>대한민국 유튜브에서 지금 가장 주목받는 관심사와 이슈를 한눈에</p><a href="#kn-top100">전체 순위 보기 <b>→</b></a></div>
+  <div class="kn-hero-visual"><div class="kn-glow"></div><div class="kn-hero-play">▶</div><span class="kn-hero-label">WHAT KOREA WATCHES</span></div>
+  <aside class="kn-keywords"><h3>🔥 오늘의 주요 키워드</h3><ol><li><i>1</i> 경제·금융</li><li><i>2</i> 정치·사회</li><li><i>3</i> 인공지능</li><li><i>4</i> 부동산</li><li><i>5</i> 국제정세</li></ol><div class="kn-keyword-chart"><span></span><span></span><span></span><span></span><span></span></div></aside>
+ </section>
+ <div class="kn-main-grid">
+  <section class="kn-panel kn-category-panel" id="kn-categories"><div class="kn-panel-head"><h2>🗂 분야별 인기 TOP 100</h2><a href="#kn-top100">분야 전체 보기 →</a></div>
+   <div class="kn-category-content"><div class="kn-category-list">
+    <a href="#kn-top100"><b>🏛</b>정치·시사</a><a href="#kn-top100"><b>💰</b>경제·금융</a><a href="#kn-top100"><b>📈</b>돈벌이·사업</a><a href="#kn-top100"><b>🛡</b>군사·밀리터리</a><a href="#kn-top100"><b>🌐</b>국제정세</a><a href="#kn-top100"><b>🏭</b>산업·기업</a><a href="#kn-top100"><b>🏠</b>부동산</a><a href="#kn-top100"><b>💄</b>뷰티·패션</a><a href="#kn-top100"><b>🎮</b>게임</a><a href="#kn-top100"><b>🎵</b>음악</a><a href="#kn-top100"><b>🎬</b>연예·방송</a><a href="#kn-top100"><b>⚽</b>스포츠</a><a href="#kn-top100"><b>🤖</b>IT·AI</a><a href="#kn-top100"><b>🔬</b>과학·기술</a><a href="#kn-top100"><b>🌱</b>농업·식품</a><a href="#kn-top100"><b>✈️</b>여행·문화</a><a href="#kn-top100"><b>📚</b>교육·지식</a><a href="#kn-top100"><b>🐾</b>생활·반려</a>
+   </div><div class="kn-feature"><div class="kn-feature-image"><span>WEEKLY FEATURE</span><b>오늘 가장 주목받는 이슈</b></div><strong>분야별 대표 콘텐츠</strong><p>가장 높은 관심을 얻은 영상과 관련 키워드를 보여주는 영역입니다.</p></div></div>
+  </section>
+  <section class="kn-panel" id="kn-channels"><div class="kn-panel-head"><h2>🏆 오늘의 인기 채널 TOP 10</h2><a href="#kn-channels">더보기 →</a></div><div class="kn-channel-list"><div><i>1</i><b class="kn-avatar">K</b><span>인기 채널 데이터 연동 대기</span><strong>—</strong></div><div><i>2</i><b class="kn-avatar">N</b><span>구독자 증가 순위</span><strong>—</strong></div><div><i>3</i><b class="kn-avatar">T</b><span>급상승 채널</span><strong>—</strong></div><div><i>4</i><b class="kn-avatar">M</b><span>분야별 인기 채널</span><strong>—</strong></div><div><i>5</i><b class="kn-avatar">P</b><span>신규 주목 채널</span><strong>—</strong></div></div></section>
+  <section class="kn-panel" id="kn-rising"><div class="kn-panel-head"><h2>✉ 급상승 영상 TOP 10</h2><a href="#kn-rising">더보기 →</a></div><div class="kn-rising-list"><div><b>01</b><span class="kn-thumb kn-thumb-a">TREND</span><span><strong>급상승 영상 데이터 연결 대기</strong><small>조회수 증가량 · 업로드 시간</small></span></div><div><b>02</b><span class="kn-thumb kn-thumb-b">ISSUE</span><span><strong>실시간 인기 영상</strong><small>분야별 관심도 분석</small></span></div><div><b>03</b><span class="kn-thumb kn-thumb-c">NOW</span><span><strong>오늘의 주목 콘텐츠</strong><small>조회수 증가율 기준</small></span></div></div></section>
  </div>
- <div class="hero-art" aria-hidden="true">
-  <div class="sound-orbit orbit-one"></div>
-  <div class="sound-orbit orbit-two"></div>
-  <div class="sound-core">♫</div>
-  <span class="sound-note note-one">♪</span>
-  <span class="sound-note note-two">♬</span>
- </div>
+ <section class="kn-bottom-grid" id="kn-trends"><div class="kn-trend-area"><div class="kn-panel-head"><h2>지금 뜨는 이슈 <span class="kn-hot">HOT</span></h2><a href="#kn-analysis">실시간 트렌드 분석 →</a></div><div class="kn-trend-cards"><article><div class="kn-trend-img kn-trend-1">POLITICS</div><b>정치·사회 주요 이슈</b><small>관련 영상과 키워드 분석</small></article><article><div class="kn-trend-img kn-trend-2">ECONOMY</div><b>경제·금융 관심 변화</b><small>조회수 증가 추이</small></article><article><div class="kn-trend-img kn-trend-3">DEFENSE</div><b>국방·국제정세 동향</b><small>분야별 인기 콘텐츠</small></article><article><div class="kn-trend-img kn-trend-4">CULTURE</div><b>문화·엔터테인먼트</b><small>오늘의 인기 영상</small></article><article><div class="kn-trend-img kn-trend-5">SPORTS</div><b>스포츠 주요 화제</b><small>채널과 영상 순위</small></article></div></div>
+  <aside class="kn-panel kn-search-rank" id="kn-weekly"><div class="kn-panel-head"><h2>📈 실시간 인기 검색어</h2><a href="#kn-weekly">더보기 →</a></div><ol><li><i>1</i> 검색어 데이터 연결 대기 <b>—</b></li><li><i>2</i> 키워드 순위 <b>—</b></li><li><i>3</i> 키워드 순위 <b>—</b></li><li><i>4</i> 키워드 순위 <b>—</b></li><li><i>5</i> 키워드 순위 <b>—</b></li></ol></aside>
+ </section>
+ <section class="kn-panel kn-data-footer" id="kn-analysis"><div><span class="kn-kicker">DATA & INSIGHT</span><h2>대한민국의 관심은 어떻게 움직이고 있을까?</h2><p>조회수 증가량, 채널 성장, 분야별 순위 변동을 누적 데이터로 분석합니다.</p></div><div class="kn-data-stats"><span><b>24H</b>일간 변화</span><span><b>7D</b>주간 흐름</span><span><b>30D</b>월간 추세</span></div></section>
+ <section class="kn-panel kn-top100" id="kn-top100"><div class="kn-panel-head"><h2>종합 인기 TOP 100</h2><span>전체 분야 통합 순위 · 데이터 연동 예정</span></div><p>실제 순위 데이터가 연결되면 이곳에 통합 랭킹이 표시됩니다.</p></section>
 </section>
-
-<section class="quick-links" id="genreSection">
- <a href="#chartSection" data-quick-chart="실시간"><span>🏆</span><b>실시간 차트</b><small>최근 24시간 인기</small></a>
- <a href="#chartSection" data-quick-chart="주간"><span>📅</span><b>주간 차트</b><small>최근 7일간 인기</small></a>
- <a href="#chartSection" data-quick-chart="연간"><span>🌟</span><b>연간 차트</b><small>최근 365일 인기</small></a>
- <a href="#chartSection" data-quick-genre="트로트"><span>🎤</span><b>트로트</b><small>AI 트로트 모아보기</small></a>
-</section>
+<div id="knSearchStatus" class="kn-search-status" aria-live="polite"></div>
 
 <section class="panel" id="authPanel">
  <h2>회원가입 / 로그인</h2>
