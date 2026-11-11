@@ -1374,7 +1374,11 @@ function periodDays(period){return period==='실시간'?1:period==='월간'?30:p
 function percentileScores(sorted){const map=new Map(),n=sorted.length;sorted.forEach((song,i)=>map.set(song.id,n?100*(n-i)/n:0));return map;}
 function calculateScores(songsList,period){
  const songs=[...(songsList||[])],days=periodDays(period),cutoff=new Date();cutoff.setDate(cutoff.getDate()-days);
- const ytRanked=songs.map(song=>{const delta=getPeriodViewDelta(song,days);return {...song,_ytMetric:delta===null?Number(song.youtube_views||0):delta,_ytFallback:delta===null};}).sort((a,b)=>b._ytMetric-a._ytMetric);
+ const periodDeltas=songs.map(song=>getPeriodViewDelta(song,days));
+ // 기간별 조회수는 모든 곡에 비교 가능한 기간 데이터가 있을 때만 사용한다.
+ // 데이터가 일부 곡에만 있으면 누적 조회수와 기간 조회수가 섞여 순위가 왜곡되므로 전체 곡을 누적 조회수 기준으로 전환한다.
+ const hasCompletePeriodData=periodDeltas.length>0&&periodDeltas.every(delta=>delta!==null);
+ const ytRanked=songs.map((song,index)=>({...song,_ytMetric:hasCompletePeriodData?periodDeltas[index]:Number(song.youtube_views||0),_ytFallback:!hasCompletePeriodData})).sort((a,b)=>b._ytMetric-a._ytMetric);
  const youtubeScore=percentileScores(ytRanked);
  const siteRanked=songs.map(song=>({...song,_siteMetric:Number(song.plays||0)+4*(Number(song.likes||0)+Number(guestLikeCounts.get(song.id)||0))+2*Number(siteCommentCounts.get(song.id)||0)})).sort((a,b)=>b._siteMetric-a._siteMetric);
  const siteScore=percentileScores(siteRanked),latestBySongPlatform=new Map();
@@ -1387,7 +1391,8 @@ function calculateScores(songsList,period){
   let weighted=(youtubeScore.get(song.id)||0)*30;
   for(const platform of activePlatforms){const row=latestBySongPlatform.get(song.id+'|'+platform);if(row)weighted+=Math.max(0,101-Number(row.rank_position||100))*PLATFORM_WEIGHTS[platform];}
   const externalScore=extWeight?weighted/extWeight:youtubeScore.get(song.id)||0,site=siteScore.get(song.id)||0,yt=ytRanked.find(x=>x.id===song.id);
-  return {...song,calculatedScore:externalScore*.9+site*.1,externalScore,siteScore:site,periodIsFallback:yt?yt._ytFallback:true};
+  // 사이트 참여도는 별도 지표로 보여주되 조회수·외부 플랫폼 순위를 뒤집지 않도록 통합 순위에는 반영하지 않는다.
+  return {...song,calculatedScore:externalScore,externalScore,siteScore:site,periodIsFallback:yt?yt._ytFallback:true};
  }).sort((a,b)=>b.calculatedScore-a.calculatedScore);
 }
 async function loadExternalScores(){
