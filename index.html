@@ -1130,26 +1130,24 @@ function renderKoreaIssuePage(){
  const mobile=window.matchMedia("(max-width:760px)").matches;
  const others=koreaIssueVideos.filter(v=>!issueIsShort(v));
  const shorts=koreaIssueVideos.filter(issueIsShort);
- const shortMode=others.length===0&&shorts.length>0;
- const hasShorts=shorts.length>0;
- const pageSize=mobile?2:5;
- const totalPages=Math.max(1,mobile?Math.max(others.length,shorts.length):Math.ceil(koreaIssueVideos.length/pageSize));
+ const shortMode=others.length===0&&shorts.length>0,hasShorts=shorts.length>0;
+ const pageSize=mobile?3:5;
+ const totalPages=Math.max(1,mobile?Math.max(others.length,Math.ceil(shorts.length/2)):Math.ceil(koreaIssueVideos.length/pageSize));
  koreaIssuePage=((koreaIssuePage%totalPages)+totalPages)%totalPages;
- // 모바일은 일반영상 1개 + 쇼츠 1개를 나란히, PC는 두 유형을 섞어 5개 표시합니다.
+ // 모바일은 일반영상 1개를 전체 폭으로, 쇼츠 2개를 아래에 나란히 배치합니다.
  const videos=mobile
-  ? [others[koreaIssuePage],shorts[koreaIssuePage]].filter(Boolean)
+  ? [others[koreaIssuePage],...shorts.slice(koreaIssuePage*2,koreaIssuePage*2+2)].filter(Boolean)
   : koreaIssueVideos.slice(koreaIssuePage*pageSize,(koreaIssuePage+1)*pageSize);
  const labels={"정치·시사":"정치","스포츠":"스포츠","개그·유머":"개그","게임":"게임","건강·의료":"건강","여행·문화":"문화","군사·밀리터리":"군사","돈벌이·사업":"돈벌이"};
- host.classList.toggle("has-shorts",shortMode);
- host.classList.toggle("has-mixed-videos",hasShorts&&!shortMode);
- host.innerHTML=videos.map(v=>'<a class="kn-issue-video'+(issueIsShort(v)?' is-short':'')+'" href="'+escapeHTML(v.video_url||"#")+'" target="_blank" rel="noopener"><img src="'+escapeHTML(v.thumbnail_url||"")+'" alt="" loading="lazy"><b>['+escapeHTML(labels[v.issueCategory]||v.issueCategory)+'] '+escapeHTML(v.title||"")+'</b><small>'+escapeHTML(v.channel_title||"")+(issueIsShort(v)?' · 쇼츠':' · 일반영상')+'</small></a>').join("")||'<div class="kn-issue-empty">분야별 영상을 수집하고 있습니다.</div>';
- const label=$("kn-issue-page-label");if(label)label.textContent=(mobile?"모바일 · 일반영상 1개 + 쇼츠 1개":shortMode?"쇼츠 영상":"일반영상 + 쇼츠 · 5개씩")+" · "+(koreaIssueVideos.length?Math.min(koreaIssuePage*pageSize+1,koreaIssueVideos.length):0)+"–"+Math.min((koreaIssuePage+1)*pageSize,koreaIssueVideos.length)+" / "+koreaIssueVideos.length;
+ host.classList.toggle("has-shorts",shortMode);host.classList.toggle("has-mixed-videos",hasShorts&&!shortMode);
+ host.innerHTML=videos.map(v=>'<a class="kn-issue-video'+(issueIsShort(v)?' is-short':' is-general')+'" href="'+escapeHTML(v.video_url||"#")+'" target="_blank" rel="noopener"><img src="'+escapeHTML(v.thumbnail_url||"")+'" alt="" loading="lazy"><b>['+escapeHTML(labels[v.issueCategory]||v.issueCategory)+'] '+escapeHTML(v.title||"")+'</b><small>'+escapeHTML(v.channel_title||"")+(issueIsShort(v)?' · 쇼츠':' · 일반영상')+'</small></a>').join("")||'<div class="kn-issue-empty">분야별 영상을 수집하고 있습니다.</div>';
+ const label=$("kn-issue-page-label");if(label)label.textContent=(mobile?"모바일 · 일반영상 1개 + 쇼츠 2개":shortMode?"쇼츠 영상":"일반영상 + 쇼츠 · 5개씩")+" · "+(koreaIssueVideos.length?Math.min(koreaIssuePage*pageSize+1,koreaIssueVideos.length):0)+"–"+Math.min((koreaIssuePage+1)*pageSize,koreaIssueVideos.length)+" / "+koreaIssueVideos.length;
  const prev=$("kn-issue-prev"),next=$("kn-issue-next");if(prev)prev.disabled=totalPages<=1;if(next)next.disabled=totalPages<=1;
 }
 $("kn-issue-prev")?.addEventListener("click",()=>{koreaIssuePage--;renderKoreaIssuePage();});
 $("kn-issue-next")?.addEventListener("click",()=>{koreaIssuePage++;renderKoreaIssuePage();});
 window.addEventListener("resize",()=>{if(koreaNowData)renderKoreaIssuePage();});
-setInterval(()=>{const n=window.matchMedia("(max-width:760px)").matches?2:5;if(koreaIssueVideos.length>n){koreaIssuePage++;renderKoreaIssuePage();}},60000);
+setInterval(()=>{const n=window.matchMedia("(max-width:760px)").matches?3:5;if(koreaIssueVideos.length>n){koreaIssuePage++;renderKoreaIssuePage();}},60000);
 setInterval(()=>{window.knCategoryRotation=((window.knCategoryRotation||0)+1)%5;if(koreaNowData){const d=koreaNowData;const groups=[["정치·시사","국제정세"],["경제·금융","돈벌이·사업","산업·기업"],["군사·밀리터리"],["부동산"],["뷰티·패션"],["게임"],["음악"],["연예·방송"],["스포츠"],["IT·AI"],["과학·기술"],["개그·유머","코미디"],["여행·문화"],["교육·지식"],["생활·반려","반려동물"],["건강·의료"],["자동차"],["취미","인물·브이로그"]];groups.forEach((keys,i)=>{const el=$("kn-issue-"+i);const rows=keys.flatMap(cat=>d.rankings?.[cat]||[]).slice().sort((a,b)=>Number(b.view_count||0)-Number(a.view_count||0));const v=rows[window.knCategoryRotation%Math.max(1,Math.min(5,rows.length))];if(el)el.textContent=v?.title||(keys[0]==="취미"?"추천 영상 준비 중":"해당 분야 영상 준비 중");});}},30000);
 // 뉴스 메인 두 패널: 사회적 파급력 우선, 5개씩 표시, 60초 자동 페이지 전환
 const koreaNewsPriority=["정치·국제","스포츠","음악·AI","개그·유머","돈벌이·경제","군사","연예·방송","병·건강·의료","부동산","국제정세","IT·AI","과학·기술","여행·문화","교육·지식","게임","반려동물","자동차","취미","뷰티·패션"];
@@ -1169,13 +1167,37 @@ function renderKoreaNewsPanels(data){
   const items=(newsGroups.get(cat)||[]).slice().sort((a,b)=>String(b.published_at||"").localeCompare(String(a.published_at||"")));
   for(const item of items){
    if(!item?.title)continue;
-   const related=videoFor(cat)[0];
-   news.push({title:item.title,url:item.url,meta:item.source||cat,category:cat,image:item.image_url||item.thumbnail_url||related?.thumbnail_url||"",videoUrl:related?.video_url||""});
+   news.push({title:item.title,url:item.url,meta:item.source||cat,category:cat,image:item.image_url||item.thumbnail_url||"",videoUrl:item.url||""});
   }
  }
  koreaNewsItems.issue=issue;koreaNewsItems.news=news;
  koreaNewsPage.issue=0;koreaNewsPage.news=0;
  renderKoreaNewsPage("issue");renderKoreaNewsPage("news");
+}
+function presenterImageData(index){
+ const palettes=[
+  ["#e6b59a","#263f68","#1d2535","#d8b08e"],["#f0c6a8","#8b3150","#24202b","#241b1d"],
+  ["#dba889","#287b79","#202d3a","#30211d"],["#f1c9ad","#6c5794","#28334a","#1c191b"],
+  ["#c98e72","#345b8a","#202a38","#30211d"],["#edbd9e","#a34c3c","#273346","#251b1c"],
+  ["#e9b99b","#52724b","#253044","#241c1a"],["#d9a184","#343b48","#202b3c","#1b1717"]
+ ];
+ const p=palettes[((index%palettes.length)+palettes.length)%palettes.length],female=index%4!==1;
+ const hair=female
+  ? ['<path d="M45 91 Q28 20 83 16 Q142 18 125 96 L113 133 L54 133Z" fill="'+p[3]+'"/>','<path d="M43 78 Q35 18 85 17 Q135 17 127 80 Q110 54 88 52 Q62 53 43 78Z" fill="'+p[3]+'"/>','<path d="M42 90 Q30 24 83 18 Q135 22 128 92 L117 127 L50 127Z" fill="'+p[3]+'"/>'][Math.floor(index/2)%3]
+  : '<path d="M44 66 Q39 17 86 18 Q129 17 128 66 Q108 47 83 48 Q62 47 44 66Z" fill="'+p[3]+'"/>';
+ const outfit='<path d="M28 184 Q35 126 65 119 L85 135 L105 119 Q135 128 143 184Z" fill="'+p[1]+'"/><path d="M65 120 L85 148 L105 120 L97 184 L73 184Z" fill="#f6f3ef"/>';
+ const svg='<svg xmlns="http://www.w3.org/2000/svg" width="320" height="180" viewBox="0 0 170 180"><defs><linearGradient id="bg" x2="1" y2="1"><stop stop-color="'+p[2]+'"/><stop offset="1" stop-color="'+p[1]+'"/></linearGradient><linearGradient id="light" x2="0" y2="1"><stop stop-color="#ffffff" stop-opacity=".22"/><stop offset="1" stop-color="#ffffff" stop-opacity="0"/></linearGradient></defs><rect width="170" height="180" rx="10" fill="url(#bg)"/><rect width="170" height="180" rx="10" fill="url(#light)"/><circle cx="86" cy="67" r="37" fill="'+p[3]+'" opacity=".14"/>'+hair+'<path d="M53 56 Q53 28 85 28 Q118 28 118 59 L113 92 Q105 112 85 113 Q65 112 57 92Z" fill="'+p[0]+'"/><path d="M55 61 Q57 34 85 34 Q111 34 117 61 L111 50 Q88 39 61 55Z" fill="'+p[3]+'"/><ellipse cx="72" cy="72" rx="3" ry="2" fill="#30252a"/><ellipse cx="99" cy="72" rx="3" ry="2" fill="#30252a"/><path d="M77 91 Q86 100 96 90" fill="none" stroke="#a64f59" stroke-width="3" stroke-linecap="round"/>'+outfit+'<path d="M112 139 Q133 126 139 105 Q142 94 149 98 Q154 101 149 114 Q144 137 128 153 L111 161Z" fill="'+p[0]+'"/><path d="M139 105 Q141 86 148 80 Q153 77 155 82 Q158 88 151 99" fill="'+p[0]+'"/><path d="M136 106 L149 99" stroke="'+p[0]+'" stroke-width="7" stroke-linecap="round"/><path d="M22 176 H148" stroke="#ffffff" stroke-opacity=".18" stroke-width="2"/></svg>';
+ return "data:image/svg+xml;charset=UTF-8,"+encodeURIComponent(svg);
+}
+function renderKoreaRisingList(){
+ const target=$("kn-rising-list");if(!target)return;
+ const rows=window.knRisingVideos||[];
+ target.innerHTML=rows.map((v,i)=>'<div class="kn-rising-item"><b>'+(i+1)+'</b><span class="kn-thumb"><img src="'+escapeHTML(v.thumbnail_url||"")+'" alt="" loading="lazy"></span><span><a href="'+escapeHTML(v.video_url||"#")+'" target="_blank" rel="noopener"><strong>'+escapeHTML(v.title)+'</strong></a><small>'+escapeHTML(v.channel_title||"")+' · '+(v.views_24h===null?'24시간 집계 중':fmt(v.views_24h)+'회 증가')+'</small></span></div>').join("")||'<div class="kn-empty">급상승 영상이 없습니다.</div>';
+}
+function rotateKoreaRising(){
+ const rows=window.knRisingVideos||[];if(rows.length<2)return;
+ rows.push(rows.shift());window.knRisingVideos=rows;renderKoreaRisingList();
+ const target=$("kn-rising-list");if(target){target.classList.remove("kn-rising-moving");void target.offsetWidth;target.classList.add("kn-rising-moving");}
 }
 function renderKoreaNewsPage(type){
  const rows=koreaNewsItems[type]||[],pageSize=5,total=Math.max(1,Math.ceil(rows.length/pageSize));
@@ -1184,9 +1206,9 @@ function renderKoreaNewsPage(type){
  const list=$(type==="issue"?"kn-issue-page":"kn-news-page");
  const media=$(type==="issue"?"kn-issue-media":"kn-news-media");
  const label=$(type==="issue"?"kn-issue-page-label2":"kn-news-page-label");
- if(list)list.innerHTML=page.map(v=>'<a class="kn-article-row" href="'+escapeHTML(v.url||v.videoUrl||"#")+'" target="_blank" rel="noopener">'+(v.image?'<img src="'+escapeHTML(v.image)+'" alt="" loading="lazy">':'<span class="kn-article-placeholder">▶</span>')+'<span><strong>'+escapeHTML(v.title)+'</strong><small>'+escapeHTML(v.meta||v.category||"")+'</small></span></a>').join("")||'<div class="kn-empty">표시할 기사가 없습니다.</div>';
- const imageRows=page.filter(v=>v.image).slice(0,3);
- if(media)media.innerHTML=imageRows.map(v=>'<a class="kn-article-image" href="'+escapeHTML(v.videoUrl||v.url||"#")+'" target="_blank" rel="noopener"><img src="'+escapeHTML(v.image)+'" alt="" loading="lazy"><span>'+escapeHTML(v.title)+'</span></a>').join("")||'<div class="kn-article-image-empty">관련 영상 이미지를 수집하고 있습니다.</div>';
+ if(list)list.innerHTML=page.map((v,i)=>{const img=v.image||presenterImageData(i+koreaNewsPage[type]*5);return '<a class="kn-article-row" href="'+escapeHTML(v.url||"#")+'" target="_blank" rel="noopener"><img class="'+(v.image?'':'kn-presenter-fallback')+'" src="'+escapeHTML(img)+'" alt="" loading="lazy"><span><strong>'+escapeHTML(v.title)+'</strong><small>'+escapeHTML(v.meta||v.category||"")+'</small></span></a>';}).join("")||'<div class="kn-empty">표시할 기사가 없습니다.</div>';
+ const imageRows=page.slice(0,3);
+ if(media)media.innerHTML=imageRows.map((v,i)=>{const img=v.image||presenterImageData(i+3+koreaNewsPage[type]*5);return '<a class="kn-article-image" href="'+escapeHTML(v.url||"#")+'" target="_blank" rel="noopener"><img class="'+(v.image?'':'kn-presenter-fallback')+'" src="'+escapeHTML(img)+'" alt="" loading="lazy"><span>'+escapeHTML(v.title)+'</span></a>';}).join("")||'<div class="kn-article-image-empty">표시할 기사가 없습니다.</div>';
  if(label)label.textContent=(rows.length?koreaNewsPage[type]+1:0)+" / "+total;
  const panel=$(type==="issue"?"kn-issue-carousel":"kn-news-carousel");
  if(panel)panel.dataset.pageCount=String(total);
@@ -1201,6 +1223,7 @@ for(const type of ["issue","news"]){
  panel.addEventListener("touchend",e=>{const dx=e.changedTouches[0].clientX-touchX;if(Math.abs(dx)>45)moveKoreaNewsPage(type,dx<0?1:-1);},{passive:true});
 }
 setInterval(()=>{moveKoreaNewsPage("issue",1);moveKoreaNewsPage("news",1);},60000);
+setInterval(rotateKoreaRising,30000);
 
 function runKoreaGlobalSearch(query){
  const q=String(query||"").trim().toLowerCase(),box=$("kn-search-results"),list=$("kn-search-results-list"),title=$("kn-search-results-title");if(!box||!list)return;if(!q){box.hidden=true;return;}
@@ -1247,8 +1270,8 @@ async function loadKoreaNowTrends(){
   }
   const channelTarget=$('kn-channel-list');
   if(channelTarget)channelTarget.innerHTML=(data.channels||[]).slice(0,10).map((c,i)=>'<div><i>'+(i+1)+'</i><b class="kn-avatar">'+(c.avatar?'<img src="'+escapeHTML(c.avatar)+'" alt="">':escapeHTML((c.title||'?').slice(0,1)))+'</b><span>'+escapeHTML(c.title)+'</span><strong>'+fmt(c.subscribers)+'명</strong></div>').join('')||'<div>채널 데이터가 없습니다.</div>';
-  const risingTarget=$('kn-rising-list');
-  if(risingTarget)risingTarget.innerHTML=(data.overall||[]).slice(0,10).map((v,i)=>'<div><b>'+(i+1)+'</b><span class="kn-thumb"><img src="'+escapeHTML(v.thumbnail_url||'')+'" alt="" loading="lazy"></span><span><a href="'+escapeHTML(v.video_url||'#')+'" target="_blank" rel="noopener"><strong>'+escapeHTML(v.title)+'</strong></a><small>'+escapeHTML(v.channel_title)+' · '+(v.views_24h===null?'24시간 집계 중':fmt(v.views_24h)+'회 증가')+'</small></span></div>').join('')||'<div class="kn-empty">급상승 영상이 없습니다.</div>';
+  window.knRisingVideos=(data.overall||[]).slice(0,10);
+  renderKoreaRisingList();
   const overallTarget=$('kn-overall-list');
   if(overallTarget)overallTarget.innerHTML=(data.overall||[]).slice(0,100).map((v,i)=>'<div class="kn-overall-row"><b>'+(i+1)+'</b><img src="'+escapeHTML(v.thumbnail_url||'')+'" alt="" loading="lazy"><a href="'+escapeHTML(v.video_url||'#')+'" target="_blank" rel="noopener"><strong>'+escapeHTML(v.title)+'</strong><small>'+escapeHTML(v.channel_title)+' · '+(v.views_24h===null?'24시간 집계 중':fmt(v.views_24h)+'회 증가')+'</small></a></div>').join('');
   const categoryIssueGroups=[
@@ -2318,5 +2341,42 @@ setInterval(loadKoreaNowTrends, 6*60*60*1000);
 }
 </style>
 
+
+<style>
+/* 전 화면 글자 가독성 상향 및 영상·기사 전용 배치 */
+body{font-size:16px}
+.kn-panel-head h2{font-size:20px!important}
+.kn-article-row strong{font-size:17px!important;line-height:1.5!important}
+.kn-article-row small{font-size:13px!important}
+.kn-category-list a,.kn-category-issue-list a,.kn-news-list a{font-size:15px!important}
+.kn-category-list a strong,.kn-category-issue-list a strong,.kn-news-list a span{font-size:15px!important}
+.kn-issue-video b{font-size:16px!important}
+.kn-issue-video small{font-size:12px!important}
+.kn-rising-list>div{grid-template-columns:28px 92px minmax(0,1fr)!important;gap:10px!important;padding:10px 0!important}
+.kn-rising-list>div>b{font-size:16px!important}
+.kn-rising-list a strong{font-size:15px!important;line-height:1.4!important}
+.kn-rising-list small{font-size:12px!important}
+.kn-rising-item{will-change:transform}
+#kn-rising-list.kn-rising-moving .kn-rising-item:first-child{animation:knRiseOut .45s ease both}
+@keyframes knRiseOut{to{transform:translateY(-100%);opacity:0}}
+.kn-article-row>img.kn-presenter-fallback,.kn-article-image img.kn-presenter-fallback{object-fit:cover;background:#263b59}
+.kn-article-row>img{flex:0 0 108px;width:108px;height:72px;object-fit:cover;border-radius:6px;background:#252b36}
+.kn-article-image img{aspect-ratio:16/9}
+@media(max-width:760px){
+ .kn-issue-videos,.kn-issue-videos.has-shorts,.kn-issue-videos.has-mixed-videos{grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:10px!important;padding:0 24px!important}
+ .kn-issue-videos .kn-issue-video.is-general{grid-column:1/-1}
+ .kn-issue-videos .kn-issue-video.is-general img{aspect-ratio:16/9!important;max-height:none!important}
+ .kn-issue-videos .kn-issue-video.is-short img{aspect-ratio:4/5!important;max-height:none!important}
+ .kn-issue-videos .kn-issue-video.is-short b{font-size:14px!important}
+ .kn-issue-video.is-general b{font-size:16px!important}
+ body{font-size:16px}
+ .kn-panel-head h2{font-size:19px!important}
+ .kn-article-row strong{font-size:16px!important}
+ .kn-article-row small{font-size:12px!important}
+ .kn-category-list a,.kn-category-issue-list a,.kn-news-list a{font-size:14px!important}
+ .kn-rising-list>div{grid-template-columns:25px 82px minmax(0,1fr)!important}
+ .kn-rising-list a strong{font-size:14px!important}
+}
+</style>
 </body>
 </html>
