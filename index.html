@@ -2067,7 +2067,7 @@ $('headerSignup').addEventListener('click',e=>{e.preventDefault();openMemberView
 $('headerLogout').addEventListener('click',e=>{e.preventDefault();logout();});
 const returnHome=()=>{ $('home').classList.remove('member-focus'); $('authPanel').hidden=true; $('memberPanel').hidden=true; window.scrollTo({top:0,behavior:'instant'});};
 $('memberHomeBtn').addEventListener('click',returnHome);
-$('memberHomeBtn2').addEventListener('click',returnHome);
+$('memberHomeBtn2')?.addEventListener('click',returnHome);
 $('showProfileBtn').addEventListener('click',()=>{$('profileView').hidden=false;$('profileEdit').hidden=true;});
 $('editProfileBtn').addEventListener('click',()=>{$('profileView').hidden=true;$('profileEdit').hidden=false;});
 $('cancelProfileBtn').addEventListener('click',()=>{$('profileEdit').hidden=true;});
