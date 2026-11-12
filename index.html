@@ -160,10 +160,11 @@ main.wrap img, main.wrap picture, main.wrap video{display:none!important}
 main.wrap > .hero img{display:block!important}
 .cafe-art,.regional-map-art,.sancheong-cafe-card .visual,.selected-business-photo,.selected-business-no-photo,.image-source-note{display:none!important}
 
-/* Site cleanup: keep only the single Gyeongnam hero photo. Remove all maps. */
+/* Keep the Gyeongnam-wide regional map; remove only broken local/detail maps. */
 main.wrap img,main.wrap picture,main.wrap video{display:none!important}
 main.wrap>.hero img{display:block!important}
-#region-map,.sancheong-map-stage,.map-canvas-column,.map-side,.map-legend,.map-note,.regional-map-art,.admin-map-picker,.regional-map-art img,.sancheong-map-svg,.map-pin-layer{display:none!important}
+.sancheong-map-stage,.map-canvas-column,.map-side,.map-legend,.map-note,.regional-map-art,.admin-map-picker,.regional-map-art img,.sancheong-map-svg,.map-pin-layer{display:none!important}
+#region-map{display:block!important}
 .sancheong-map-layout{display:block!important}
 .map-filter-panel{display:block!important}
 #region-text-options{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:9px;margin:12px 0 4px}
