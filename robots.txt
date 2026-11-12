@@ -1,4 +1,0 @@
-User-agent: *
-Allow: /
-
-Sitemap: https://top100korea.onrender.com/sitemap.xml
