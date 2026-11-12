@@ -228,6 +228,7 @@ const categoryOptions=[["카페","cafe"],["식당·맛집","restaurant"],["학�
 /* Replace the broken county map with a simple, working text selector. */
 const regionTextHost=document.createElement("div");regionTextHost.id="region-text-options";regionTextHost.className="region-text-options";
 regionTextHost.innerHTML=regionOptions.filter(x=>!["의창구","성산구","마산합포구","마산회원구","진해구"].includes(x[0])).map(x=>'<button type="button" data-region-choice="'+x[0]+'">'+x[0]+'</button>').join("");
+const mapEl=$("#region-map");
 mapEl.parentElement.insertBefore(regionTextHost,mapEl.nextSibling);
 regionTextHost.querySelectorAll("[data-region-choice]").forEach(btn=>btn.addEventListener("click",()=>chooseRegion(btn.dataset.regionChoice)));
 
@@ -254,7 +255,7 @@ function adminLogout(){adminState.token="";adminState.userId="";$("#admin-work")
 $("#admin-login-btn").onclick=adminLogin;$("#admin-reset-request").onclick=requestAdminPasswordReset;$("#admin-save-password").onclick=saveAdminNewPassword;$("#admin-logout").onclick=adminLogout;$("#admin-refresh").onclick=loadAdminBusinesses;$("#business-form").onsubmit=saveBusiness;$("#biz-reset").onclick=resetBusinessForm;$("#admin-back").onclick=()=>{history.pushState({},"",location.pathname+location.search);$("#admin-view").style.display="none";$(".hero").style.display="";$(".layout").style.display="";$("#home-foot").style.display="";window.scrollTo(0,0);};
 
 
-const mapEl=$("#region-map");
+
 const regionMascots={"창원시":["⚙️","창원이","산업과 바다가 만나는 활기찬 도시 친구예요."],"의창구":["🏙️","의창이","북면 온천과 도심 생활권을 잇는 안내 친구예요."],"성산구":["🏭","성산이","창원 중심상권과 산업·문화 공간을 소개하는 친구예요."],"마산합포구":["⚓","합포리","마산항과 어시장, 해안 풍경을 안내하는 친구예요."],"마산회원구":["🚉","회원이","마산역과 주거·전통시장 생활권을 소개하는 친구예요."],"진해구":["🌸","벚꽃이","벚꽃길과 푸른 바다를 좋아하는 봄의 친구예요."],"진주시":["🐉","남강이","남강과 진주성의 이야기를 들려주는 용 친구예요."],"통영시":["🐙","바다리","섬과 바다를 누비는 작은 해양 탐험가예요."],"사천시":["🛩️","우주니","하늘과 바다를 사랑하는 비행 친구예요."],"김해시":["🥔","금이","가야의 옛이야기와 들녘을 지키는 친구예요."],"밀양시":["🍎","얼음이","맑은 계곡과 얼음골을 좋아하는 산골 친구예요."],"거제시":["🐬","몽돌이","푸른 섬과 몽돌해변을 지키는 돌고래 친구예요."],"양산시":["🌿","통도리","산사와 숲길을 안내하는 초록 친구예요."],"의령군":["🍡","망개","의령의 맛과 정겨운 들판을 소개하는 친구예요."],"함안군":["🌼","아라미","아라가야의 꽃길을 거니는 꽃 친구예요."],"창녕군":["🦅","우포리","우포늪의 새와 생태계를 사랑하는 친구예요."],"고성군":["🦕","공룡이","공룡 발자국과 바닷가를 탐험하는 친구예요."],"남해군":["🐚","보리","바다와 마늘밭 사이를 뛰노는 섬 친구예요."],"하동군":["🍵","차돌이","섬진강과 야생차밭을 안내하는 차밭 친구예요."],"산청군":["🐻","지리","지리산 약초와 맑은 계곡을 아끼는 산 친구예요."],"함양군":["🌲","산삼이","깊은 숲과 산양삼을 지키는 숲 친구예요."],"거창군":["🍇","사과롱","사과밭과 맑은 산바람을 좋아하는 친구예요."],"합천군":["🦖","해인이","합천의 자연과 영상테마파크를 누비는 친구예요."]};function renderMascot(name){const m=regionMascots[name]||["🌱","우리동네 친구","지역을 선택하면 이곳의 캐릭터가 나타나요."];$("#mascot-card").innerHTML='<div class="mascot-avatar">'+m[0]+'</div><div><strong>'+m[1]+' · '+name+' 안내 캐릭터</strong><p>'+m[2]+'</p></div>';}function chooseRegion(name){r=name;c="카페";document.querySelectorAll(".map-shape").forEach(x=>x.classList.toggle("selected",x.dataset.region===name));$("#sel").innerHTML="<b>"+r+" 선택됨</b> · "+r+" 업종별 업체를 선택하세요.";renderMascot(name);openRegionHub(name,true);}
 mapEl.querySelectorAll(".map-shape").forEach(p=>{p.addEventListener("click",()=>chooseRegion(p.dataset.region));p.addEventListener("keydown",e=>{if(e.key==="Enter"||e.key===" "){e.preventDefault();chooseRegion(p.dataset.region);}});});
 
