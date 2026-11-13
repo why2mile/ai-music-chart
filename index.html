@@ -404,7 +404,7 @@ function businessCardMarkup(b){
  const evidence=Array.isArray(b.newspaper_evidence)?b.newspaper_evidence:[];
  const photo=b.image_url?'<img src="'+escapeHtml(b.image_url)+'" alt="'+escapeHtml(b.name)+' 대표 사진" loading="lazy">':"";
  return `<article class="biz ${b.is_featured?'biz-curated':''}">
- <div class="biz-photo-grid"><div class="biz-photo-pane">${photo||'<span>대표 사진 준비 중</span>'}<small>대표 사진</small></div><div class="biz-photo-pane">${photo||'<span>추가 사진 준비 중</span>'}<small>업체 이미지</small></div></div>
+ <div class="biz-photo-grid"><div class="biz-photo-pane"><span>추가 사진은 확보 후 등록</span><small>추가 이미지</small></div><div class="biz-photo-pane">${photo||'<span>추가 사진 준비 중</span>'}<small>업체 이미지</small></div></div>
  <div class="biz-content"><div class="biz-head"><div><h3>${escapeHtml(b.name)}</h3>${b.is_featured?'<span class="featured">확인된 보도 근거</span>':''}</div>${score!==null?'<div class="biz-score">'+score+'<small>통합 평가점수</small></div>':''}</div>
  <p class="biz-highlight"><strong>업체 소개</strong> · ${escapeHtml(b.summary||"업체 소개가 준비 중입니다.")}</p>
  ${b.address?'<div class="biz-address"><span>📍 '+escapeHtml(b.address)+'</span><button type="button" data-copy-address="'+escapeHtml(b.address)+'">주소 복사</button></div>':''}
