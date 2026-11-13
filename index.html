@@ -394,4 +394,67 @@ $("#go").onclick=()=>openRegionCategory(r,c);$("#cafe-preview-link").onclick=()=
   if(location.hash==='#/admin')openAdminDirect();
 })();
 </script>
+
+<style>
+/* Admin login must remain above decorative layers and receive pointer input. */
+#admin-view{position:relative;z-index:2147483000;pointer-events:auto}
+#admin-view *{pointer-events:auto}
+#admin-view button,#admin-view input,#admin-view select,#admin-view textarea{position:relative;z-index:1;touch-action:manipulation}
+</style>
+<script>
+/* Independent admin controls: these work even if an earlier page initializer stops. */
+(function(){
+  function wireAdminControls(){
+    var root=document.getElementById('admin-view');
+    if(!root)return;
+    root.style.position='relative';
+    root.style.zIndex='2147483000';
+    root.style.pointerEvents='auto';
+    root.querySelectorAll('button,input,select,textarea').forEach(function(el){
+      el.style.pointerEvents='auto';
+      el.style.position='relative';
+      el.style.zIndex='1';
+    });
+    if(window.__adminEmergencyControlsBound)return;
+    window.__adminEmergencyControlsBound=true;
+    document.addEventListener('click',function(ev){
+      var target=ev.target&&ev.target.closest?ev.target.closest('#admin-login-btn,#admin-reset-request,#admin-save-password,#admin-back'):null;
+      if(!target)return;
+      ev.preventDefault();
+      ev.stopPropagation();
+      ev.stopImmediatePropagation();
+      try{
+        if(target.id==='admin-login-btn'){
+          if(typeof adminLogin==='function')adminLogin();
+          else document.getElementById('admin-login-status').textContent='로그인 기능을 초기화하지 못했습니다. 페이지 스크립트 오류를 확인해야 합니다.';
+        }else if(target.id==='admin-reset-request'){
+          if(typeof requestAdminPasswordReset==='function')requestAdminPasswordReset();
+          else document.getElementById('admin-login-status').textContent='비밀번호 메일 기능을 초기화하지 못했습니다.';
+        }else if(target.id==='admin-save-password'){
+          if(typeof saveAdminNewPassword==='function')saveAdminNewPassword();
+          else document.getElementById('admin-reset-status').textContent='비밀번호 저장 기능을 초기화하지 못했습니다.';
+        }else if(target.id==='admin-back'){
+          history.pushState({},'',location.pathname+location.search);
+          root.style.display='none';
+          document.querySelector('.hero').style.display='';
+          document.querySelector('.layout').style.display='';
+          document.getElementById('home-foot').style.display='';
+          window.scrollTo(0,0);
+        }
+      }catch(err){
+        var status=document.getElementById(target.id==='admin-save-password'?'admin-reset-status':'admin-login-status');
+        if(status)status.textContent='버튼 실행 오류: '+(err&&err.message?err.message:String(err));
+      }
+    },true);
+    root.querySelectorAll('#admin-email,#admin-password').forEach(function(input){
+      input.addEventListener('keydown',function(ev){
+        if(ev.key==='Enter'){ev.preventDefault();if(typeof adminLogin==='function')adminLogin();}
+      });
+    });
+  }
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',wireAdminControls,{once:true});
+  else wireAdminControls();
+  window.addEventListener('pageshow',wireAdminControls);
+})();
+</script>
 </body></html>
