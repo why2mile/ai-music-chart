@@ -369,4 +369,29 @@ $("#go").onclick=()=>openRegionCategory(r,c);$("#cafe-preview-link").onclick=()=
     }
   },true);
 })();
-</script><script>if("scrollRestoration" in history)history.scrollRestoration="manual";window.addEventListener("pageshow",()=>{if(!location.hash)window.scrollTo(0,0);});if(!location.hash)window.scrollTo(0,0);</script></body></html>
+</script><script>if("scrollRestoration" in history)history.scrollRestoration="manual";window.addEventListener("pageshow",()=>{if(!location.hash)window.scrollTo(0,0);});if(!location.hash)window.scrollTo(0,0);</script>
+<script>
+/* Reliable admin navigation: do not depend on hashchange initialization. */
+(function(){
+  function openAdminDirect(){
+    const admin=document.getElementById('admin-view');
+    if(!admin)return;
+    const hide=(selector)=>{const el=document.querySelector(selector);if(el)el.style.display='none';};
+    hide('.hero');hide('.layout');hide('#home-foot');hide('#rank-view');hide('#region-hub');
+    const san=document.getElementById('sancheong-view');if(san)san.classList.remove('open');
+    admin.style.display='block';
+    if(location.hash!=='#/admin')history.pushState({},'',location.pathname+location.search+'#/admin');
+    window.scrollTo(0,0);
+  }
+  document.addEventListener('click',function(e){
+    const link=e.target.closest('a.admin-entry, nav a[href="#/admin"]');
+    if(link){e.preventDefault();e.stopPropagation();openAdminDirect();return;}
+    const exposure=e.target.closest('#jump-exposure-list');
+    if(exposure){e.preventDefault();const target=document.getElementById('admin-exposure-card');if(target)target.scrollIntoView({behavior:'smooth',block:'start'});return;}
+    const research=e.target.closest('#jump-research-list');
+    if(research){e.preventDefault();const target=document.getElementById('admin-research-card');if(target)target.scrollIntoView({behavior:'smooth',block:'start'});}
+  },true);
+  if(location.hash==='#/admin')openAdminDirect();
+})();
+</script>
+</body></html>
