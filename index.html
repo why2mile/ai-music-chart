@@ -207,7 +207,7 @@ main.wrap>.hero img{display:block!important}
 <div class="rank-top"><div><div class="eyebrow">SITE MANAGEMENT</div><h2 class="rank-title">업체 등록</h2><p class="rank-sub">지역과 업종을 고르고 업체명·주소만 입력하세요. 등록하면 편집 대기 목록에 보관됩니다.</p></div><button class="back" id="admin-back">← 메인으로</button></div>
 <div class="admin-card admin-login" id="admin-login"><h3>관리자 로그인</h3><div class="admin-field"><label for="admin-email">이메일</label><input id="admin-email" type="email" autocomplete="username" placeholder="관리자 이메일"></div><div class="admin-field"><label for="admin-password">비밀번호</label><input id="admin-password" type="password" autocomplete="current-password" placeholder="비밀번호"></div><button class="admin-btn" id="admin-login-btn">로그인</button><button class="admin-btn secondary" type="button" id="admin-reset-request">비밀번호 설정 메일 받기</button><div class="admin-status" id="admin-login-status"></div></div><div class="admin-card" id="admin-password-reset" style="display:none"><h3>관리자 비밀번호 새로 설정</h3><p class="hint">새 비밀번호를 두 번 입력하세요. 10자 이상을 권장합니다.</p><div class="admin-field"><label for="admin-new-password">새 비밀번호</label><input id="admin-new-password" type="password" autocomplete="new-password" minlength="8"></div><div class="admin-field"><label for="admin-new-password-confirm">새 비밀번호 확인</label><input id="admin-new-password-confirm" type="password" autocomplete="new-password" minlength="8"></div><button class="admin-btn" type="button" id="admin-save-password">비밀번호 저장</button><div class="admin-status" id="admin-reset-status"></div></div>
 <div id="admin-work" style="display:none">
-<div class="admin-card"><div class="admin-head"><div><h3 id="business-form-title">새 업체 등록</h3><p class="hint">필수 입력은 네 가지뿐입니다.</p></div><button class="admin-btn secondary" id="admin-logout">로그아웃</button></div>
+<div class="admin-card"><div class="admin-head"><div><h3 id="business-form-title">새 업체 등록</h3><p class="hint">경남 18개 시·군 중 선택 · 필수 입력은 네 가지뿐입니다.</p></div><button class="admin-btn secondary" id="admin-logout">로그아웃</button></div>
 <form id="business-form"><input type="hidden" id="biz-id"><div class="admin-grid">
 <div class="admin-field"><label for="biz-region">① 지역</label><select id="biz-region" required></select></div>
 <div class="admin-field"><label for="biz-category">② 업종</label><select id="biz-category" required></select></div>
@@ -223,7 +223,7 @@ const regions={"창원시":"changwon","의창구":"uichang","성산구":"seongsa
 const categories={"카페":"cafe","식당·맛집":"restaurant","학원":"academy","병원":"hospital","미용실":"beauty","숙박":"stay","카센터":"car_service"};
 const $=s=>document.querySelector(s);let r="",c="",businesses=[];
 const adminState={token:"",userId:"",editing:null};
-const regionOptions=[["창원시","changwon"],["의창구","uichang"],["성산구","seongsan"],["마산합포구","masanhappo"],["마산회원구","masanhoewon"],["진해구","jinhae"],["진주시","jinju"],["통영시","tongyeong"],["사천시","sacheon"],["김해시","gimhae"],["밀양시","miryang"],["거제시","geoje"],["양산시","yangsan"],["의령군","uiryeong"],["함안군","haman"],["창녕군","changnyeong"],["고성군","goseong"],["남해군","namhae"],["하동군","hadong"],["산청군","sancheong"],["함양군","hamyang"],["거창군","geochang"],["합천군","hapcheon"]];
+const regionOptions=[["창원시","changwon"],["진주시","jinju"],["통영시","tongyeong"],["사천시","sacheon"],["김해시","gimhae"],["밀양시","miryang"],["거제시","geoje"],["양산시","yangsan"],["의령군","uiryeong"],["함안군","haman"],["창녕군","changnyeong"],["고성군","goseong"],["남해군","namhae"],["하동군","hadong"],["산청군","sancheong"],["함양군","hamyang"],["거창군","geochang"],["합천군","hapcheon"]];
 const categoryOptions=[["카페","cafe"],["식당·맛집","restaurant"],["학원","academy"],["병원","hospital"],["미용실","beauty"],["숙박","stay"],["카센터","car_service"]];
 /* Replace the broken county map with a simple, working text selector. */
 const regionTextHost=document.createElement("div");regionTextHost.id="region-text-options";regionTextHost.className="region-text-options";
@@ -232,8 +232,8 @@ const mapEl=$("#region-map");
 mapEl.parentElement.insertBefore(regionTextHost,mapEl.nextSibling);
 regionTextHost.querySelectorAll("[data-region-choice]").forEach(btn=>btn.addEventListener("click",()=>chooseRegion(btn.dataset.regionChoice)));
 
-$("#biz-region").innerHTML=regionOptions.map(x=>'<option value="'+x[1]+'">'+x[0]+'</option>').join("");
-$("#biz-category").innerHTML=categoryOptions.map(x=>'<option value="'+x[1]+'">'+x[0]+'</option>').join("");
+$("#biz-region").innerHTML='<option value="" disabled selected>시·군을 선택하세요</option>'+regionOptions.map(x=>'<option value="'+x[1]+'">'+x[0]+'</option>').join("");
+$("#biz-category").innerHTML='<option value="" disabled selected>업종을 선택하세요</option>'+categoryOptions.map(x=>'<option value="'+x[1]+'">'+x[0]+'</option>').join("");
 function adminStatus(id,msg,type=""){const el=$(id);el.textContent=msg;el.className="admin-status "+type;}
 function showAdmin(){document.querySelector(".hero").style.display="none";$(".layout").style.display="none";$("#home-foot").style.display="none";$("#rank-view").style.display="none";$("#admin-view").style.display="block";window.scrollTo(0,0);}
 function resetBusinessForm(){adminState.editing=null;$("#business-form").reset();$("#biz-id").value="";$("#business-form-title").textContent="새 업체 등록";adminStatus("#biz-status","");}
