@@ -445,9 +445,9 @@ function renderSancheongRestaurantDirectory(list){
   const track=content.querySelector(".sancheong-area-card-track");if(track)bindBusinessDetailButtons(track,rows);
  };
  host.querySelectorAll("[data-area]").forEach(tab=>tab.onclick=()=>drawArea(tab.dataset.area));
- drawArea("산청읍");
+ drawArea(window.__seoAreaName||"산청읍");
 }
-let activeRankFilter="all";function renderBusinesses(list){const host=$("#rank-list");$("#business-detail").classList.remove("open");let filtered=list.filter(b=>activeRankFilter==="all"||(activeRankFilter==="press"&&Array.isArray(b.newspaper_evidence)&&b.newspaper_evidence.length>0)||(activeRankFilter==="curated"&&!!b.is_featured));const mode=$("#rank-sort")?.value||"score";const sorted=[...filtered].sort((a,b)=>a.name.localeCompare(b.name,"ko"));const count=$("#rank-result-count");if(count)count.textContent="검색 결과 "+sorted.length+"곳 · 전체 등록 "+list.length+"곳";if(!sorted.length){host.innerHTML='<div class="empty"><strong>검색 결과가 없습니다.</strong>다른 조건을 선택해 보세요.</div>';return;}const featuredCount=sorted.filter(b=>b.is_featured).length;host.innerHTML=(featuredCount?'<section class="curated-intro"><div class="eyebrow">LOCAL EDITORIAL PICKS</div><h2>우리동네가 발굴한 장소</h2><p>언론 취재와 지역 기록 등 확인 가능한 근거가 있는 업체를 별도로 소개합니다.</p><span>'+featuredCount+'곳 선정 · 등록 업체 목록</span></section>':'')+sorted.map(businessCardMarkup).join("");bindBusinessDetailButtons(host,sorted);}
+let activeRankFilter="all";function renderBusinesses(list){const host=$("#rank-list");$("#business-detail").classList.remove("open");if(r==="산청군"&&c==="식당·맛집"&&typeof renderSancheongRestaurantDirectory==="function"){renderSancheongRestaurantDirectory(list);const count=$("#rank-result-count");if(count)count.textContent="검색 결과 "+list.length+"곳 · 읍·면별로 확인";return;}let filtered=list.filter(b=>activeRankFilter==="all"||(activeRankFilter==="press"&&Array.isArray(b.newspaper_evidence)&&b.newspaper_evidence.length>0)||(activeRankFilter==="curated"&&!!b.is_featured));const mode=$("#rank-sort")?.value||"score";const sorted=[...filtered].sort((a,b)=>a.name.localeCompare(b.name,"ko"));const count=$("#rank-result-count");if(count)count.textContent="검색 결과 "+sorted.length+"곳 · 전체 등록 "+list.length+"곳";if(!sorted.length){host.innerHTML='<div class="empty"><strong>검색 결과가 없습니다.</strong>다른 조건을 선택해 보세요.</div>';return;}const featuredCount=sorted.filter(b=>b.is_featured).length;host.innerHTML=(featuredCount?'<section class="curated-intro"><div class="eyebrow">LOCAL EDITORIAL PICKS</div><h2>우리동네가 발굴한 장소</h2><p>언론 취재와 지역 기록 등 확인 가능한 근거가 있는 업체를 별도로 소개합니다.</p><span>'+featuredCount+'곳 선정 · 등록 업체 목록</span></section>':'')+sorted.map(businessCardMarkup).join("");bindBusinessDetailButtons(host,sorted);}
 function openBusinessDetail(b){
  if(!b)return;
  const detail=$("#business-detail");
@@ -633,7 +633,7 @@ document.addEventListener("click",function(ev){
   const regionNames={sancheong:'산청군',jinju:'진주시',hadong:'하동군',hamyang:'함양군',geochang:'거창군',hapcheon:'합천군',changwon:'창원시',tongyeong:'통영시',sacheon:'사천시',gimhae:'김해시',miryang:'밀양시',geoje:'거제시',yangsan:'양산시',uiryeong:'의령군',haman:'함안군',changnyeong:'창녕군',goseong:'고성군',namhae:'남해군'};
   const categoryNames={restaurant:'식당·맛집',cafe:'카페',academy:'학원',hospital:'병원',beauty:'미용실',stay:'숙박',car_service:'카센터'};
   const areaNames={sinan:'신안면'};
-  const area=areaNames[areaParam]||'';
+  const area=areaNames[areaParam]||'';window.__seoAreaName=area;
   const region=regionNames[regionParam]||'';
   const category=categoryNames[categoryParam]||'';
   if(region&&category&&typeof openRegionCategory==='function'){
